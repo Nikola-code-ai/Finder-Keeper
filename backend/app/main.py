@@ -11,9 +11,11 @@ from sqlalchemy import delete, func, select, update
 
 from . import retrieval
 from .acquisition import trusted_import_candidate
-from .auth import current_owner, verify_worker
+import secrets
+
+from .auth import current_email, current_owner, verify_worker
 from .config import settings
-from .database import Candidate, Chunk, Document, Folder, Job, Page, Session, document_dict, init_db, now
+from .database import Candidate, Chunk, Document, Folder, Job, Page, Session, Share, document_dict, init_db, now
 from .discovery import discover, public_target
 from .embeddings import embeddings
 from .jobs import (
@@ -58,6 +60,7 @@ app = FastAPI(title="Finder-Keeper", version="0.1.0", lifespan=lifespan)
 app.add_middleware(BodySizeLimitMiddleware, max_bytes=settings.max_bytes + 1024 * 1024)
 app.add_middleware(CORSMiddleware, allow_origins=settings.allowed_origins.split(","), allow_credentials=False, allow_methods=["GET", "POST", "PATCH", "DELETE"], allow_headers=["Authorization", "Content-Type"])
 Owner = Annotated[str, Depends(current_owner)]
+Email = Annotated[str, Depends(current_email)]
 
 
 @app.middleware("http")
@@ -138,6 +141,49 @@ def owned_document(session, document_id, owner):
     return document
 
 
+class ShareInput(BaseModel):
+    email: str | None = Field(default=None, max_length=320)
+    link: bool = False
+    role: Literal["viewer"] = "viewer"
+
+
+def share_dict(share, folder=None):
+    return {"id": share.id, "folder_id": share.folder_id, "email": share.grantee_email, "role": share.role, "link": f"/shared/{share.token}" if share.token else None, "owner_email": share.owner_email, "folder_name": folder.name if folder else None}
+
+
+def shared_folder_ids(session, email):
+    """Collections lent to this address, plus the dividers inside them."""
+    if not email:
+        return {}
+    shares = session.scalars(select(Share).where(Share.grantee_email == email)).all()
+    access = {}
+    for share in shares:
+        access[share.folder_id] = share
+        for child in session.scalars(select(Folder.id).where(Folder.parent_id == share.folder_id)).all():
+            access[child] = share
+    return access
+
+
+def readable_document(session, document_id, owner, email):
+    """Your own document, or one inside a collection a friend lent you."""
+    document = session.get(Document, document_id)
+    if not document:
+        raise HTTPException(404, "Document not found")
+    if document.owner_id == owner:
+        return document
+    if document.folder_id and document.folder_id in shared_folder_ids(session, email):
+        return document
+    raise HTTPException(404, "Document not found")
+
+
+def link_folder(session, token):
+    share = session.scalar(select(Share).where(Share.token == token)) if token else None
+    folder = session.get(Folder, share.folder_id) if share else None
+    if not share or not folder:
+        raise HTTPException(404, "This link does not open anything")
+    return share, folder
+
+
 def queue_or_report(job_id):
     try:
         dispatch(job_id)
@@ -172,11 +218,28 @@ def status(owner: Owner):
 
 
 @app.get("/api/library")
-def library(owner: Owner):
+def library(owner: Owner, email: Email):
     with Session() as session:
         documents = session.scalars(select(Document).where(Document.owner_id == owner).order_by(Document.created_at.desc())).all()
         folders = session.scalars(select(Folder).where(Folder.owner_id == owner).order_by(Folder.created_at)).all()
-        return {"folders": [folder_dict(folder, documents) for folder in folders], "documents": [document_dict(doc) for doc in documents]}
+        return {"folders": [folder_dict(folder, documents) for folder in folders], "documents": [document_dict(doc) for doc in documents], "shared": shared_with_me(session, email)}
+
+
+def shared_with_me(session, email):
+    """Collections friends have lent to this address, with what is in them."""
+    out = []
+    seen = set()
+    for share in session.scalars(select(Share).where(Share.grantee_email == email).order_by(Share.created_at)).all():
+        if share.folder_id in seen:
+            continue
+        seen.add(share.folder_id)
+        folder = session.get(Folder, share.folder_id)
+        if not folder:
+            continue
+        ids = [folder.id, *session.scalars(select(Folder.id).where(Folder.parent_id == folder.id)).all()]
+        docs = session.scalars(select(Document).where(Document.folder_id.in_(ids), Document.status == "ready").order_by(Document.created_at.desc())).all()
+        out.append({"id": folder.id, "name": folder.name, "color": folder.color, "owner_email": share.owner_email, "role": share.role, "count": len(docs), "documents": [document_dict(doc) for doc in docs]})
+    return out
 
 
 @app.post("/api/folders", status_code=201)
@@ -240,24 +303,109 @@ async def upload_document(owner: Owner, file: UploadFile = File(...), folder_id:
 
 
 @app.get("/api/documents/{document_id}")
-def get_document(document_id: str, owner: Owner):
+def get_document(document_id: str, owner: Owner, email: Email):
     with Session() as session:
-        document = owned_document(session, document_id, owner)
+        document = readable_document(session, document_id, owner, email)
         pages = session.scalars(select(Page).where(Page.document_id == document_id).order_by(Page.page_number)).all()
         chunks = session.scalars(select(Chunk).where(Chunk.document_id == document_id).order_by(Chunk.position)).all()
         return {**document_dict(document), "pages": [{"page_number": page.page_number, "text": page.text} for page in pages], "chunks": [{"id": chunk.id, "page_number": chunk.page_number, "start_char": chunk.start_char, "end_char": chunk.end_char, "embedding_model": chunk.embedding_model} for chunk in chunks]}
 
 
-@app.get("/api/documents/{document_id}/file")
-def get_document_file(document_id: str, owner: Owner, download: bool = False):
+def document_file_response(document, download):
+    disposition = "attachment" if download or document.kind == "Article" else "inline"
+    # Imported HTML is never rendered in the app's origin; the extracted-text reader is safe.
+    if settings.storage_backend == "local":
+        return FileResponse(storage.local_path(document.storage_key), media_type=document.mime_type, filename=document.filename, content_disposition_type=disposition, headers={"Content-Security-Policy": "sandbox"})
+    from urllib.parse import quote
+    return Response(storage.get(document.storage_key), media_type=document.mime_type, headers={"Content-Disposition": f"{disposition}; filename*=UTF-8''{quote(document.filename)}", "Content-Security-Policy": "sandbox"})
+
+
+@app.get("/api/folders/{folder_id}/shares")
+def list_shares(folder_id: str, owner: Owner):
     with Session() as session:
-        document = owned_document(session, document_id, owner)
-        disposition = "attachment" if download or document.kind == "Article" else "inline"
-        # Imported HTML is never rendered in the app's origin; the extracted-text reader is safe.
-        if settings.storage_backend == "local":
-            return FileResponse(storage.local_path(document.storage_key), media_type=document.mime_type, filename=document.filename, content_disposition_type=disposition, headers={"Content-Security-Policy": "sandbox"})
-        from urllib.parse import quote
-        return Response(storage.get(document.storage_key), media_type=document.mime_type, headers={"Content-Disposition": f"{disposition}; filename*=UTF-8''{quote(document.filename)}", "Content-Security-Policy": "sandbox"})
+        folder = session.get(Folder, folder_id)
+        if not folder or folder.owner_id != owner:
+            raise HTTPException(404, "Folder not found")
+        return {"shares": [share_dict(s, folder) for s in session.scalars(select(Share).where(Share.folder_id == folder_id).order_by(Share.created_at)).all()]}
+
+
+@app.post("/api/folders/{folder_id}/shares", status_code=201)
+def create_share(folder_id: str, payload: ShareInput, owner: Owner, email: Email):
+    with Session.begin() as session:
+        folder = session.get(Folder, folder_id)
+        if not folder or folder.owner_id != owner:
+            raise HTTPException(404, "Folder not found")
+        if folder.parent_id:
+            raise HTTPException(400, "Share the drawer this divider sits in; dividers travel with it")
+        if payload.link:
+            existing = session.scalar(select(Share).where(Share.folder_id == folder_id, Share.token.is_not(None)))
+            if existing:
+                return share_dict(existing, folder)
+            share = Share(folder_id=folder_id, owner_id=owner, owner_email=email, token=secrets.token_urlsafe(24), role="viewer")
+        else:
+            grantee = (payload.email or "").strip().lower()
+            if "@" not in grantee or len(grantee) < 5:
+                raise HTTPException(400, "Give your friend's email address")
+            if grantee == email:
+                raise HTTPException(400, "That is your own address")
+            existing = session.scalar(select(Share).where(Share.folder_id == folder_id, Share.grantee_email == grantee))
+            if existing:
+                return share_dict(existing, folder)
+            share = Share(folder_id=folder_id, owner_id=owner, owner_email=email, grantee_email=grantee, role=payload.role)
+        session.add(share)
+        session.flush()
+        return share_dict(share, folder)
+
+
+@app.delete("/api/shares/{share_id}")
+def revoke_share(share_id: str, owner: Owner):
+    with Session.begin() as session:
+        share = session.get(Share, share_id)
+        if not share or share.owner_id != owner:
+            raise HTTPException(404, "Share not found")
+        session.delete(share)
+    return {"revoked": True}
+
+
+@app.get("/api/shared/{token}")
+def open_link(token: str):
+    """Anyone holding the link may read the collection; nothing else of the owner's is visible."""
+    with Session() as session:
+        share, folder = link_folder(session, token)
+        ids = [folder.id, *session.scalars(select(Folder.id).where(Folder.parent_id == folder.id)).all()]
+        docs = session.scalars(select(Document).where(Document.folder_id.in_(ids), Document.status == "ready").order_by(Document.created_at.desc())).all()
+        return {"name": folder.name, "owner_email": share.owner_email, "documents": [document_dict(doc) for doc in docs]}
+
+
+@app.get("/api/shared/{token}/documents/{document_id}")
+def open_link_document(token: str, document_id: str):
+    with Session() as session:
+        share, folder = link_folder(session, token)
+        ids = [folder.id, *session.scalars(select(Folder.id).where(Folder.parent_id == folder.id)).all()]
+        document = session.get(Document, document_id)
+        if not document or document.folder_id not in ids:
+            raise HTTPException(404, "Document not found")
+        pages = session.scalars(select(Page).where(Page.document_id == document_id).order_by(Page.page_number)).all()
+        return {**document_dict(document), "pages": [{"page_number": page.page_number, "text": page.text} for page in pages]}
+
+
+@app.get("/api/shared/{token}/documents/{document_id}/file")
+def open_link_file(token: str, document_id: str, download: bool = False):
+    with Session() as session:
+        share, folder = link_folder(session, token)
+        ids = [folder.id, *session.scalars(select(Folder.id).where(Folder.parent_id == folder.id)).all()]
+        document = session.get(Document, document_id)
+        if not document or document.folder_id not in ids:
+            raise HTTPException(404, "Document not found")
+        return document_file_response(document, download)
+
+
+@app.get("/api/documents/{document_id}/file")
+def get_document_file(document_id: str, owner: Owner, email: Email, download: bool = False):
+    with Session() as session:
+        document = readable_document(session, document_id, owner, email)
+        return document_file_response(document, download)
+
 
 
 @app.patch("/api/documents/{document_id}")
@@ -328,22 +476,36 @@ def retry_job(job_id: str, owner: Owner):
 
 
 @app.post("/api/search")
-def search_library(payload: SearchInput, owner: Owner):
+def search_library(payload: SearchInput, owner: Owner, email: Email):
     if not embeddings.ready:
         raise HTTPException(503, "The embedding model is warming up. Please try again in a moment.")
     with Session() as session:
-        scope = folder_scope(session, owner, payload.folder_id)
-    results = retrieval.search(payload.query.strip(), owner, scope, payload.limit)
+        owners, scope = search_scope(session, owner, email, payload.folder_id)
+    results = retrieval.search(payload.query.strip(), owners, scope, payload.limit)
     return {"results": results, "query": payload.query, "method": "hybrid-semantic", "embedding_model": settings.embedding_model}
 
 
 @app.post("/api/ask")
-def ask_library(payload: SearchInput, owner: Owner):
+def ask_library(payload: SearchInput, owner: Owner, email: Email):
     if not embeddings.ready:
         raise HTTPException(503, "The embedding model is warming up. Please try again in a moment.")
     with Session() as session:
-        scope = folder_scope(session, owner, payload.folder_id)
-    return retrieval.ask(payload.query.strip(), owner, scope)
+        owners, scope = search_scope(session, owner, email, payload.folder_id)
+    return retrieval.ask(payload.query.strip(), owners, scope)
+
+
+def search_scope(session, owner, email, folder_id):
+    """Your own library, or one friend's lent collection when that is what you pointed at."""
+    if not folder_id:
+        return [owner], None
+    folder = session.get(Folder, folder_id)
+    if folder and folder.owner_id == owner:
+        return [owner], folder_scope(session, owner, folder_id)
+    share = shared_folder_ids(session, email).get(folder_id)
+    if not share:
+        raise HTTPException(404, "That collection does not exist")
+    children = session.scalars(select(Folder.id).where(Folder.parent_id == folder_id)).all()
+    return [share.owner_id], [folder_id, *children]
 
 
 @app.post("/api/discover")

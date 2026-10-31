@@ -1,4 +1,6 @@
 export interface Folder { id: string; name: string; color: string; count: number; parent_id?: string | null }
+export interface SharedCollection { id: string; name: string; color: string; owner_email: string; role: string; count: number; documents: Document[] }
+export interface Share { id: string; folder_id: string; email: string | null; role: string; link: string | null; owner_email: string; folder_name?: string | null }
 export interface Document {
   id: string; title: string; authors: string[]; year?: number; kind: string;
   folder_id: string | null; status: string; page_count: number; created_at: string;

@@ -58,9 +58,11 @@ def pinpoint_excerpt(chunk, query_terms):
 
 
 def search(query, owner, folder_id=None, limit=8):
+    """owner is one owner id, or a list of them when a friend's shared collection is in scope."""
     vector = np.asarray(embeddings.embed([query], query=True)[0], dtype=np.float32)
+    owners = list(owner) if isinstance(owner, (list, tuple)) else [owner]
     with Session() as session:
-        filters = [Document.owner_id == owner, Document.status == "ready", Chunk.owner_id == owner, Chunk.embedding_model == settings.embedding_model]
+        filters = [Document.owner_id.in_(owners), Document.status == "ready", Chunk.owner_id.in_(owners), Chunk.embedding_model == settings.embedding_model]
         if folder_id:
             # A collection's scope may already include the collections inside it.
             filters.append(Document.folder_id.in_(folder_id) if isinstance(folder_id, (list, tuple)) else Document.folder_id == folder_id)

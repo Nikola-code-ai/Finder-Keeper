@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { ArrowLeft, ArrowRight, CircleHelp, ListTree, Pause, Play, X } from 'lucide-react';
 import type { KeeperActivity, KeeperOperation } from '@/lib/keeper-choreography';
-import type { Document, Folder, Job, SearchMode } from '@/lib/types';
+import type { Document, Folder, Job, SearchMode, SharedCollection } from '@/lib/types';
 import { clerkPresentation } from '@/lib/clerk-room';
 import KeeperAtlas, { type KeeperManifest, type MotionPreview } from './keeper-atlas';
 import styles from './shop.module.css';
@@ -28,6 +28,7 @@ interface ShopProps {
   reading: boolean;
   folders: Folder[];
   documents: Document[];
+  shared: SharedCollection[];
   selectedFolder: string | null;
   onSelectFolder: (id: string | null) => void;
   onOpenDocument: (doc: Document) => void;
@@ -181,9 +182,11 @@ export default function Shop(props: ShopProps) {
 
   // The folios on the desks are your real collections; the first is everything you keep.
   const childrenOf = (id: string) => props.folders.filter(f => f.parent_id === id);
-  const folios: { id: string | null; name: string; count: number; docs: Document[]; dividers: Folder[] }[] = [
+  const folios: { id: string | null; name: string; count: number; docs: Document[]; dividers: Folder[]; lentBy?: string }[] = [
     { id: null, name: 'Everything kept', count: props.documents.length, docs: props.documents, dividers: [] },
     ...props.folders.filter(f => !f.parent_id).map(f => { const inside = childrenOf(f.id); const ids = new Set([f.id, ...inside.map(c => c.id)]); const docs = props.documents.filter(d => d.folder_id && ids.has(d.folder_id)); return { id: f.id, name: f.name, count: docs.length, docs: props.documents.filter(d => d.folder_id === f.id), dividers: inside }; }),
+    // Drawers a friend lent you sit on the same desk, marked with who lent them.
+    ...props.shared.map(s => ({ id: s.id, name: s.name, count: s.count, docs: s.documents, dividers: [] as Folder[], lentBy: s.owner_email })),
   ];
   const shown = folios.slice(0, 6), more = folios.length - shown.length;
   folioIndexRef.current = Object.fromEntries(shown.map((f, i) => [f.id ?? 'all', i]));
@@ -222,7 +225,7 @@ export default function Shop(props: ShopProps) {
         <div className={styles.folios} role="group" aria-label="Your collections, as the desk's drawers" data-placed={!!marks}>
           {shown.map((folio, index) => <div key={folio.id ?? 'all'} className={styles.folio} data-open={openFolio === (folio.id ?? 'all')} data-selected={props.selectedFolder === folio.id} style={{ '--i': index, ...drawerStyle(index) } as CSSProperties}>
             <button className={styles.folioCover} onClick={() => { setOpenFolio(value => value === (folio.id ?? 'all') ? null : (folio.id ?? 'all')); props.onSelectFolder(folio.id); }} aria-expanded={openFolio === (folio.id ?? 'all')} aria-label={`${folio.name}, ${folio.count} ${folio.count === 1 ? 'sheet' : 'sheets'}; lean in to see them`}>
-              <span className={styles.folioName}>{folio.name}</span><span className={styles.folioCount}>{props.loading ? '…' : folio.count} {folio.count === 1 ? 'sheet' : 'sheets'}</span>
+              <span className={styles.folioName}>{folio.name}</span><span className={styles.folioCount}>{props.loading ? '…' : folio.count} {folio.count === 1 ? 'sheet' : 'sheets'}{folio.lentBy ? ` · lent by ${folio.lentBy.split('@')[0]}` : ''}</span>
             </button>
             <div className={styles.fan} aria-label={`Inside ${folio.name}`}>
               {folio.dividers.map((sub, i) => <button key={sub.id} className={`${styles.fanSheet} ${styles.divider}`} data-selected={props.selectedFolder === sub.id} style={{ '--n': i } as CSSProperties} onClick={() => props.onSelectFolder(sub.id)}><span>{sub.name}</span><small>{sub.count} {sub.count === 1 ? 'sheet' : 'sheets'} · a divider inside {folio.name}</small></button>)}

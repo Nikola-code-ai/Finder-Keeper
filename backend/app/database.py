@@ -42,6 +42,19 @@ class Folder(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
 
 
+class Share(Base):
+    """A collection lent to a friend by address, or opened to anyone holding its link (read-only)."""
+    __tablename__ = "shares"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uid)
+    folder_id: Mapped[str] = mapped_column(ForeignKey("folders.id", ondelete="CASCADE"), index=True)
+    owner_id: Mapped[str] = mapped_column(String(128), index=True)
+    owner_email: Mapped[str] = mapped_column(String(320), default="")
+    grantee_email: Mapped[str | None] = mapped_column(String(320), nullable=True, index=True)
+    token: Mapped[str | None] = mapped_column(String(64), nullable=True, unique=True)
+    role: Mapped[str] = mapped_column(String(20), default="viewer")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
 class Document(Base):
     __tablename__ = "documents"
     __table_args__ = (UniqueConstraint("owner_id", "content_hash", name="unique_owner_content"),)
