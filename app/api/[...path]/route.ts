@@ -21,7 +21,7 @@ async function proxy(request: Request, context: Context) {
     return Response.json({ detail: 'Invalid API path.' }, { status: 400 });
   }
   // Internal task endpoints are deliberately not exposed through the browser proxy.
-  if (!['status','library','folders','documents','search','ask','discover','import','jobs','health'].includes(path[0])) {
+  if (!['status','library','folders','documents','search','ask','discover','import','jobs','health','shares','shared'].includes(path[0])) {
     return Response.json({ detail: 'Not found.' }, { status: 404 });
   }
   const base = (process.env.API_INTERNAL_URL || 'http://127.0.0.1:8010').replace(/\/$/, '');
