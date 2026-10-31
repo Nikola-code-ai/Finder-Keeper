@@ -5,8 +5,7 @@ import { ArrowLeft, ArrowRight, CircleHelp, ListTree, Pause, Play, X } from 'luc
 import type { KeeperActivity, KeeperOperation } from '@/lib/keeper-choreography';
 import type { Document, Folder, Job, SearchMode } from '@/lib/types';
 import { clerkPresentation } from '@/lib/clerk-room';
-import ClerkAnimatedScene, { type MotionPreview } from './clerk-animated-scene';
-import { RoomBack, RoomFront, RoomMid } from './herbarium-room';
+import KeeperAtlas, { type KeeperManifest, type MotionPreview } from './keeper-atlas';
 import styles from './shop.module.css';
 
 export type Station = 'desks' | 'counter' | 'window';
@@ -38,12 +37,14 @@ interface ShopProps {
   library: ReactNode;
 }
 
-// Stations sit along the painting; x is a percentage of the painting's width.
-const STATIONS: { id: Station; x: number; job: SearchMode; name: string }[] = [
+// Stations sit along the rendered room; x is a percentage of its width, read from the render's landmarks once they load.
+const DEFAULT_STATIONS: { id: Station; x: number; job: SearchMode; name: string }[] = [
   { id: 'desks', x: 15, job: 'search', name: 'the desks' },
   { id: 'counter', x: 54, job: 'ask', name: 'the counter' },
   { id: 'window', x: 88, job: 'discover', name: 'the window' },
 ];
+type Landmarks = { desks: [number, number]; desksLabel: [number, number]; tray: [number, number]; counter: [number, number]; register: [number, number]; window: [number, number]; windowLabel: [number, number]; drawers: { id: string; at: [number, number]; open: [number, number] }[] };
+const ROOM = '/herbarium/';
 const JOB_LINES: Record<SearchMode, string> = { discover: 'Send the spider onto the web', search: 'Untie a folio at the desks', ask: 'Open the register, answered from your library' };
 const IMPORT_STATIONS = ['queued', 'mounting', 'searchable'] as const;
 
@@ -61,6 +62,12 @@ export default function Shop(props: ShopProps) {
   const [openFolio, setOpenFolio] = useState<string | null>(null);
   const [preview, setPreview] = useState<MotionPreview | null>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const folioIndexRef = useRef<Record<string, number>>({});
+  const [manifest, setManifest] = useState<KeeperManifest | null>(null);
+  const [plates, setPlates] = useState<Record<string, [number, number, number, number]>>({});
+  const marks = (manifest?.landmarks as Landmarks | undefined) ?? null;
+  const openDrawer = openFolio === null ? null : (marks?.drawers[folioIndexRef.current[openFolio] ?? -1]?.id ?? null);
+  const STATIONS = marks ? DEFAULT_STATIONS.map(s => ({ ...s, x: Math.round((s.id === 'desks' ? marks.desks[0] : s.id === 'counter' ? marks.counter[0] : marks.window[0]) * 100) })) : DEFAULT_STATIONS;
   const scroller = useRef<HTMLDivElement>(null);
   const frames = useRef<Partial<Record<Station, HTMLDivElement | null>>>({});
   const settle = useRef(0);
@@ -77,6 +84,18 @@ export default function Shop(props: ShopProps) {
     if (!frame || !scroller.current || plain) return;
     scroller.current.scrollTo({ left: frame.offsetLeft, behavior: reducedMotion ? 'instant' : 'smooth' });
   }, [plain, reducedMotion]);
+
+  // The render's manifest carries the character box, the clips, and where every object sits in the frame.
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch(`${ROOM}manifest.json`, { signal: controller.signal }).then(r => r.ok ? r.json() : Promise.reject(new Error('no room'))).then((m: KeeperManifest) => {
+      setManifest(m);
+      const drawers = (m.landmarks as Landmarks).drawers || [];
+      Promise.all(drawers.map(d => fetch(`${ROOM}drawer-${d.id}.json`, { signal: controller.signal }).then(r => r.ok ? r.json() : null).then(j => [d.id, j?.box] as const).catch(() => [d.id, null] as const)))
+        .then(entries => setPlates(Object.fromEntries(entries.filter(e => e[1]) as [string, [number, number, number, number]][])));
+    }).catch(() => {});
+    return () => controller.abort();
+  }, []);
 
   useEffect(() => {
     const counter = frames.current.counter;
@@ -133,7 +152,7 @@ export default function Shop(props: ShopProps) {
     const next = !plain; setPlain(next);
     try { localStorage.setItem('finder-keeper:plain-list', String(next)); } catch { /* Private storage can be unavailable. */ }
   };
-  const openDrawer = () => { setDrawer(value => !value); goTo('desks'); };
+  const openDrawerPanel = () => { setDrawer(value => !value); goTo('desks'); };
   const rehearse = () => {
     if (preview) { setPreview(null); return; }
     setPreview({ operation: props.mode, run: Date.now() }); goTo(stationFor(props.mode));
@@ -160,6 +179,11 @@ export default function Shop(props: ShopProps) {
     ...props.folders.map(f => ({ id: f.id, name: f.name, count: f.count, docs: props.documents.filter(d => d.folder_id === f.id) })),
   ];
   const shown = folios.slice(0, 6), more = folios.length - shown.length;
+  folioIndexRef.current = Object.fromEntries(shown.map((f, i) => [f.id ?? 'all', i]));
+  const drawerStyle = (index: number): CSSProperties => {
+    const d = marks?.drawers[index]; if (!d) return {};
+    return { position: 'absolute', left: `${d.at[0] * 100}%`, top: `${d.at[1] * 100}%`, transform: 'translate(-50%, -50%)' };
+  };
 
   return <div className={styles.shop} data-shop data-station={station} data-pose={presentation.pose} data-request-active={props.activity.active} data-paused={props.paused || reducedMotion} data-reading={props.reading} data-plain={plain} data-drawer={drawer}>
     <a className={styles.sign} href="/" aria-label="Finder & Keeper, a quiet research library">finder &amp; keeper<small>a quiet research library</small></a>
@@ -174,36 +198,42 @@ export default function Shop(props: ShopProps) {
       <div className={styles.stage}>
         <div className={styles.artClip} aria-hidden={plain}>
           <div className={styles.art}>
-            <div className={`${styles.layer} ${styles.layerBack}`}><RoomBack /></div>
-            <div className={`${styles.layer} ${styles.layerMid}`}><RoomMid /></div>
-            <div className={`${styles.layer} ${styles.layerKeeper}`}><ClerkAnimatedScene activity={props.activity} paused={props.paused} reducedMotion={reducedMotion} preview={props.activity.active ? null : preview} room={false} /></div>
-            <div className={`${styles.layer} ${styles.layerFront}`}><RoomFront /></div>
+            {/* Three renders of one Blender scene from one camera: they register exactly, and the layers slide at different speeds. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className={`${styles.layer} ${styles.layerBack}`} src={`${ROOM}room-back.webp`} alt="" draggable="false" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className={`${styles.layer} ${styles.layerMid}`} src={`${ROOM}room-mid.webp`} alt="" draggable="false" />
+            {/* An open drawer is its own render, laid over the desk where it belongs. */}
+            {Object.entries(plates).map(([id, box]) => <img key={id} className={styles.plate} data-open={openDrawer === id} src={`${ROOM}drawer-${id}.webp`} alt="" draggable="false" style={{ left: `${box[0] * 100}%`, top: `${box[1] * 100}%`, width: `${(box[2] - box[0]) * 100}%`, height: `${(box[3] - box[1]) * 100}%` }} />)}
+            <div className={`${styles.layer} ${styles.layerKeeper}`}><KeeperAtlas activity={props.activity} paused={props.paused} reducedMotion={reducedMotion} preview={props.activity.active ? null : preview} manifest={manifest} /></div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className={`${styles.layer} ${styles.layerFront}`} src={`${ROOM}room-front.webp`} alt="" draggable="false" />
           </div>
         </div>
 
         {/* The folios on the desks: lean in (hover, focus, or tap) and a folio fans its sheets. */}
-        <div className={styles.folios} role="group" aria-label="Your collections, as folios on the desks">
-          {shown.map((folio, index) => <div key={folio.id ?? 'all'} className={styles.folio} data-open={openFolio === (folio.id ?? 'all')} data-selected={props.selectedFolder === folio.id} style={{ '--i': index } as CSSProperties}>
+        <div className={styles.folios} role="group" aria-label="Your collections, as the desk's drawers" data-placed={!!marks}>
+          {shown.map((folio, index) => <div key={folio.id ?? 'all'} className={styles.folio} data-open={openFolio === (folio.id ?? 'all')} data-selected={props.selectedFolder === folio.id} style={{ '--i': index, ...drawerStyle(index) } as CSSProperties}>
             <button className={styles.folioCover} onClick={() => { setOpenFolio(value => value === (folio.id ?? 'all') ? null : (folio.id ?? 'all')); props.onSelectFolder(folio.id); }} aria-expanded={openFolio === (folio.id ?? 'all')} aria-label={`${folio.name}, ${folio.count} ${folio.count === 1 ? 'sheet' : 'sheets'}; lean in to see them`}>
-              <span className={styles.folioName}>{folio.name}</span><span className={styles.folioCount}>{props.loading ? '…' : folio.count} {folio.count === 1 ? 'sheet' : 'sheets'}</span><span className={styles.tie} aria-hidden="true" />
+              <span className={styles.folioName}>{folio.name}</span><span className={styles.folioCount}>{props.loading ? '…' : folio.count} {folio.count === 1 ? 'sheet' : 'sheets'}</span>
             </button>
             <div className={styles.fan} aria-label={`Sheets in ${folio.name}`}>
               {folio.docs.slice(0, 5).map((doc, i) => <button key={doc.id} className={styles.fanSheet} style={{ '--n': i } as CSSProperties} onClick={() => props.onOpenDocument(doc)}><span>{doc.title}</span><small>{kindOf(doc)} · {doc.page_count || '–'} {doc.kind === 'PDF' ? 'pages' : 'sections'}</small></button>)}
-              {folio.docs.length > 5 && <button className={`${styles.fanSheet} ${styles.fanMore}`} style={{ '--n': 5 } as CSSProperties} onClick={openDrawer}><span>{folio.docs.length - 5} more in the drawers</span></button>}
+              {folio.docs.length > 5 && <button className={`${styles.fanSheet} ${styles.fanMore}`} style={{ '--n': 5 } as CSSProperties} onClick={openDrawerPanel}><span>{folio.docs.length - 5} more in the drawers</span></button>}
               {folio.docs.length === 0 && <span className={`${styles.fanSheet} ${styles.fanMore}`} style={{ '--n': 0 } as CSSProperties}><span>Nothing mounted yet</span></span>}
             </div>
           </div>)}
-          {more > 0 && <button className={styles.folioMore} onClick={openDrawer}>{more} more {more === 1 ? 'folio' : 'folios'} in the drawers</button>}
+          {more > 0 && <button className={styles.folioMore} onClick={openDrawerPanel}>{more} more {more === 1 ? 'folio' : 'folios'} in the drawers</button>}
         </div>
 
-        <button className={styles.tag} style={at(6, 32, 1.5, [8, 20])} onClick={openDrawer} aria-expanded={drawer} aria-controls="shop-drawer"><span className={styles.tagCard}>The tray<small>add a document</small></span></button>
-        <button className={styles.tag} style={at(19, 32, -1.5, [22, 20])} onClick={() => chooseJob('search')} disabled={props.disabled} aria-pressed={props.mode === 'search'}><span className={styles.tagCard}>The desks<small>untie a folio, search what you keep</small></span></button>
-        <button className={styles.tag} style={at(60, 69, -1.5, [62, 44])} onClick={() => chooseJob('ask')} disabled={props.disabled} aria-pressed={props.mode === 'ask'}><span className={styles.tagCard}>The register<small>ask, answered from your library</small></span></button>
-        <button className={styles.tag} style={at(85, 56, 1.5)} onClick={() => chooseJob('discover')} disabled={props.disabled} aria-pressed={props.mode === 'discover'}><span className={styles.tagCard}>The window<small>send the spider onto the web</small></span></button>
+        <button className={styles.tag} style={marks ? at(marks.tray[0] * 100, marks.tray[1] * 100, 1.5) : at(6, 32, 1.5)} onClick={openDrawerPanel} aria-expanded={drawer} aria-controls="shop-drawer"><span className={styles.tagCard}>The tray<small>add a document</small></span></button>
+        <button className={styles.tag} style={marks ? at(marks.desksLabel[0] * 100, marks.desksLabel[1] * 100, -1.5) : at(19, 32, -1.5)} onClick={() => chooseJob('search')} disabled={props.disabled} aria-pressed={props.mode === 'search'}><span className={styles.tagCard}>The desks<small>open a drawer, search what you keep</small></span></button>
+        <button className={styles.tag} style={marks ? at(marks.register[0] * 100 + 8, marks.register[1] * 100 - 2, -1.5) : at(60, 69, -1.5)} onClick={() => chooseJob('ask')} disabled={props.disabled} aria-pressed={props.mode === 'ask'}><span className={styles.tagCard}>The register<small>ask, answered from your library</small></span></button>
+        <button className={styles.tag} style={marks ? at(marks.windowLabel[0] * 100, marks.windowLabel[1] * 100, 1.5) : at(85, 56, 1.5)} onClick={() => chooseJob('discover')} disabled={props.disabled} aria-pressed={props.mode === 'discover'}><span className={styles.tagCard}>The window<small>send the spider onto the web</small></span></button>
 
         {STATIONS.map(item => <div key={item.id} className={styles.frame} data-station={item.id} data-current={station === item.id} ref={el => { frames.current[item.id] = el; }} style={{ '--x': item.x } as CSSProperties}>
           {item.id === 'desks' && <aside id="shop-drawer" className={styles.drawer} hidden={!drawer} aria-label="Your collections">
-            <div className={styles.drawerHead}><div><h2>The drawers</h2><p>Add a document, make a folio, or tidy what is kept.</p></div><button aria-label="Close the drawers" onClick={() => { setDrawer(false); focusSlip(); }}><X size={18} /></button></div>
+            <div className={styles.drawerHead}><div><h2>The tray</h2><p>Add a document, make a collection, or tidy what is kept.</p></div><button aria-label="Close the drawers" onClick={() => { setDrawer(false); focusSlip(); }}><X size={18} /></button></div>
             {props.library}
           </aside>}
           {props.hasResults && resultsStation === item.id && <section className={styles.papers} aria-label="Keeper’s findings" onClick={pullPaper}>{props.results}</section>}

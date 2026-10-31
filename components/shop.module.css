@@ -34,7 +34,9 @@
 .artClip { position: absolute; inset: 0; overflow: hidden; }
 .art { position: absolute; left: 0; top: var(--art-top); width: 100%; height: var(--art-h); transform-origin: 54% 72%; transition: transform .7s cubic-bezier(.16, .84, .24, 1); }
 .shop[data-reading='true'] .art { transform: scale(1.04); }
-.layer { position: absolute; inset: 0; will-change: transform; }
+.layer { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: fill; will-change: transform; user-select: none; pointer-events: none; }
+.plate { position: absolute; display: block; opacity: 0; transform: translateY(-6%) scale(.96); transform-origin: 50% 100%; transition: opacity .3s cubic-bezier(.16, .84, .24, 1), transform .4s cubic-bezier(.16, .84, .24, 1); pointer-events: none; }
+.plate[data-open='true'] { opacity: 1; transform: none; }
 .layerBack { transform: translateX(calc(var(--sx) * .08)); }
 .layerMid { transform: none; }
 .layerKeeper { transform: none; }
@@ -56,15 +58,15 @@
 
 /* The folios on the desks: cloth covers with a tape tie; lean in and the sheets fan out above. */
 .folios { position: absolute; z-index: 5; left: 2.4%; top: 59%; width: 27%; height: 16%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6% 3%; align-content: start; }
+.folios[data-placed='true'] { display: block; inset: 0; width: auto; height: auto; pointer-events: none; }
+.folios[data-placed='true'] .folio { width: min(13cqw, 190px); pointer-events: auto; }
 .folio { position: relative; }
-.folioCover { position: relative; display: flex; flex-direction: column; justify-content: flex-end; width: 100%; aspect-ratio: 5 / 3.6; padding: 8% 10% 9%; border: 0; border-radius: 2px 3px 3px 2px; background: linear-gradient(100deg, var(--cloth-deep), var(--cloth) 40%, var(--cloth-light)); box-shadow: 2px 3px 0 var(--cloth-deep), 0 6px 14px #1a1f1566; color: var(--sheet); text-align: left; transform: rotate(calc(var(--i) * .9deg - 1.5deg)); transition: transform .3s cubic-bezier(.16, .84, .24, 1), box-shadow .3s; }
-.folioCover:hover, .folioCover:focus-visible, .folio[data-open='true'] .folioCover { transform: rotate(0deg) translateY(-4px); box-shadow: 2px 3px 0 var(--cloth-deep), 0 14px 26px #1a1f1577; }
-.folio[data-selected='true'] .folioCover { outline: 2px solid var(--sheet); outline-offset: 2px; }
-.folioName { display: block; padding: 2px 6px; background: var(--sheet); color: var(--ink); font: 500 clamp(9px, 1.05cqw, 15px)/1.15 var(--academic); font-variant-caps: small-caps; letter-spacing: .03em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.folioCount { display: block; margin-top: 4px; font: italic 400 clamp(9px, .95cqw, 13px)/1.2 var(--academic); color: var(--sheet-shade); }
-.tie { position: absolute; left: 50%; top: 0; bottom: 0; width: 3px; margin-left: -1.5px; background: var(--tape); opacity: .9; }
-.tie::after { content: ''; position: absolute; left: -7px; top: 50%; width: 17px; height: 10px; border: 2px solid var(--tape); border-radius: 50%; }
-.fan { position: absolute; left: -10%; right: -10%; bottom: 100%; display: none; flex-direction: column; align-items: stretch; padding: 0 0 8px; pointer-events: none; }
+.folioCover { position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; min-height: 44px; padding: 4px 6px; border: 0; background: transparent; color: var(--ink); text-align: center; transition: transform .3s cubic-bezier(.16, .84, .24, 1); }
+.folioCover:hover, .folioCover:focus-visible, .folio[data-open='true'] .folioCover { transform: translateY(-2px); }
+.folio[data-selected='true'] .folioName { box-shadow: inset 0 0 0 1.5px var(--ink); }
+.folioName { display: block; max-width: 100%; padding: 3px 8px; background: var(--sheet); background-image: var(--tooth); border: 1px solid var(--ink-soft); color: var(--ink); font: 500 clamp(10px, 1.0cqw, 14px)/1.15 var(--academic); font-variant-caps: small-caps; letter-spacing: .03em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; box-shadow: var(--shadow); }
+.folioCount { display: block; margin-top: 3px; padding: 1px 6px; background: #1a1f15aa; border-radius: 2px; font: italic 400 clamp(9px, .85cqw, 12px)/1.2 var(--academic); color: var(--sheet); }
+.fan { position: absolute; left: -30%; right: -30%; bottom: 100%; z-index: 3; display: none; flex-direction: column; align-items: stretch; padding: 0 0 10px; pointer-events: none; }
 .folio:hover .fan, .folio:focus-within .fan, .folio[data-open='true'] .fan { display: flex; pointer-events: auto; }
 .fanSheet { display: block; width: 100%; margin-top: -10px; padding: 9px 12px 8px 22px; box-shadow: var(--shadow); text-align: left; color: var(--ink); transform: rotate(calc(var(--n) * .6deg - 1deg)); animation: fanIn .35s cubic-bezier(.16, .84, .24, 1) backwards; animation-delay: calc(var(--n) * 40ms); }
 .fanSheet span { display: block; font: italic 400 clamp(11px, 1.05cqw, 15px)/1.25 var(--academic); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -255,6 +257,7 @@
   .tagCard small { overflow: hidden; text-overflow: ellipsis; }
   .edge { top: 26%; padding: 8px 9px; font-size: 13px; }
   .folios { left: 2%; top: 46%; width: 27%; grid-template-columns: repeat(2, 1fr); gap: 8% 4%; }
+  .folios[data-placed='true'] .folio { width: min(26cqw, 150px); }
   .folioName { font-size: 12px; } .folioCount { font-size: 11px; }
   .fanSheet span { font-size: 13px; } .fanSheet small { font-size: 11px; }
   .fan { left: 0; right: -40%; }
