@@ -73,6 +73,10 @@
 .fanSheet small { display: block; margin-top: 2px; font: 400 clamp(9px, .85cqw, 12px)/1.3 var(--academic); font-variant-caps: small-caps; letter-spacing: .03em; color: var(--ink-soft); }
 .fanSheet:hover, .fanSheet:focus-visible { z-index: 2; transform: translateY(-3px) rotate(0deg); box-shadow: var(--lift); }
 .fanMore { background: var(--sheet-shade); }
+.divider { background: var(--cloth-light); color: var(--sheet); border-color: var(--cloth-deep); }
+.divider small { color: var(--sheet-shade); }
+.divider[data-selected='true'] { box-shadow: inset 0 0 0 2px var(--sheet), var(--shadow); }
+.divider::before, .divider::after { display: none; }
 .fanMore::before, .fanMore::after { display: none; }
 .folioMore { grid-column: 1 / -1; justify-self: start; padding: 4px 8px; background: none; color: var(--sheet); font: italic 400 13px/1.3 var(--academic); text-decoration: underline; text-underline-offset: 3px; }
 @keyframes fanIn { from { opacity: 0; transform: translateY(14px) rotate(0deg); } }

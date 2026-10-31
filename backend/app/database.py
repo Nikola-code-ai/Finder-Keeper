@@ -37,6 +37,8 @@ class Folder(Base):
     owner_id: Mapped[str] = mapped_column(String(128), index=True)
     name: Mapped[str] = mapped_column(String(100))
     color: Mapped[str] = mapped_column(String(20), default="sage")
+    # A collection may sit inside another: the desk's drawers hold dividers.
+    parent_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
 
 
@@ -126,6 +128,11 @@ def init_db():
         with engine.begin() as connection:
             connection.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
     Base.metadata.create_all(engine)
+    # Libraries created before collections could nest get the column added in place.
+    with engine.begin() as connection:
+        columns = {row[1] for row in connection.execute(text("PRAGMA table_info(folders)"))} if engine.dialect.name == "sqlite" else {row[0] for row in connection.execute(text("SELECT column_name FROM information_schema.columns WHERE table_name = 'folders'"))}
+        if "parent_id" not in columns:
+            connection.execute(text("ALTER TABLE folders ADD COLUMN parent_id VARCHAR(36)"))
     if engine.dialect.name == "postgresql":
         with engine.begin() as connection:
             connection.execute(text("CREATE INDEX IF NOT EXISTS chunks_vector_cosine ON chunks USING hnsw (embedding vector_cosine_ops)"))

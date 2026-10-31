@@ -174,9 +174,10 @@ export default function Shop(props: ShopProps) {
   const foundLine = props.resultCount === null ? null : props.resultCount === 0 ? `Nothing found at ${STATIONS.find(s => s.id === resultsStation)!.name}` : `${props.resultCount} found at ${STATIONS.find(s => s.id === resultsStation)!.name}`;
 
   // The folios on the desks are your real collections; the first is everything you keep.
-  const folios: { id: string | null; name: string; count: number; docs: Document[] }[] = [
-    { id: null, name: 'Everything kept', count: props.documents.length, docs: props.documents },
-    ...props.folders.map(f => ({ id: f.id, name: f.name, count: f.count, docs: props.documents.filter(d => d.folder_id === f.id) })),
+  const childrenOf = (id: string) => props.folders.filter(f => f.parent_id === id);
+  const folios: { id: string | null; name: string; count: number; docs: Document[]; dividers: Folder[] }[] = [
+    { id: null, name: 'Everything kept', count: props.documents.length, docs: props.documents, dividers: [] },
+    ...props.folders.filter(f => !f.parent_id).map(f => { const inside = childrenOf(f.id); const ids = new Set([f.id, ...inside.map(c => c.id)]); const docs = props.documents.filter(d => d.folder_id && ids.has(d.folder_id)); return { id: f.id, name: f.name, count: docs.length, docs: props.documents.filter(d => d.folder_id === f.id), dividers: inside }; }),
   ];
   const shown = folios.slice(0, 6), more = folios.length - shown.length;
   folioIndexRef.current = Object.fromEntries(shown.map((f, i) => [f.id ?? 'all', i]));
@@ -217,7 +218,8 @@ export default function Shop(props: ShopProps) {
             <button className={styles.folioCover} onClick={() => { setOpenFolio(value => value === (folio.id ?? 'all') ? null : (folio.id ?? 'all')); props.onSelectFolder(folio.id); }} aria-expanded={openFolio === (folio.id ?? 'all')} aria-label={`${folio.name}, ${folio.count} ${folio.count === 1 ? 'sheet' : 'sheets'}; lean in to see them`}>
               <span className={styles.folioName}>{folio.name}</span><span className={styles.folioCount}>{props.loading ? '…' : folio.count} {folio.count === 1 ? 'sheet' : 'sheets'}</span>
             </button>
-            <div className={styles.fan} aria-label={`Sheets in ${folio.name}`}>
+            <div className={styles.fan} aria-label={`Inside ${folio.name}`}>
+              {folio.dividers.map((sub, i) => <button key={sub.id} className={`${styles.fanSheet} ${styles.divider}`} data-selected={props.selectedFolder === sub.id} style={{ '--n': i } as CSSProperties} onClick={() => props.onSelectFolder(sub.id)}><span>{sub.name}</span><small>{sub.count} {sub.count === 1 ? 'sheet' : 'sheets'} · a divider inside {folio.name}</small></button>)}
               {folio.docs.slice(0, 5).map((doc, i) => <button key={doc.id} className={styles.fanSheet} style={{ '--n': i } as CSSProperties} onClick={() => props.onOpenDocument(doc)}><span>{doc.title}</span><small>{kindOf(doc)} · {doc.page_count || '–'} {doc.kind === 'PDF' ? 'pages' : 'sections'}</small></button>)}
               {folio.docs.length > 5 && <button className={`${styles.fanSheet} ${styles.fanMore}`} style={{ '--n': 5 } as CSSProperties} onClick={openDrawerPanel}><span>{folio.docs.length - 5} more in the drawers</span></button>}
               {folio.docs.length === 0 && <span className={`${styles.fanSheet} ${styles.fanMore}`} style={{ '--n': 0 } as CSSProperties}><span>Nothing mounted yet</span></span>}

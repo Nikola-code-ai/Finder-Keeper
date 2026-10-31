@@ -1,4 +1,4 @@
-export interface Folder { id: string; name: string; color: string; count: number }
+export interface Folder { id: string; name: string; color: string; count: number; parent_id?: string | null }
 export interface Document {
   id: string; title: string; authors: string[]; year?: number; kind: string;
   folder_id: string | null; status: string; page_count: number; created_at: string;

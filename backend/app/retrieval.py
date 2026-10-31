@@ -62,7 +62,8 @@ def search(query, owner, folder_id=None, limit=8):
     with Session() as session:
         filters = [Document.owner_id == owner, Document.status == "ready", Chunk.owner_id == owner, Chunk.embedding_model == settings.embedding_model]
         if folder_id:
-            filters.append(Document.folder_id == folder_id)
+            # A collection's scope may already include the collections inside it.
+            filters.append(Document.folder_id.in_(folder_id) if isinstance(folder_id, (list, tuple)) else Document.folder_id == folder_id)
         base = select(Chunk, Document).join(Document, Chunk.document_id == Document.id).where(*filters)
         if engine.dialect.name == "postgresql":
             # Use pgvector for semantic candidates and PostgreSQL FTS for exact wording candidates.

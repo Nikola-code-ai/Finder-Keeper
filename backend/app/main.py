@@ -79,6 +79,32 @@ async def safe_response_headers(request: Request, call_next):
 class FolderInput(BaseModel):
     name: str = Field(min_length=1, max_length=100)
     color: str = Field(default="sage", max_length=20)
+    parent_id: str | None = None
+
+
+def folder_dict(folder, documents=()):
+    return {"id": folder.id, "name": folder.name, "color": folder.color, "parent_id": folder.parent_id, "count": sum(doc.folder_id == folder.id for doc in documents)}
+
+
+def folder_scope(session, owner, folder_id):
+    """A collection's scope includes the collections inside it, one level down."""
+    if not folder_id:
+        return None
+    children = session.scalars(select(Folder.id).where(Folder.owner_id == owner, Folder.parent_id == folder_id)).all()
+    return [folder_id, *children]
+
+
+def checked_parent(session, owner, parent_id, folder_id=None):
+    if not parent_id:
+        return None
+    parent = session.get(Folder, parent_id)
+    if not parent or parent.owner_id != owner:
+        raise HTTPException(404, "That collection does not exist")
+    if parent.id == folder_id:
+        raise HTTPException(400, "A collection cannot sit inside itself")
+    if parent.parent_id:
+        raise HTTPException(400, "Collections nest one level deep: put this one inside a top-level collection")
+    return parent.id
 
 
 class DocumentPatch(BaseModel):
@@ -150,7 +176,7 @@ def library(owner: Owner):
     with Session() as session:
         documents = session.scalars(select(Document).where(Document.owner_id == owner).order_by(Document.created_at.desc())).all()
         folders = session.scalars(select(Folder).where(Folder.owner_id == owner).order_by(Folder.created_at)).all()
-        return {"folders": [{"id": folder.id, "name": folder.name, "color": folder.color, "count": sum(doc.folder_id == folder.id for doc in documents)} for folder in folders], "documents": [document_dict(doc) for doc in documents]}
+        return {"folders": [folder_dict(folder, documents) for folder in folders], "documents": [document_dict(doc) for doc in documents]}
 
 
 @app.post("/api/folders", status_code=201)
@@ -159,10 +185,10 @@ def create_folder(payload: FolderInput, owner: Owner):
     if not name:
         raise HTTPException(400, "Give the folder a name")
     with Session.begin() as session:
-        folder = Folder(owner_id=owner, name=name, color=payload.color)
+        folder = Folder(owner_id=owner, name=name, color=payload.color, parent_id=checked_parent(session, owner, payload.parent_id))
         session.add(folder)
         session.flush()
-        return {"id": folder.id, "name": folder.name, "color": folder.color, "count": 0}
+        return folder_dict(folder)
 
 
 @app.patch("/api/folders/{folder_id}")
@@ -173,8 +199,11 @@ def edit_folder(folder_id: str, payload: FolderInput, owner: Owner):
             raise HTTPException(404, "Folder not found")
         if not payload.name.strip():
             raise HTTPException(400, "Give the folder a name")
-        folder.name, folder.color = payload.name.strip(), payload.color
-        return {"id": folder.id, "name": folder.name, "color": folder.color}
+        parent = checked_parent(session, owner, payload.parent_id, folder.id)
+        if parent and session.scalar(select(func.count()).select_from(Folder).where(Folder.parent_id == folder.id)):
+            raise HTTPException(400, "This collection holds others, so it stays at the top level")
+        folder.name, folder.color, folder.parent_id = payload.name.strip(), payload.color, parent
+        return folder_dict(folder)
 
 
 @app.delete("/api/folders/{folder_id}")
@@ -184,6 +213,8 @@ def delete_folder(folder_id: str, owner: Owner):
         if not folder or folder.owner_id != owner:
             raise HTTPException(404, "Folder not found")
         session.execute(update(Document).where(Document.folder_id == folder_id, Document.owner_id == owner).values(folder_id=None))
+        # Collections inside a removed one step up to where it was.
+        session.execute(update(Folder).where(Folder.parent_id == folder_id, Folder.owner_id == owner).values(parent_id=folder.parent_id))
         session.delete(folder)
     return {"deleted": True, "documents_preserved": True}
 
@@ -300,7 +331,9 @@ def retry_job(job_id: str, owner: Owner):
 def search_library(payload: SearchInput, owner: Owner):
     if not embeddings.ready:
         raise HTTPException(503, "The embedding model is warming up. Please try again in a moment.")
-    results = retrieval.search(payload.query.strip(), owner, payload.folder_id, payload.limit)
+    with Session() as session:
+        scope = folder_scope(session, owner, payload.folder_id)
+    results = retrieval.search(payload.query.strip(), owner, scope, payload.limit)
     return {"results": results, "query": payload.query, "method": "hybrid-semantic", "embedding_model": settings.embedding_model}
 
 
@@ -308,7 +341,9 @@ def search_library(payload: SearchInput, owner: Owner):
 def ask_library(payload: SearchInput, owner: Owner):
     if not embeddings.ready:
         raise HTTPException(503, "The embedding model is warming up. Please try again in a moment.")
-    return retrieval.ask(payload.query.strip(), owner, payload.folder_id)
+    with Session() as session:
+        scope = folder_scope(session, owner, payload.folder_id)
+    return retrieval.ask(payload.query.strip(), owner, scope)
 
 
 @app.post("/api/discover")
