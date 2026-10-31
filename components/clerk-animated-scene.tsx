@@ -7,8 +7,8 @@ import ClerkIllustratedScene from './clerk-illustrated-scene';
 
 export interface MotionPreview { operation: KeeperOperation; run: number }
 
-export default function ClerkAnimatedScene({ activity, paused, reducedMotion, preview }: {
-  activity: KeeperActivity; paused: boolean; reducedMotion: boolean; preview: MotionPreview | null;
+export default function ClerkAnimatedScene({ activity, paused, reducedMotion, preview, room = true }: {
+  activity: KeeperActivity; paused: boolean; reducedMotion: boolean; preview: MotionPreview | null; room?: boolean;
 }) {
   const effectiveActivity: KeeperActivity = preview ? { id: -preview.run - 1, operation: preview.operation, active: true } : activity;
   const clock = useRef(startClerkClock(effectiveActivity));
@@ -41,6 +41,6 @@ export default function ClerkAnimatedScene({ activity, paused, reducedMotion, pr
   }, [paused, reducedMotion, preview?.run]);
 
   return <div data-clerk-animation data-phase={frame.phase} data-motion-time={frame.time.toFixed(2)} data-preview={Boolean(preview)} role="img" aria-label={`Facing the elderly shopkeeper across his counter. ${CLERK_PHASE_LABELS[frame.phase]}`} style={{ position: 'absolute', inset: 0 }}>
-    <ClerkIllustratedScene {...frame} paused={paused} reducedMotion={reducedMotion} operation={effectiveActivity.operation} />
+    <ClerkIllustratedScene {...frame} paused={paused} reducedMotion={reducedMotion} operation={effectiveActivity.operation} room={room} />
   </div>;
 }

@@ -11,7 +11,7 @@ import room from './bookseller-room.module.css';
 import RequestGuide from './request-guide';
 import { RequestActivity } from './library-scene';
 import Dialog from './dialog';
-import Reader from './reader';
+import Reader, { type ReaderAsk } from './reader';
 import DiscoveryResults from './discovery-results';
 import Shop from './shop';
 import shop from './shop.module.css';
@@ -126,6 +126,14 @@ export default function LibraryApp({ view = 'classic' }: { view?: 'classic' | 'c
     if (!authRef.current) { setError('Sign-in has not been configured for this installation.'); return; }
     try { const { signInWithPopup, GoogleAuthProvider } = await import('firebase/auth'); await signInWithPopup(authRef.current, new GoogleAuthProvider()); } catch (e) { setError(e instanceof Error ? e.message : 'Sign-in did not complete.'); }
   };
+  const askInReader = async (text: string): Promise<ReaderAsk> => {
+    const keeperId = beginKeeper('ask', undefined, `collection:${folder || 'all'}`);
+    try {
+      const value = await api<ReaderAsk>('/ask', { method: 'POST', body: JSON.stringify({ query: text, folder_id: folder }) });
+      finishKeeper(keeperId, value.citations.length ? 'success' : 'empty', value.citations[0] ? `result:${value.citations[0].document.id}` : undefined, value.citations.length ? 'The register has an answer with its sources.' : 'Nothing in your library answers this.');
+      return value;
+    } catch (e) { finishKeeper(keeperId, 'error'); throw e; }
+  };
   const clearSearch = () => { abortRef.current?.abort(); setKeeperActivity(current => current.operation === 'import' ? current : { ...current, active: false, outcome: undefined, status: undefined }); setBusy(false); setResults(null); setDiscoveries(null); setUnavailable([]); setShowUnavailable(false); setDiscoveryNotice(''); setAnswer(''); setSubmitted(''); setError(''); };
   const runSearch = async (override?: string, overrideMode?: SearchMode) => {
     const text = (override ?? query).trim(), selectedMode = overrideMode || mode;
@@ -227,6 +235,9 @@ export default function LibraryApp({ view = 'classic' }: { view?: 'classic' | 'c
       documentCount={documents.length} collectionCount={visibleDocs.length} loading={loading} hasResults={hasResults}
       resultCount={busy ? null : discoveries ? discoveries.filter(item => item.access_status === 'verified_full_text').length : results ? results.length : null}
       job={job} reading={!!reader}
+      folders={folders} documents={documents} selectedFolder={folder}
+      onSelectFolder={id => { if (id !== folder) { setFolder(id); setShowAll(false); } }}
+      onOpenDocument={doc => setReader({ document: doc })}
       composer={requestComposer} options={requestOptions} results={resultsPanel} library={libraryPanel}
     /> : <main className={room.world} aria-label="Finder Keeper">
       <h1 className="visually-hidden">Your library</h1>
@@ -254,7 +265,7 @@ export default function LibraryApp({ view = 'classic' }: { view?: 'classic' | 'c
     {(error || saving || importing) && <div className={`activity-bar ${error ? 'has-error' : ''}`} role={error ? 'alert' : 'status'}>{error ? <><span>{error}</span><button className="icon-button" aria-label="Dismiss error" onClick={() => setError('')}><X size={16} /></button></> : <><LoaderCircle className="spin" size={16} /><span>{saving ? 'Making room for your document…' : job?.stage}</span>{job && !saving && <button className="text-button" onClick={async () => { try { const next = await api<Job>(`/jobs/${job.id}`, { method: 'DELETE' }); setJob(current => current?.id === next.id ? { ...current, ...next } : current); refresh(); if (next.status === 'cancelled') notify('Import cancelled.'); } catch (e) { setError(e instanceof Error ? e.message : 'Could not cancel this import.'); } }}>Cancel</button>}</>}</div>}
     {toast && <div className="toast" role="status"><Check size={16} />{toast}</div>}
     {dragging && <div className="drop-overlay"><Upload size={40} /><h2>Something worth keeping?</h2><p>Drop your document to add it to the library.</p></div>}
-    {reader && <Reader document={reader.document} match={reader.match} onClose={() => setReader(null)} />}
+    {reader && <Reader key={reader.document.id} document={reader.document} match={reader.match} onClose={() => setReader(null)} ask={view === 'counter' ? askInReader : undefined} onOpenOther={source => setReader({ document: source.document, match: source })} />}
     {cabinetOpen && <Dialog title={stationCollectionName} onClose={() => setCabinetOpen(false)}><p className="dialog-description">{stationDocuments.length} {stationDocuments.length === 1 ? 'document' : 'documents'} in this drawer.</p><div className={room.cabinetDocuments}>{stationDocuments.length ? stationDocuments.map(doc => docRow(doc)) : <button className={room.emptyFolder} data-empty-folder="" onClick={() => { setCabinetOpen(false); fileRef.current?.click(); }}><Upload size={15} /> Add your first document</button>}</div></Dialog>}
     {folderDialog && <Dialog title={folderDialog === 'new' ? 'Make a little room.' : 'Your collection'} onClose={() => setFolderDialog(null)}><p className="dialog-description">A home for ideas that belong together.</p><form onSubmit={e => { e.preventDefault(); saveFolder(); }}><label className="field-label" htmlFor="folder-name">Collection name</label><input id="folder-name" className="field-input" value={folderName} onChange={e => setFolderName(e.target.value)} maxLength={80} placeholder="e.g. Things to think about" autoFocus required /><span className="field-label">A little color</span><div className="color-picker">{COLORS.map(color => <button key={color} type="button" className={`color-choice color-${color} ${folderColor === color ? 'selected' : ''}`} aria-label={color} aria-pressed={folderColor === color} onClick={() => setFolderColor(color)}>{folderColor === color && <Check size={17} />}</button>)}</div><div className="dialog-actions">{folderDialog !== 'new' && <button type="button" className="text-button danger" onClick={async () => { try { await api(`/folders/${folderDialog.id}`, { method: 'DELETE' }); if (folder === folderDialog.id) setFolder(null); setFolderDialog(null); refresh(); notify('Collection removed. Your documents are still in All documents.'); } catch (e) { setError(e instanceof Error ? e.message : 'Could not remove collection.'); } }}>Remove collection</button>}<button className="button primary" disabled={saving || !folderName.trim()}>{saving ? 'Saving…' : 'Save collection'}<ArrowRight size={15} /></button></div></form></Dialog>}
     {linkDialog && <Dialog title="Follow a good link." onClose={() => setLinkDialog(false)}><p className="dialog-description">Keep a PDF, EPUB, or readable web document in your library. We'll check the content before saving it.</p><form onSubmit={e => { e.preventDefault(); importDocument(linkValue, linkCandidate || undefined, rights); }}><label className="field-label" htmlFor="document-url">Document URL</label><input id="document-url" className="field-input" type="url" value={linkValue} onChange={e => { setLinkValue(e.target.value); setLinkCandidate(null); setRights(false); }} placeholder="https://…" autoFocus required /><label className="checkbox-label"><input type="checkbox" checked={rights} onChange={e => setRights(e.target.checked)} required /><span>I have permission to store this document, or it is available under a suitable open license.</span></label><div className="dialog-actions"><button className="button primary" disabled={saving || !rights || !linkValue}>{saving ? 'Following the link…' : 'Keep this document'}<ArrowRight size={15} /></button></div></form></Dialog>}

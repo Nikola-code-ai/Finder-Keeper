@@ -1,4 +1,7 @@
 .scene { position: absolute; inset: 0; overflow: hidden; isolation: isolate; background: #e5e3df; }
+.scene[data-room='false'] { background: transparent; overflow: visible; }
+/* Without the pencil room, the puppet is a stand-in in the painted shop: warmed from graphite toward skin and cloth until the modelled Keeper lands. */
+.scene[data-room='false'] .puppet { filter: sepia(.55) saturate(1.15) brightness(.96); }
 .room, .puppet { position: absolute; inset: 0; width: 100%; height: 100%; }
 .room { object-fit: fill; filter: grayscale(1); user-select: none; pointer-events: none; }
 .puppet { overflow: visible; filter: grayscale(1); pointer-events: none; }
