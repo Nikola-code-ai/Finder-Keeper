@@ -1,0 +1,190 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-31T00:00:00Z",
+  "title": "Design System: Finder & Keeper",
+  "extensions": {
+    "colorMeta": {
+      "ground": { "role": "neutral", "displayName": "Ground", "canonical": "#e5e3df", "tonalRamp": ["oklch(18% 0.004 85)", "oklch(29% 0.004 85)", "oklch(40% 0.004 85)", "oklch(51% 0.004 85)", "oklch(62% 0.004 85)", "oklch(73% 0.004 85)", "oklch(84% 0.004 85)", "oklch(91% 0.004 85)"] },
+      "paper": { "role": "neutral", "displayName": "Paper", "canonical": "#f1f0e9", "tonalRamp": ["oklch(18% 0.008 95)", "oklch(29% 0.008 95)", "oklch(40% 0.008 95)", "oklch(51% 0.008 95)", "oklch(62% 0.008 95)", "oklch(73% 0.008 95)", "oklch(84% 0.008 95)", "oklch(95% 0.008 95)"] },
+      "paper-2": { "role": "neutral", "displayName": "Second Sheet", "canonical": "#e7e4db", "tonalRamp": ["oklch(18% 0.01 90)", "oklch(29% 0.01 90)", "oklch(40% 0.01 90)", "oklch(51% 0.01 90)", "oklch(62% 0.01 90)", "oklch(73% 0.01 90)", "oklch(84% 0.01 90)", "oklch(92% 0.01 90)"] },
+      "ink": { "role": "primary", "displayName": "Ink", "canonical": "#2b2a27", "tonalRamp": ["oklch(15% 0.005 85)", "oklch(26% 0.005 85)", "oklch(38% 0.005 85)", "oklch(50% 0.005 85)", "oklch(62% 0.005 85)", "oklch(74% 0.005 85)", "oklch(86% 0.005 85)", "oklch(95% 0.005 85)"] },
+      "pencil": { "role": "neutral", "displayName": "Pencil", "canonical": "#5a5751", "tonalRamp": ["oklch(15% 0.008 80)", "oklch(26% 0.008 80)", "oklch(38% 0.008 80)", "oklch(50% 0.008 80)", "oklch(62% 0.008 80)", "oklch(74% 0.008 80)", "oklch(86% 0.008 80)", "oklch(95% 0.008 80)"] },
+      "graphite": { "role": "neutral", "displayName": "Graphite", "canonical": "#8d8a82", "tonalRamp": ["oklch(15% 0.008 85)", "oklch(26% 0.008 85)", "oklch(38% 0.008 85)", "oklch(50% 0.008 85)", "oklch(62% 0.008 85)", "oklch(74% 0.008 85)", "oklch(86% 0.008 85)", "oklch(95% 0.008 85)"] },
+      "faint": { "role": "neutral", "displayName": "Faint", "canonical": "#cfcbbf", "tonalRamp": ["oklch(15% 0.012 90)", "oklch(26% 0.012 90)", "oklch(38% 0.012 90)", "oklch(50% 0.012 90)", "oklch(62% 0.012 90)", "oklch(74% 0.012 90)", "oklch(84% 0.012 90)", "oklch(95% 0.012 90)"] },
+      "dialog-pencil": { "role": "neutral", "displayName": "Dialog Pencil", "canonical": "#4a4842", "tonalRamp": ["oklch(15% 0.008 85)", "oklch(26% 0.008 85)", "oklch(38% 0.008 85)", "oklch(50% 0.008 85)", "oklch(62% 0.008 85)", "oklch(74% 0.008 85)", "oklch(86% 0.008 85)", "oklch(95% 0.008 85)"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Shop sign", "purpose": "The shop sign only; 18px under 760px." },
+      "headline": { "displayName": "Ledger heading", "purpose": "Drawer heading; dialog and reader headings run 26px/24px in the same face." },
+      "title": { "displayName": "Tag", "purpose": "Hand-lettered tags and the results caption, one size everywhere; 15px under 760px." },
+      "script": { "displayName": "Visitor's writing", "purpose": "The slip input; 19px under 760px. Job line is 17px." },
+      "action": { "displayName": "Hand label", "purpose": "Button labels, menu rows, dashed-underline text links." },
+      "card": { "displayName": "Catalogue card", "purpose": "Ribbon captions; answer text at 1.7 leading." },
+      "body": { "displayName": "Excerpt", "purpose": "Result excerpts, 2 lines at rest, 6 lifted, 12 in plain list." },
+      "label": { "displayName": "Typed label", "purpose": "Metadata, status, hints, counts, in pencil." },
+      "badge": { "displayName": "Badge", "purpose": "Format badges and citation numerals; the available stamp is the one uppercase use." }
+    },
+    "shadows": [
+      { "name": "shadow", "value": "0 2px 5px #25231d2b, 0 10px 22px #25231d1c", "purpose": "Resting paper: tags, sign, tools, edge chips, note, caption, pile papers at rest." },
+      { "name": "lift", "value": "0 5px 12px #25231d38, 0 22px 42px #25231d2a", "purpose": "Lifted paper: slip, drawer, menus, toast, any paper on hover/focus/pulled." },
+      { "name": "pressed-ink", "value": "0 2px 4px #25231d33", "purpose": "Small ink-filled button inside a paper." },
+      { "name": "dialog", "value": "0 8px 18px #25231d44, 0 44px 90px #25231d4a", "purpose": "The reader dialog over a #25231d59 backdrop, no blur." }
+    ],
+    "motion": [
+      { "name": "ease-paper", "value": "cubic-bezier(.16, .84, .24, 1)", "purpose": "The one easing for every movement: lift, swing, fade, art zoom." },
+      { "name": "lift", "value": "transform .3s, box-shadow .3s", "purpose": "Paper rising on hover/focus; straightens to 0deg and moves up 6px (tags 3px)." },
+      { "name": "arrive", "value": "opacity .45s", "purpose": "A station's papers and drawer fade in as the camera arrives." },
+      { "name": "swing", "value": "perspective(900px) rotateY(-55deg) to flat, .45s", "purpose": "The drawer opening from the cabinet." },
+      { "name": "art-zoom", "value": "transform .7s, scale(1.05) at origin 54% 72%", "purpose": "The drawing leans in while reading." },
+      { "name": "stamp-hover", "value": "transform .25s, translateY(-1px) rotate(-10deg)", "purpose": "The send stamp on hover." },
+      { "name": "pulse", "value": "1.6s ease-in-out infinite, 50% opacity .3", "purpose": "Live dot while a request runs." },
+      { "name": "turn", "value": "6s linear infinite", "purpose": "Dashed search pulse ring while loading." },
+      { "name": "shimmer", "value": "2s infinite", "purpose": "Ledger skeleton rows." },
+      { "name": "camera", "value": "scrollTo behavior smooth; instant under reduced motion", "purpose": "Panning between stations." },
+      { "name": "pause", "value": "[data-paused] animation-play-state paused; prefers-reduced-motion removes all animation and transition", "purpose": "Required pause control." }
+    ],
+    "breakpoints": [
+      { "name": "phone", "value": "760px", "purpose": "Art at 100dvh, one station per screen, piles and drawer full-width, slip-h 150px." },
+      { "name": "tablet", "value": "1023px", "purpose": "Art at 120dvh, crop -12dvh." }
+    ],
+    "filters": [
+      { "name": "fk-wobble", "value": "feTurbulence fractalNoise baseFrequency .025 numOctaves 2 seed 4; feDisplacementMap scale 2.4 (R,G); region x -4% y -8% w 108% h 116%", "purpose": "Pencil-wobbled outlines on every paper object's ::before; defined inline in shop.tsx." },
+      { "name": "tooth", "value": "180px tiled SVG fractalNoise baseFrequency .9, graphite at 16% alpha", "purpose": "Paper grain on every paper fill. Authored vector standing in for a drawn plate." },
+      { "name": "string", "value": "14x24 SVG bowed pencil line, pencil stroke 1.1", "purpose": "The tag's hanging string. Authored vector standing in for a drawn plate." },
+      { "name": "ribbon", "value": "60x34 SVG ribbon with dashed fold lines, paper-2 fill, pencil stroke 1.4; border-image slice 0 14 0 14 fill", "purpose": "Caption ribbon on papers. Authored vector standing in for a drawn plate." }
+    ],
+    "camera": {
+      "artHeight": { "desktop": "150dvh", "tablet": "120dvh", "phone": "100dvh" },
+      "artTop": { "desktop": "-25dvh", "tablet": "-12dvh", "phone": "0px" },
+      "stageWidth": "calc(var(--art-h) * 1.5)",
+      "stations": [
+        { "id": "desks", "x": 14, "job": "search" },
+        { "id": "counter", "x": 54, "job": "ask" },
+        { "id": "window", "x": 87, "job": "discover" }
+      ],
+      "slipHeight": { "desktop": "128px", "phone": "150px" }
+    }
+  },
+  "components": [
+    {
+      "name": "Tag",
+      "kind": "chip",
+      "refersTo": "tag",
+      "description": "Hand-lettered shop tag on a drawn string and pin; names an object and the job it does. Pressed state inverts to ink.",
+      "html": "<svg width=\"0\" height=\"0\" aria-hidden=\"true\" style=\"position:absolute\"><filter id=\"ds-wobble\" x=\"-4%\" y=\"-8%\" width=\"108%\" height=\"116%\" color-interpolation-filters=\"sRGB\"><feTurbulence type=\"fractalNoise\" baseFrequency=\".025\" numOctaves=\"2\" seed=\"4\" result=\"n\"/><feDisplacementMap in=\"SourceGraphic\" in2=\"n\" scale=\"2.4\" xChannelSelector=\"R\" yChannelSelector=\"G\"/></filter></svg><div class=\"ds-tagrow\"><button class=\"ds-tag\"><span class=\"ds-tagcard\">The desks<small>search what you saved</small></span></button><button class=\"ds-tag\" aria-pressed=\"true\"><span class=\"ds-tagcard\">The window<small>send the spider onto the web</small></span></button></div>",
+      "css": ".ds-tagrow { display: flex; gap: 28px; padding: 8px 12px 20px; background: #e5e3df; } .ds-tag { display: flex; flex-direction: column; align-items: center; padding: 0; border: 0; background: none; color: #2b2a27; cursor: pointer; } .ds-tag::before { content: ''; width: 14px; height: 24px; background: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='24' viewBox='0 0 14 24'><path d='M7 0 C 8.5 7, 5.5 15, 7 24' fill='none' stroke='%235a5751' stroke-width='1.1' stroke-linecap='round'/></svg>\") center / 14px 24px no-repeat; } .ds-tagcard { position: relative; display: block; padding: 7px 12px 8px; border-radius: 2px 3px 2px 4px; background-color: #f1f0e9; background-image: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='t'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .17 0 0 0 0 .16 0 0 0 0 .15 0 0 0 .16 0'/></filter><rect width='180' height='180' filter='url(%23t)'/></svg>\"); box-shadow: 0 2px 5px #25231d2b, 0 10px 22px #25231d1c; font: 16px/1.1 'Architects Daughter', 'Segoe Print', 'Bradley Hand', cursive; white-space: nowrap; transform: rotate(-2deg); transition: transform .3s cubic-bezier(.16,.84,.24,1), box-shadow .3s; } .ds-tagcard::before { content: ''; position: absolute; inset: 0; border: 1.5px solid #5a5751; border-radius: inherit; pointer-events: none; filter: url(#ds-wobble); } .ds-tagcard::after { content: ''; position: absolute; left: 50%; top: -5px; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fff 0 1px, #2b2a27 1.8px); box-shadow: 0 1px 1px #25231d55; } .ds-tagcard small { display: block; margin-top: 3px; font: 11px/1.3 'Special Elite', 'Courier New', monospace; color: #5a5751; } .ds-tag:hover .ds-tagcard, .ds-tag:focus-visible .ds-tagcard { transform: rotate(0deg) translateY(-3px); box-shadow: 0 5px 12px #25231d38, 0 22px 42px #25231d2a; } .ds-tag:focus-visible { outline: 2px dashed #2b2a27; outline-offset: 4px; } .ds-tag[aria-pressed='true'] .ds-tagcard { background-color: #2b2a27; color: #f1f0e9; } .ds-tag[aria-pressed='true'] .ds-tagcard::before { border-color: #2b2a27; } .ds-tag[aria-pressed='true'] .ds-tagcard small { color: #cfcbbf; }"
+    },
+    {
+      "name": "Result paper",
+      "kind": "card",
+      "refersTo": "paper",
+      "description": "A finding in a pile: toothy paper, wobbled pencil outline, drawn ribbon caption; lifts and straightens when touched.",
+      "html": "<div class=\"ds-pile\"><button class=\"ds-paper\"><span class=\"ds-ribbon\"><span><strong>When threads share a cache line</strong><small>Page 1 · Words &amp; meaning</small></span><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 17 17 7M7 7h10v10\"/></svg></span><p class=\"ds-excerpt\">The threads are logically independent but physically share a cache line, so each write invalidates the other core's copy.</p></button><button class=\"ds-paper\"><span class=\"ds-ribbon\"><span><strong>Mission AI</strong><small>Page 332 · Words &amp; meaning</small></span></span><p class=\"ds-excerpt\">Keeping the amount of useful work constant when comparing implementations.</p></button></div>",
+      "css": ".ds-pile { display: flex; flex-direction: column; width: 420px; padding: 12px 10px 24px; background: #e5e3df; } .ds-paper { position: relative; width: 100%; margin: 0; padding: 14px 16px 15px; border: 0; border-radius: 2px; background-color: #f1f0e9; background-image: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='t'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .17 0 0 0 0 .16 0 0 0 0 .15 0 0 0 .16 0'/></filter><rect width='180' height='180' filter='url(%23t)'/></svg>\"); box-shadow: 0 2px 5px #25231d2b, 0 10px 22px #25231d1c; color: #2b2a27; text-align: left; cursor: pointer; transition: transform .3s cubic-bezier(.16,.84,.24,1), box-shadow .3s; } .ds-paper::before { content: ''; position: absolute; inset: 0; border: 1.5px solid #5a5751; border-radius: inherit; pointer-events: none; filter: url(#ds-wobble); } .ds-paper + .ds-paper { margin-top: -62px; } .ds-paper:nth-child(odd) { transform: rotate(-.5deg); } .ds-paper:nth-child(even) { transform: rotate(.45deg); } .ds-paper:hover, .ds-paper:focus-visible { z-index: 3; transform: translateY(-6px) rotate(0deg); box-shadow: 0 5px 12px #25231d38, 0 22px 42px #25231d2a; } .ds-paper:focus-visible { outline: 2px dashed #2b2a27; outline-offset: 4px; } .ds-ribbon { position: relative; display: flex; align-items: center; gap: 10px; margin: -14px -24px 12px; padding: 7px 14px; border: 0 solid transparent; border-width: 0 14px; border-image: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='34' viewBox='0 0 60 34'><path d='M14 1.5 L46 1.5 L58.5 1.5 L52 17 L58.5 32.5 L46 32.5 L14 32.5 L1.5 32.5 L8 17 L1.5 1.5 Z' fill='%23e7e4db' stroke='%235a5751' stroke-width='1.4' stroke-linejoin='round'/><path d='M14 1.5 L14 32.5 M46 1.5 L46 32.5' stroke='%235a5751' stroke-width='.9' stroke-dasharray='2 2' opacity='.7'/></svg>\") 0 14 0 14 fill / 0 14px 0 14px; font: 14px/1.3 'Special Elite', 'Courier New', monospace; color: #2b2a27; } .ds-ribbon > span { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; } .ds-ribbon strong { font-weight: 400; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .ds-ribbon small { font: 11px/1.4 'Special Elite', 'Courier New', monospace; color: #5a5751; } .ds-ribbon svg { color: #5a5751; flex-shrink: 0; } .ds-excerpt { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin: 8px 0 0; font: 13px/1.55 'Special Elite', 'Courier New', monospace; } .ds-paper:hover .ds-excerpt, .ds-paper:focus-visible .ds-excerpt { -webkit-line-clamp: 6; }"
+    },
+    {
+      "name": "The slip",
+      "kind": "input",
+      "refersTo": "slip",
+      "description": "The request slip: job line, options, the visitor's handwriting on ruled lines, the double-ring stamp, one foot line.",
+      "html": "<form class=\"ds-slip\"><div class=\"ds-sliphead\"><span>Send the spider onto the web</span><span class=\"ds-slipopts\"><select><option>All types</option></select></span></div><div class=\"ds-sliprow\"><input class=\"ds-slipinput\" placeholder=\"Find me a book, paper, or article…\" /><button class=\"ds-stamp\" type=\"submit\" aria-label=\"Send\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 19V5M5 12l7-7 7 7\"/></svg></button></div><div class=\"ds-slipfoot\">Free full text only; other matches stay in a separate pile.</div></form>",
+      "css": ".ds-slip { position: relative; width: min(600px, 100%); padding: 10px 18px 8px; border-radius: 2px 2px 3px 2px; background-color: #f1f0e9; background-image: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='t'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .17 0 0 0 0 .16 0 0 0 0 .15 0 0 0 .16 0'/></filter><rect width='180' height='180' filter='url(%23t)'/></svg>\"), repeating-linear-gradient(transparent 0 29px, #8d8a8240 29px 30px); background-position: 0 0, 0 14px; box-shadow: 0 5px 12px #25231d38, 0 22px 42px #25231d2a; transform: rotate(-.5deg); color: #2b2a27; font-family: 'Special Elite', 'Courier New', monospace; } .ds-slip::before { content: ''; position: absolute; inset: 0; border: 1.5px solid #5a5751; border-radius: inherit; pointer-events: none; filter: url(#ds-wobble); } .ds-sliphead { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; min-height: 26px; font: 17px/1.2 'Architects Daughter', 'Segoe Print', 'Bradley Hand', cursive; } .ds-slipopts { font: 11px/1.3 'Special Elite', 'Courier New', monospace; color: #5a5751; } .ds-slipopts select { appearance: none; padding: 2px 16px 2px 0; border: 0; border-bottom: 1px dashed #8d8a82; background: transparent; color: #2b2a27; font: 11px 'Special Elite', 'Courier New', monospace; cursor: pointer; } .ds-sliprow { display: flex; align-items: center; gap: 12px; min-height: 50px; } .ds-slipinput { flex: 1; width: 100%; padding: 8px 0 6px; border: 0; outline: none; background: transparent; font: 21px/1.35 'Architects Daughter', 'Segoe Print', 'Bradley Hand', cursive; color: #2b2a27; caret-color: #2b2a27; } .ds-slipinput::placeholder { color: #66635a; } .ds-stamp { position: relative; display: grid; place-items: center; width: 44px; height: 44px; flex: 0 0 44px; border: 0; border-radius: 50%; background: transparent; color: #2b2a27; cursor: pointer; transition: transform .25s cubic-bezier(.16,.84,.24,1); } .ds-stamp::before, .ds-stamp::after { content: ''; position: absolute; inset: 0; border: 2px solid currentColor; border-radius: 50%; pointer-events: none; filter: url(#ds-wobble); } .ds-stamp::after { inset: 4px; border-width: 1px; opacity: .75; } .ds-stamp:hover:not(:disabled) { transform: translateY(-1px) rotate(-10deg); } .ds-stamp:focus-visible { outline: 2px dashed #2b2a27; outline-offset: 4px; } .ds-stamp:disabled { color: #8d8a82; } .ds-stamp:disabled::before { border-style: dashed; } .ds-slipfoot { display: flex; align-items: center; gap: 6px; min-height: 26px; margin-top: 2px; padding-top: 6px; border-top: 1px dashed #8d8a82; font: 11px/1.3 'Special Elite', 'Courier New', monospace; color: #5a5751; }"
+    },
+    {
+      "name": "Ink button",
+      "kind": "button",
+      "refersTo": "button-ink",
+      "description": "Ink pressed into paper: the confirm/save action and the drawer's add button.",
+      "html": "<div class=\"ds-row\"><button class=\"ds-btn-ink\">Save</button><button class=\"ds-btn-paper\">Cancel</button><button class=\"ds-btn-ink ds-btn-ink--small\">Open</button></div>",
+      "css": ".ds-row { display: flex; gap: 12px; align-items: center; padding: 16px; background: #f1f0e9; } .ds-btn-ink { padding: 8px 14px; border: 1.5px solid #2b2a27; border-radius: 2px; background: #2b2a27; color: #f1f0e9; font: 13px/1.2 'Architects Daughter', 'Segoe Print', 'Bradley Hand', cursive; cursor: pointer; transition: transform .18s; } .ds-btn-ink--small { padding: 6px 11px; box-shadow: 0 2px 4px #25231d33; } .ds-btn-paper { padding: 8px 14px; border: 1.5px solid #2b2a27; border-radius: 2px; background: transparent; color: #2b2a27; font: 13px/1.2 'Architects Daughter', 'Segoe Print', 'Bradley Hand', cursive; cursor: pointer; transition: transform .18s; } .ds-btn-ink:active, .ds-btn-paper:active { transform: translateY(1px); } .ds-btn-ink:focus-visible, .ds-btn-paper:focus-visible { outline: 2px dashed #2b2a27; outline-offset: 4px; }"
+    },
+    {
+      "name": "Paper button",
+      "kind": "button",
+      "refersTo": "button-paper",
+      "description": "Secondary action: ink outline on bare paper, same hand-face label.",
+      "html": "<button class=\"ds-btn-paper\">Keep it</button>",
+      "css": ".ds-btn-paper { padding: 8px 14px; border: 1.5px solid #2b2a27; border-radius: 2px; background: transparent; color: #2b2a27; font: 13px/1.2 'Architects Daughter', 'Segoe Print', 'Bradley Hand', cursive; cursor: pointer; transition: transform .18s; } .ds-btn-paper:active { transform: translateY(1px); } .ds-btn-paper:focus-visible { outline: 2px dashed #2b2a27; outline-offset: 4px; }"
+    },
+    {
+      "name": "Tool strip",
+      "kind": "nav",
+      "refersTo": "tool-button",
+      "description": "The small paper strip under the sign: Rehearse, Pause, Plain list, Help. Typed labels; hover fills the second sheet; pressed underlines.",
+      "html": "<div class=\"ds-tools\"><button class=\"ds-tool\">Rehearse</button><button class=\"ds-tool\">Pause</button><button class=\"ds-tool\" aria-pressed=\"true\">Plain list</button><button class=\"ds-tool\">Help</button></div>",
+      "css": ".ds-tools { position: relative; display: inline-flex; gap: 2px; padding: 3px 6px; border-radius: 2px; background-color: #f1f0e9; background-image: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='t'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .17 0 0 0 0 .16 0 0 0 0 .15 0 0 0 .16 0'/></filter><rect width='180' height='180' filter='url(%23t)'/></svg>\"); box-shadow: 0 2px 5px #25231d2b, 0 10px 22px #25231d1c; transform: rotate(-1deg); } .ds-tools::before { content: ''; position: absolute; inset: 0; border: 1.5px solid #5a5751; border-radius: inherit; pointer-events: none; filter: url(#ds-wobble); } .ds-tool { position: relative; display: inline-flex; align-items: center; gap: 4px; min-height: 30px; padding: 4px 7px; border: 0; border-radius: 2px; background: none; color: #5a5751; font: 11px/1.2 'Special Elite', 'Courier New', monospace; white-space: nowrap; cursor: pointer; transition: background .18s; } .ds-tool:hover { color: #2b2a27; background: #e7e4db; } .ds-tool[aria-pressed='true'] { color: #2b2a27; text-decoration: underline; text-underline-offset: 3px; } .ds-tool:focus-visible { outline: 2px dashed #2b2a27; outline-offset: 4px; }"
+    },
+    {
+      "name": "Edge chip",
+      "kind": "chip",
+      "refersTo": "edge-chip",
+      "description": "A paper tab flush to the viewport edge that pans the camera one station.",
+      "html": "<div class=\"ds-edgerow\"><button class=\"ds-edge ds-edge--left\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M19 12H5M12 19l-7-7 7-7\"/></svg>the desks</button><button class=\"ds-edge ds-edge--right\">the window<svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14M12 5l7 7-7 7\"/></svg></button></div>",
+      "css": ".ds-edgerow { display: flex; justify-content: space-between; padding: 16px 0; background: #e5e3df; } .ds-edge { position: relative; display: flex; align-items: center; gap: 6px; padding: 9px 11px; border: 0; background-color: #f1f0e9; background-image: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='t'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .17 0 0 0 0 .16 0 0 0 0 .15 0 0 0 .16 0'/></filter><rect width='180' height='180' filter='url(%23t)'/></svg>\"); box-shadow: 0 2px 5px #25231d2b, 0 10px 22px #25231d1c; font: 14px/1 'Architects Daughter', 'Segoe Print', 'Bradley Hand', cursive; color: #2b2a27; cursor: pointer; transition: transform .3s cubic-bezier(.16,.84,.24,1); } .ds-edge::before { content: ''; position: absolute; inset: 0; border: 1.5px solid #5a5751; border-radius: inherit; pointer-events: none; filter: url(#ds-wobble); } .ds-edge--left { border-radius: 0 3px 3px 0; } .ds-edge--left::before { left: -4px; } .ds-edge--right { border-radius: 3px 0 0 3px; } .ds-edge--right::before { right: -4px; } .ds-edge:hover { transform: translateY(-2px); } .ds-edge:focus-visible { outline: 2px dashed #2b2a27; outline-offset: 4px; }"
+    },
+    {
+      "name": "Counter note",
+      "kind": "custom",
+      "refersTo": "note",
+      "description": "Names the state in words; the live dot pulses while a request runs; import stages listed as ordered stations.",
+      "html": "<div class=\"ds-note\"><strong><span class=\"ds-livedot\"></span>Keeper is at his desk.</strong><p>Choose an object in the room, or start below.</p><div class=\"ds-stations\"><span data-done=\"true\">queued</span><span data-current=\"true\">processing</span><span>searchable</span></div></div>",
+      "css": ".ds-note { position: relative; max-width: 340px; padding: 9px 13px 10px; border-radius: 2px; background-color: #f1f0e9; background-image: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='t'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .17 0 0 0 0 .16 0 0 0 0 .15 0 0 0 .16 0'/></filter><rect width='180' height='180' filter='url(%23t)'/></svg>\"); box-shadow: 0 2px 5px #25231d2b, 0 10px 22px #25231d1c; transform: rotate(-1deg); font: 12px/1.45 'Special Elite', 'Courier New', monospace; color: #5a5751; } .ds-note::before { content: ''; position: absolute; inset: 0; border: 1.5px solid #5a5751; border-radius: inherit; pointer-events: none; filter: url(#ds-wobble); } .ds-note strong { display: flex; align-items: center; gap: 7px; font: 15px/1.2 'Architects Daughter', 'Segoe Print', 'Bradley Hand', cursive; color: #2b2a27; } .ds-note p { margin: 3px 0 0; } .ds-livedot { flex: 0 0 6px; width: 6px; height: 6px; border-radius: 50%; background: #2b2a27; animation: ds-pulse 1.6s ease-in-out infinite; } @keyframes ds-pulse { 50% { opacity: .3; } } .ds-stations { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 6px; font: 11px/1.3 'Special Elite', 'Courier New', monospace; color: #8d8a82; } .ds-stations span[data-current='true'] { color: #2b2a27; text-decoration: underline; text-underline-offset: 3px; } .ds-stations span[data-done='true'] { color: #5a5751; text-decoration: line-through; }"
+    },
+    {
+      "name": "The drawer",
+      "kind": "card",
+      "refersTo": "drawer",
+      "description": "The ledger panel that swings out of the cabinet: hand heading, ruled rows, no row backgrounds.",
+      "html": "<section class=\"ds-drawer\"><div class=\"ds-drawerhead\"><div><h2>The drawers</h2><p>Open a collection to read what is in it, or search within it from the desks.</p></div><button class=\"ds-drawerclose\" aria-label=\"Close\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M18 6 6 18M6 6l12 12\"/></svg></button></div><div class=\"ds-ledgertools\"><span>10 kept</span><button class=\"ds-add\" aria-label=\"Add\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M12 5v14M5 12h14\"/></svg></button></div><button class=\"ds-collection\"><strong>Computer science</strong><small>3 documents · Pull open</small></button><button class=\"ds-collection\"><strong>Reading room</strong><small>2 documents · Pull open</small></button></section>",
+      "css": ".ds-drawer { position: relative; width: min(440px, 100%); padding: 16px 20px 22px; border-radius: 2px; background-color: #f1f0e9; background-image: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='t'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .17 0 0 0 0 .16 0 0 0 0 .15 0 0 0 .16 0'/></filter><rect width='180' height='180' filter='url(%23t)'/></svg>\"); box-shadow: 0 5px 12px #25231d38, 0 22px 42px #25231d2a; color: #2b2a27; transform-origin: left center; animation: ds-swing .45s cubic-bezier(.16,.84,.24,1); } @keyframes ds-swing { from { transform: perspective(900px) rotateY(-55deg); opacity: .5; } } .ds-drawer::before { content: ''; position: absolute; inset: 0; border: 1.5px solid #5a5751; border-radius: inherit; pointer-events: none; filter: url(#ds-wobble); } .ds-drawerhead { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 4px; } .ds-drawerhead h2 { margin: 0; font: 24px/1.1 'Architects Daughter', 'Segoe Print', 'Bradley Hand', cursive; font-weight: 400; } .ds-drawerhead p { margin: 6px 0 0; font: 11px/1.5 'Special Elite', 'Courier New', monospace; color: #5a5751; } .ds-drawerclose { display: grid; place-items: center; width: 34px; height: 34px; border: 0; border-radius: 50%; background: none; color: #5a5751; cursor: pointer; } .ds-drawerclose:hover { background: #e7e4db; color: #2b2a27; } .ds-ledgertools { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 0 8px; border-bottom: 1.5px solid #5a5751; font: 12px 'Special Elite', 'Courier New', monospace; color: #5a5751; } .ds-add { display: grid; place-items: center; width: 32px; height: 32px; border: 1.5px solid #2b2a27; border-radius: 50%; background: #2b2a27; color: #f1f0e9; cursor: pointer; } .ds-collection { display: flex; flex-direction: column; gap: 4px; width: 100%; min-height: 56px; padding: 12px 36px 12px 2px; border: 0; border-bottom: 1px dashed #8d8a82; background: transparent; color: #2b2a27; text-align: left; cursor: pointer; } .ds-collection strong { font: 17px/1.2 'Architects Daughter', 'Segoe Print', 'Bradley Hand', cursive; font-weight: 400; } .ds-collection small { font: 11px/1.3 'Special Elite', 'Courier New', monospace; color: #5a5751; } .ds-collection:focus-visible, .ds-add:focus-visible, .ds-drawerclose:focus-visible { outline: 2px dashed #2b2a27; outline-offset: 4px; }"
+    },
+    {
+      "name": "Format badge and citation",
+      "kind": "chip",
+      "refersTo": "format-badge",
+      "description": "Typed 10px badge with a 1px pencil box; the inline citation is a 20px ink ring that fills on hover; the available stamp is the one uppercase mark.",
+      "html": "<div class=\"ds-row\"><span class=\"ds-badge\">PDF</span><span class=\"ds-available\">Free full text</span><span>…as noted<button class=\"ds-cite\">1</button>in the passage.</span></div>",
+      "css": ".ds-row { display: flex; gap: 12px; align-items: center; padding: 16px; background: #f1f0e9; font: 13px/1.55 'Special Elite', 'Courier New', monospace; color: #2b2a27; } .ds-badge { padding: 2px 6px; border: 1px solid #5a5751; border-radius: 2px; font: 10px/1.3 'Special Elite', 'Courier New', monospace; letter-spacing: .04em; } .ds-available { display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; border: 1.5px solid #2b2a27; border-radius: 2px; transform: rotate(-2deg); font: 10px/1.45 'Special Elite', 'Courier New', monospace; text-transform: uppercase; letter-spacing: .06em; } .ds-cite { display: inline-grid; place-items: center; min-width: 20px; height: 20px; margin: 0 2px; padding: 0 4px; border: 1.5px solid #2b2a27; border-radius: 50%; background: transparent; color: #2b2a27; font: 10px/1 'Special Elite', 'Courier New', monospace; vertical-align: 1px; cursor: pointer; } .ds-cite:hover { background: #2b2a27; color: #f1f0e9; } .ds-cite:focus-visible { outline: 2px dashed #2b2a27; outline-offset: 4px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Shop Wider Than the Window",
+    "overview": "The whole interface is one continuous pencil drawing of a bookshop that runs past both edges of the viewport. Three stations sit along it (the desks at the left, the counter in the centre, the window at the right) and the camera pans between them; results land at the station that produced them. There is no header bar, no title block, no framed picture with a form beneath it. Everything a visitor touches is a paper object that could have been drawn by the same pencil: a hand-lettered tag hanging from a string, a request slip lying on the counter, shingled findings with a ribbon caption, a ledger that swings out of the cabinet, a counter note that names the state in words.\n\nThe world is monochrome graphite on worn paper, sampled from the drawing itself. There is no colour accent anywhere; emphasis is weight of line (1.5px pencil outlines against 1px dashed and dotted rules), paper laid over paper (two paper tones plus the ground), and ink density (an inverted ink-filled card is the loudest thing on screen). Every paper edge is wobbled by an SVG displacement filter so no outline is machine-straight, but text is never passed through the filter and stays crisp. Two faces only: a hand face for what a person wrote and a typewriter face for what the Keeper's catalogue typed.\n\nDensity is a shop counter, not a dashboard: a handful of paper objects at rest, piles that grow only when a job has run. Motion obeys one physical law, papers slide with weight; nothing floats, glows, or blurs. The sole softness in the whole system is the diffuse shadow a sheet of paper casts on the one beneath it.",
+    "keyCharacteristics": [
+      "One drawing, three stations, a camera that pans; no chrome above or beside it.",
+      "Every control is paper: toothy fill, pencil-wobbled outline, soft cast shadow, a slight tilt.",
+      "Monochrome graphite; emphasis by line weight, paper-on-paper, and ink inversion.",
+      "Hand face for human writing and labels; typewriter face for catalogue data and status.",
+      "States are always named in text on the counter note; animation never carries meaning alone."
+    ],
+    "rules": [
+      { "name": "The No-Accent Rule", "body": "There is no hue in this system. Emphasis is only ever line weight, paper over paper, or ink inversion. A coloured state (success green, error red, link blue) is a violation; errors are a dashed outline and words on the note.", "section": "colors" },
+      { "name": "The Shadow-Is-Ink Rule", "body": "Every shadow is #25231d at low alpha, never black and never a hue; it reads as the paper's own cast shadow on the drawing.", "section": "colors" },
+      { "name": "The Two Hands Rule", "body": "Hand face for what a person wrote; typewriter face for what the catalogue typed. Never mix them inside one line, and never introduce a third face on the shop surface. (The reader's long-form serif is a carried exception inside the dialog, not a licence.)", "section": "typography" },
+      { "name": "The One Weight Rule", "body": "Both faces ship at 400 only. Emphasis is size, face, ink inversion, or an underline; font-weight above 400 is not available.", "section": "typography" },
+      { "name": "The Weight Rule", "body": "A paper either rests (--shadow) or is lifted (--lift); there is no third level and no shadow on text, icons, or outlines.", "section": "elevation" },
+      { "name": "The Nothing Floats Rule", "body": "No element hovers without a shadow that explains how it sits on the sheet below; no blur, no glass, no glow.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do make every new control a paper object: paper fill with the tooth, a ::before outline of 1.5px pencil through #fk-wobble, resting shadow, a small tilt, 2px corners.",
+      "Do keep text outside the wobble filter; only the outline pseudo-element is displaced.",
+      "Do write human-facing labels in the hand face and catalogue data in the typewriter face, both at 400.",
+      "Do express state with words on the counter note and with line style (solid, dashed, dotted, inverted ink), never with hue.",
+      "Do ease every movement with cubic-bezier(.16,.84,.24,1) (lift .3s, swing .45s, art zoom .7s) and let [data-paused] and prefers-reduced-motion stop all of it.",
+      "Do land results at the station that made them and fade them in with the camera's arrival (.45s)."
+    ],
+    "donts": [
+      "Don't add a header bar, a page title, or a framed picture with a form beneath it; the drawing is the page.",
+      "Don't introduce any hue, gradient fill, glass blur, glow, or inset highlight; the global glass treatments are zeroed on purpose.",
+      "Don't use a bold weight, uppercase tracking (beyond the single 10px \"available\" stamp), or a third typeface on the shop surface.",
+      "Don't give a paper a hover fill or a straight border; hover is lift and straightening, and borders are drawn.",
+      "Don't let an element float without a shadow that explains what it rests on; no shadow on text, icons, or outlines.",
+      "Don't put a fourth row on the slip; it carries the job line, the writing, the stamp, and one foot line only."
+    ],
+    "provenance": {
+      "assets": "No image generation existed in this session. The paper tooth, tag string, caption ribbon, pin and send stamp are authored SVG vectors standing in for drawn plates; the finish reviewer scored the material 'partial' for that reason and an asset round is owed. The drawing itself (public/clerk-room/front-illustrated/{room,head,torso}.png) carries its provenance as PNG tEXt.",
+      "removed": "Blender and pixel scenes were removed from the main route by the user's decision; the classic route at /classic keeps its own world (components/bookseller-room.module.css) and is not part of this record.",
+      "notCanonized": "Tags sit above pile papers (z-index 7 over 6) and cover ribbon text at the desks station; the mobile 'The book' tag clips at the viewport edge; the reader's readable-text serif (ui-serif/Georgia) and the literal hexes under .shell (#4a4842, #dcd9d1, #66635a) are carried as-is, not promoted to rules."
+    }
+  }
+}
