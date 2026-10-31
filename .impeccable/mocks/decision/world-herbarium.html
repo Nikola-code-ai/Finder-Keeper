@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>The Herbarium Folio — first viewport</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;width:1440px;height:900px;overflow:hidden;background:#35503a;color:#2a2a26;font-family:'EB Garamond',Georgia,serif}
+  .layer{position:absolute;left:0;right:0}
+  .back{top:0;height:560px;background:
+    repeating-linear-gradient(90deg,#2d4532 0 22px,#3b5a41 22px 30px,#304a36 30px 52px,#4a6b4f 52px 58px);opacity:.9}
+  .wall{top:120px;height:440px;left:430px;right:560px;background:#9aa58a;border-left:6px solid #2d4532;border-right:6px solid #2d4532}
+  .floor{top:560px;height:340px;background:repeating-linear-gradient(90deg,#6e5a3f 0 90px,#7a6244 90px 180px)}
+  .counter{position:absolute;left:470px;right:300px;top:520px;height:380px;background:#5a4731;border-top:14px solid #7a6244;border-left:4px solid #3e3022;border-right:4px solid #3e3022}
+  .keeper{position:absolute;left:760px;top:210px;width:220px;height:340px}
+  .keeper .head{width:110px;height:120px;margin:0 auto;border-radius:48% 48% 44% 44%;background:#e7d2b8;border:3px solid #3a2f24}
+  .keeper .body{width:200px;height:220px;margin:-10px auto 0;border-radius:90px 90px 10px 10px;background:#4f6a4f;border:3px solid #3a2f24}
+  .desk{position:absolute;left:40px;top:520px;width:380px;height:140px;background:#7a6244;border-top:12px solid #8c7350;border:4px solid #3e3022}
+  .folio{position:absolute;width:150px;height:96px;background:#35503a;border:3px solid #22331f;border-radius:3px}
+  .folio::after{content:'';position:absolute;left:20px;right:20px;top:44px;height:3px;background:#efe9da}
+  .folio b{position:absolute;left:12px;top:10px;font:500 22px/1 'EB Garamond',serif;color:#efe9da}
+  .folio i{position:absolute;left:12px;bottom:10px;font:italic 20px/1 'EB Garamond',serif;color:#efe9da}
+  .sheet{position:absolute;width:300px;height:190px;background:#efe9da;border:2px solid #7a6244;box-shadow:4px 6px 12px #0005}
+  .sheet .tape{position:absolute;left:30px;right:30px;top:18px;height:14px;background:#d9cfb3;border:1px solid #a89470}
+  .sheet .label{position:absolute;left:18px;right:18px;bottom:16px;height:70px;background:#fff;border:2px solid #2a2a26;padding:8px 10px;font:24px/1.1 'EB Garamond',serif}
+  .sheet .label small{display:block;font:22px/1.2 'EB Garamond',serif;font-variant:small-caps;color:#5a4731}
+  .stamp{position:absolute;right:26px;top:40px;padding:6px 10px;border:3px solid #9c3b2c;color:#9c3b2c;transform:rotate(-8deg);font:500 22px/1 'EB Garamond',serif;letter-spacing:.04em;text-transform:uppercase}
+  .window{position:absolute;right:60px;top:40px;width:260px;height:400px;border:10px solid #3e3022;border-radius:130px 130px 0 0;background:linear-gradient(#cfdac2,#9fb08e)}
+  .web{position:absolute;right:92px;top:62px;width:110px;height:110px;border:2px dashed #efe9da;border-radius:50%}
+  .spider{position:absolute;right:140px;top:120px;width:24px;height:24px;background:#2a2a26;border-radius:50%}
+  .tag{position:absolute;padding:8px 14px;background:#efe9da;border:2px solid #2a2a26;font:24px/1 'EB Garamond',serif;font-variant:small-caps;letter-spacing:.04em;box-shadow:3px 4px 8px #0004}
+  .tag small{display:block;margin-top:4px;font:italic 20px/1.2 'EB Garamond',serif;font-variant:normal;color:#5a4731}
+  .slip{position:absolute;left:470px;width:560px;bottom:30px;height:130px;background:#efe9da;border:2px solid #2a2a26;padding:16px 24px;box-shadow:6px 8px 16px #0006}
+  .slip b{display:block;font:500 24px/1 'EB Garamond',serif;font-variant:small-caps;letter-spacing:.04em;color:#5a4731}
+  .slip span{display:block;margin-top:14px;font:italic 34px/1.2 'EB Garamond',serif;color:#6b5a3e}
+  .slip em{position:absolute;right:24px;bottom:22px;width:48px;height:48px;border:3px solid #9c3b2c;border-radius:50%}
+  .note{position:absolute;left:30px;bottom:30px;width:360px;padding:12px 16px;background:#efe9da;border:2px solid #2a2a26;font:24px/1.3 'EB Garamond',serif}
+  .sign{position:absolute;left:30px;top:26px;padding:10px 16px;background:#efe9da;border:2px solid #2a2a26;font:500 30px/1 'EB Garamond',serif;letter-spacing:.02em}
+</style></head><body>
+<div class="layer back"></div><div class="wall"></div><div class="layer floor"></div>
+<div class="window"></div><div class="web"></div><div class="spider"></div>
+<div class="desk"><div class="folio" style="left:16px;top:-70px;transform:rotate(-3deg)"><b>Reading room</b><i>12 sheets</i></div><div class="folio" style="left:190px;top:-60px;transform:rotate(2deg)"><b>Computer science</b><i>31 sheets</i></div></div>
+<div class="keeper"><div class="head"></div><div class="body"></div></div>
+<div class="counter">
+  <div class="sheet" style="left:40px;top:30px;transform:rotate(-2deg)"><div class="tape"></div><div class="stamp">Full text checked</div><div class="label">When threads share a cache line<small>Finder-Keeper starter collection · 2026 · PDF</small></div></div>
+  <div class="sheet" style="left:360px;top:60px;transform:rotate(1.5deg)"><div class="tape"></div><div class="label">Free Culture<small>Lessig · 2004 · HTML · catalogue copy</small></div></div>
+</div>
+<div class="tag" style="left:120px;top:440px">The desks<small>your folios, lean in to see the sheets</small></div>
+<div class="tag" style="left:1000px;top:470px">The book<small>ask, answered from your library</small></div>
+<div class="tag" style="right:70px;top:460px">The window<small>send the spider onto the web</small></div>
+<div class="sign">finder &amp; keeper</div>
+<div class="note">The Keeper has looked up from his folio.</div>
+<div class="slip"><b>Collector's label · send the spider onto the web</b><span>Find me a book, paper, or article…</span><em></em></div>
+</body></html>

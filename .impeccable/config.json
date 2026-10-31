@@ -56,6 +56,42 @@
         ],
         "createdAt": "2026-10-31T05:59:52.182Z",
         "reason": "Claude: decision-round composition skeleton from before DESIGN.md existed; Georgia is the sketch placeholder, not a shipped face"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/world-herbarium.html"
+        ],
+        "createdAt": "2026-10-31T06:22:29.792Z",
+        "reason": "Claude: replacement-world decision sketch; its faces are candidates for the world that replaces the current DESIGN.md, which is retired at this round's finish"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/world-diorama.html"
+        ],
+        "createdAt": "2026-10-31T06:22:29.809Z",
+        "reason": "Claude: replacement-world decision sketch; its faces are candidates for the world that replaces the current DESIGN.md, which is retired at this round's finish"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/world-azulejo.html"
+        ],
+        "createdAt": "2026-10-31T06:22:29.828Z",
+        "reason": "Claude: replacement-world decision sketch; its faces are candidates for the world that replaces the current DESIGN.md, which is retired at this round's finish"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/world-canon.html"
+        ],
+        "createdAt": "2026-10-31T06:22:29.847Z",
+        "reason": "Claude: replacement-world decision sketch; its faces are candidates for the world that replaces the current DESIGN.md, which is retired at this round's finish"
       }
     ]
   }

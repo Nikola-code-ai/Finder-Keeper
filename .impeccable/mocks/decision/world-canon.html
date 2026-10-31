@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>The category standard — first viewport</title>
+<style>
+  html,body{margin:0;width:1440px;height:900px;overflow:hidden;background:#ffffff;color:#1f2937;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+  .top{position:absolute;left:0;right:0;top:0;height:64px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;padding:0 28px;gap:24px}
+  .logo{font:700 24px/1 system-ui,sans-serif;color:#2f6f4e}
+  .nav{display:flex;gap:20px;font:22px/1 system-ui,sans-serif;color:#4b5563}
+  .avatar{margin-left:auto;width:36px;height:36px;border-radius:50%;background:#2f6f4e}
+  .side{position:absolute;left:0;top:64px;bottom:0;width:280px;border-right:1px solid #e5e7eb;padding:24px}
+  .side h2{margin:0 0 12px;font:600 22px/1 system-ui,sans-serif;color:#6b7280;letter-spacing:.06em;text-transform:uppercase}
+  .folder{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;font:22px/1 system-ui,sans-serif}
+  .folder.on{background:#ecfdf5;color:#2f6f4e}
+  .folder i{width:20px;height:16px;background:#9ca3af;border-radius:3px}
+  .main{position:absolute;left:280px;right:0;top:64px;bottom:0;padding:32px 40px}
+  .search{height:56px;border:1px solid #d1d5db;border-radius:12px;display:flex;align-items:center;padding:0 20px;font:24px/1 system-ui,sans-serif;color:#6b7280;box-shadow:0 1px 2px #0000000d}
+  .tabs{display:flex;gap:24px;margin:24px 0 16px;font:22px/1 system-ui,sans-serif;color:#6b7280}
+  .tabs b{color:#2f6f4e;border-bottom:3px solid #2f6f4e;padding-bottom:8px;font-weight:600}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .card{border:1px solid #e5e7eb;border-radius:12px;padding:20px;box-shadow:0 1px 3px #0000000f;height:180px}
+  .card b{display:block;font:600 24px/1.2 system-ui,sans-serif}
+  .card small{display:block;margin-top:8px;font:22px/1.4 system-ui,sans-serif;color:#6b7280}
+  .badge{display:inline-block;margin-top:14px;padding:4px 10px;border-radius:999px;background:#ecfdf5;color:#2f6f4e;font:22px/1.2 system-ui,sans-serif}
+  .mascot{position:absolute;right:40px;bottom:30px;width:140px;height:160px;border-radius:70px 70px 20px 20px;background:#e5e7eb}
+</style></head><body>
+<div class="top"><div class="logo">Finder Keeper</div><div class="nav"><span>Library</span><span>Discover</span><span>Ask</span></div><div class="avatar"></div></div>
+<div class="side"><h2>Collections</h2><div class="folder on"><i></i>All documents · 10</div><div class="folder"><i></i>Computer science · 3</div><div class="folder"><i></i>Design &amp; ideas · 1</div><div class="folder"><i></i>Reading room · 2</div><div class="folder"><i></i>Research papers · 1</div></div>
+<div class="main">
+  <div class="search">Search your library or find documents online…</div>
+  <div class="tabs"><b>Discover</b><span>Search library</span><span>Ask</span></div>
+  <div class="cards">
+    <div class="card"><b>When threads share a cache line</b><small>Starter collection · 2026 · PDF</small><span class="badge">Full text checked</span></div>
+    <div class="card"><b>Free Culture</b><small>Lessig · 2004 · HTML</small><span class="badge">Full text checked</span></div>
+    <div class="card"><b>Mission AI</b><small>Starter collection · 2026 · PDF</small><span class="badge">Searchable</span></div>
+  </div>
+</div>
+<div class="mascot"></div>
+</body></html>

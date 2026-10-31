@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>The Tiled Hall — first viewport</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;width:1440px;height:900px;overflow:hidden;background:#35503a;color:#2a2a26;font-family:'EB Garamond',Georgia,serif}
+  .grid{position:absolute;inset:0;background:
+    linear-gradient(90deg,#c9c0a8 0 3px,transparent 3px) 0 0/90px 90px,
+    linear-gradient(0deg,#c9c0a8 0 3px,transparent 3px) 0 0/90px 90px;pointer-events:none;z-index:5;opacity:.9}
+  .panel{position:absolute;top:60px;bottom:60px;border:18px solid #35503a;outline:6px solid #efe9da;outline-offset:-24px}
+  .panel.left{left:-520px;width:600px;opacity:.55}
+  .panel.main{left:120px;right:120px}
+  .panel.right{right:-520px;width:600px;opacity:.55}
+  .scene{position:absolute;inset:18px;background:linear-gradient(#9fb08e 0 55%,#7a6244 55% 100%)}
+  .shelves{position:absolute;left:0;width:380px;top:0;height:55%;background:repeating-linear-gradient(90deg,#35503a 0 16px,#9fb08e 16px 22px,#7a6244 22px 34px,#9fb08e 34px 40px)}
+  .counter{position:absolute;left:300px;right:200px;top:52%;height:48%;background:#5a4731;border-top:14px solid #7a6244}
+  .keeper{position:absolute;left:520px;top:120px;width:220px;height:340px}
+  .keeper .head{width:110px;height:120px;margin:0 auto;border-radius:48%;background:#efe9da;border:4px solid #35503a}
+  .keeper .body{width:200px;height:220px;margin:-10px auto 0;border-radius:90px 90px 10px 10px;background:#35503a;border:4px solid #22331f}
+  .window{position:absolute;right:40px;top:30px;width:200px;height:330px;border:8px solid #35503a;border-radius:100px 100px 0 0;background:#cfdac2}
+  .spider{position:absolute;right:110px;top:90px;width:22px;height:22px;background:#2a2a26;border-radius:50%}
+  .cartouche{position:absolute;padding:10px 18px;background:#efe9da;border:4px double #35503a;font:700 22px/1.1 'Cinzel',serif;letter-spacing:.08em;text-transform:uppercase;color:#35503a}
+  .cartouche small{display:block;margin-top:5px;font:italic 20px/1.2 'EB Garamond',serif;text-transform:none;letter-spacing:0;color:#5a4731}
+  .cartouche.red{border-color:#9c3b2c;color:#9c3b2c}
+  .sheet{position:absolute;width:320px;height:170px;background:#efe9da;border:4px double #35503a;padding:14px 18px;font:24px/1.2 'EB Garamond',serif}
+  .sheet small{display:block;margin-top:8px;font:italic 20px/1.3 'EB Garamond',serif;color:#5a4731}
+  .frieze{position:absolute;left:0;right:0;height:40px;background:repeating-linear-gradient(90deg,#35503a 0 20px,transparent 20px 45px);opacity:.5}
+  .slip{position:absolute;left:440px;width:560px;bottom:20px;height:110px;background:#efe9da;border:4px double #35503a;padding:12px 22px;z-index:6}
+  .slip b{display:block;font:700 20px/1 'Cinzel',serif;letter-spacing:.1em;text-transform:uppercase;color:#35503a}
+  .slip span{display:block;margin-top:12px;font:italic 32px/1.2 'EB Garamond',serif;color:#6b5a3e}
+  .edge{position:absolute;top:50%;padding:10px 16px;background:#efe9da;border:4px double #35503a;font:700 20px/1 'Cinzel',serif;letter-spacing:.08em;z-index:6}
+</style></head><body>
+<div class="panel left"><div class="scene"></div></div>
+<div class="panel main"><div class="scene"><div class="frieze" style="top:0"></div><div class="shelves" style="top:40px"></div><div class="window"></div><div class="spider"></div><div class="counter"></div>
+  <div class="keeper"><div class="head"></div><div class="body"></div></div>
+  <div class="sheet" style="left:340px;top:470px;transform:rotate(-1.5deg)">When threads share a cache line<small>Starter collection · 2026 · PDF</small></div>
+  <div class="cartouche red" style="left:560px;top:430px">Full text checked</div>
+  <div class="cartouche" style="left:40px;top:420px">The desks<small>your folios, lean in</small></div>
+  <div class="cartouche" style="left:760px;top:520px">The book<small>ask, with sources</small></div>
+  <div class="cartouche" style="right:40px;top:380px">The window<small>the spider, onto the web</small></div>
+  <div class="cartouche" style="left:40px;top:30px">finder &amp; keeper<small>a quiet research library</small></div>
+</div></div>
+<div class="panel right"><div class="scene"></div></div>
+<div class="grid"></div>
+<div class="edge" style="left:20px">← The desks</div><div class="edge" style="right:20px">The window →</div>
+<div class="slip"><b>Send the spider onto the web</b><span>Find me a book, paper, or article…</span></div>
+</body></html>
