@@ -29,6 +29,33 @@
         ],
         "createdAt": "2026-10-31T04:33:12.525Z",
         "reason": "Claude: decision-round composition skeleton, not shipping UI; its paper ground is the user-pinned black-and-white ink world (user chose the ink illustration in this session); the build palette is decided in the surface brief"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "georgia",
+        "files": [
+          ".impeccable/mocks/decision/assigned.html"
+        ],
+        "createdAt": "2026-10-31T05:59:52.144Z",
+        "reason": "Claude: decision-round composition skeleton from before DESIGN.md existed; Georgia is the sketch placeholder, not a shipped face"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "georgia",
+        "files": [
+          ".impeccable/mocks/decision/dealt-shelves.html"
+        ],
+        "createdAt": "2026-10-31T05:59:52.163Z",
+        "reason": "Claude: decision-round composition skeleton from before DESIGN.md existed; Georgia is the sketch placeholder, not a shipped face"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "georgia",
+        "files": [
+          ".impeccable/mocks/decision/dealt-counter.html"
+        ],
+        "createdAt": "2026-10-31T05:59:52.182Z",
+        "reason": "Claude: decision-round composition skeleton from before DESIGN.md existed; Georgia is the sketch placeholder, not a shipped face"
       }
     ]
   }
