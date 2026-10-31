@@ -1,0 +1,22 @@
+.station { position:relative; width:100%; color:#242424; }
+.stage { position:relative; width:100%; max-width:820px; height:320px; margin:0 auto; isolation:isolate; overflow:hidden; }
+.floor { position:absolute; bottom:9px; left:calc(50% - 220px); width:390px; height:2px; background:#333; transform:rotate(-.3deg); box-shadow:3px 3px 0 #bbb; }
+.actor { position:absolute; z-index:2; pointer-events:none; }
+.drawing,.laptopDrawing { display:block; width:100%; height:100%; object-fit:contain; user-select:none; pointer-events:none; }
+.drawing { transform:scaleX(-1); }
+.laptopDrawing { object-position:center bottom; }
+.cabinet { position:absolute; z-index:0; border:2px solid #333; background:repeating-linear-gradient(-6deg,#f5f5f5 0 12px,#e8e8e8 13px,#fff 14px); box-shadow:-5px 4px 0 #ddd,-6px 5px 0 #333; }
+.cabinet i { position:absolute; width:9px; height:10px; bottom:-10px; left:9px; border:1px solid #333; background:#ddd; }.cabinet i+i { left:auto; right:9px; }
+.drawer { position:absolute; z-index:1; transform:translateX(var(--drawer-slide,0)); transition:transform 160ms ease-out; }
+.liveDrawer { transition:none; }
+.cavity { position:absolute; inset:0 0 auto; height:26px; background:repeating-linear-gradient(130deg,#555 0 1px,#999 1px 3px); border:1px solid #222; overflow:hidden; }
+.cavity i { position:absolute; left:10px; top:8px; width:48%; height:23px; background:repeating-linear-gradient(#fff 0 4px,#bbb 4px 5px); border:1px solid #333; transform:rotate(-6deg); }.cavity i:nth-child(2) { left:39%; top:4px; transform:rotate(4deg); }.cavity i:nth-child(3) { left:25%; top:16px; }
+.drawerFront { position:absolute; top:23px; left:-1px; right:-1px; bottom:-1px; width:calc(100% + 2px); border:2px solid #333; border-radius:1px 2px 3px 1px; padding:5px 8px 13px; background:linear-gradient(110deg,#fffefb,#eee); box-shadow:2px 3px #999; text-align:left; color:inherit; cursor:pointer; }
+.drawerFront:hover { background:#fff; box-shadow:3px 4px #777; }.drawerFront:focus-visible { outline:3px solid #555; outline-offset:5px; }
+.drawerLabel { display:flex; flex-direction:column; gap:2px; padding-right:24px; }.drawerLabel strong { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:700 12px/1.2 var(--font-lettering),sans-serif; }.drawerLabel small { font:9px/1.2 var(--sans),sans-serif; color:#666; }
+.drawerHandle { position:absolute; right:9px; top:14px; width:21px; height:9px; border:1px solid #333; border-top:3px solid #333; background:#fff; }.openHint { position:absolute; left:8px; bottom:4px; font:8px/1 var(--sans),sans-serif; color:#666; }
+.paper { position:absolute; z-index:3; pointer-events:none; width:15px; height:19px; background:repeating-linear-gradient(#fff 0 4px,#999 4px 5px); border:1px solid #444; transform:rotate(-9deg); box-shadow:2px 1px 0 #fff,3px 2px 0 #555; }
+.caption { position:absolute; left:calc(50% + 118px); bottom:52px; max-width:145px; margin:0; font:16px/1.35 var(--font-lettering),serif; transform:rotate(-2deg); color:#555; }
+.laptopFallback { position:absolute; left:27%; top:48%; width:60%; height:24%; transform:rotate(-8deg); }.laptopFallback i { display:block; height:75%; border:2px solid #222; background:repeating-linear-gradient(#e8e8e8 0 8px,#bcbcbc 9px,#eee 10px); transform:skewY(6deg); }.laptopFallback b { display:block; height:13%; background:#ddd; border:2px solid #222; transform:skewX(-28deg); }
+@media(max-width:760px) { .stage { height:250px; }.floor { left:calc(50% - 154px); width:290px; }.drawerLabel strong { font-size:10px; }.drawerLabel small { font-size:8px; }.drawerFront { padding:4px 7px 12px; }.drawerHandle { right:6px; top:12px; width:17px; }.caption { left:50%; bottom:auto; top:8px; max-width:230px; width:max-content; transform:translateX(-50%); font-size:13px; text-align:center; }.paper { width:12px; height:16px; } }
+@media(prefers-reduced-motion:reduce) { .drawer { transition:none; } }

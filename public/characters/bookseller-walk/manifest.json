@@ -1,0 +1,268 @@
+{
+  "canvas": {
+    "width": 384,
+    "height": 480
+  },
+  "groundAnchor": [
+    0.5,
+    0.94
+  ],
+  "facing": "right",
+  "walkOrder": [
+    "walk-1",
+    "walk-2",
+    "walk-3",
+    "walk-4"
+  ],
+  "packaging": "Crop, uniform resize, transparent padding, lossless WebP encoding. Generated alpha preserved. No hand redrawing or background removal.",
+  "frames": [
+    {
+      "pose": "stand",
+      "source": "walk-source.png",
+      "crop": [
+        202,
+        6,
+        198,
+        514
+      ],
+      "origin": [
+        302,
+        515
+      ],
+      "scale": 0.68,
+      "packaging": {
+        "left": 124,
+        "top": 105,
+        "resized": {
+          "width": 135,
+          "height": 350
+        }
+      },
+      "visibleHeightAt240": 173.3
+    },
+    {
+      "pose": "walk-1",
+      "source": "walk-source.png",
+      "crop": [
+        637,
+        18,
+        288,
+        493
+      ],
+      "origin": [
+        761,
+        506
+      ],
+      "scale": 0.68,
+      "packaging": {
+        "left": 108,
+        "top": 119,
+        "resized": {
+          "width": 196,
+          "height": 336
+        }
+      },
+      "visibleHeightAt240": 166.3
+    },
+    {
+      "pose": "walk-2",
+      "source": "walk-source.png",
+      "crop": [
+        1078,
+        18,
+        293,
+        498
+      ],
+      "origin": [
+        1188,
+        511
+      ],
+      "scale": 0.68,
+      "packaging": {
+        "left": 117,
+        "top": 117,
+        "resized": {
+          "width": 199,
+          "height": 338
+        }
+      },
+      "visibleHeightAt240": 167.3
+    },
+    {
+      "pose": "walk-3",
+      "source": "walk-source.png",
+      "crop": [
+        170,
+        518,
+        312,
+        480
+      ],
+      "origin": [
+        300,
+        993
+      ],
+      "scale": 0.68,
+      "packaging": {
+        "left": 104,
+        "top": 129,
+        "resized": {
+          "width": 212,
+          "height": 326
+        }
+      },
+      "visibleHeightAt240": 161.3
+    },
+    {
+      "pose": "walk-4",
+      "source": "walk-source.png",
+      "crop": [
+        676,
+        515,
+        203,
+        490
+      ],
+      "origin": [
+        777,
+        1000
+      ],
+      "scale": 0.68,
+      "packaging": {
+        "left": 123,
+        "top": 122,
+        "resized": {
+          "width": 138,
+          "height": 333
+        }
+      },
+      "visibleHeightAt240": 164.8
+    },
+    {
+      "pose": "rise",
+      "source": "walk-source.png",
+      "crop": [
+        1104,
+        541,
+        251,
+        467
+      ],
+      "origin": [
+        1219,
+        1003
+      ],
+      "scale": 0.68,
+      "packaging": {
+        "left": 114,
+        "top": 137,
+        "resized": {
+          "width": 171,
+          "height": 318
+        }
+      },
+      "visibleHeightAt240": 157.3
+    },
+    {
+      "pose": "climb-1",
+      "source": "climb-source.png",
+      "crop": [
+        225,
+        9,
+        532,
+        966
+      ],
+      "origin": [
+        450,
+        970
+      ],
+      "scale": 0.4,
+      "grips": [
+        [
+          711,
+          49
+        ],
+        [
+          645,
+          392
+        ]
+      ],
+      "upperFoot": [
+        584,
+        713
+      ],
+      "packaging": {
+        "left": 102,
+        "top": 66,
+        "resized": {
+          "width": 213,
+          "height": 387
+        }
+      },
+      "visibleHeightAt240": 192.5,
+      "gripOffsetsAt240": [
+        [
+          52.2,
+          -184.5
+        ],
+        [
+          39,
+          -115.8
+        ]
+      ],
+      "upperFootOffsetAt240": [
+        26.8,
+        -51.5
+      ]
+    },
+    {
+      "pose": "climb-2",
+      "source": "climb-source.png",
+      "crop": [
+        891,
+        8,
+        513,
+        992
+      ],
+      "origin": [
+        1080,
+        995
+      ],
+      "scale": 0.4,
+      "grips": [
+        [
+          1365,
+          50
+        ],
+        [
+          1307,
+          423
+        ]
+      ],
+      "upperFoot": [
+        1250,
+        749
+      ],
+      "packaging": {
+        "left": 116,
+        "top": 57,
+        "resized": {
+          "width": 205,
+          "height": 396
+        }
+      },
+      "visibleHeightAt240": 197,
+      "gripOffsetsAt240": [
+        [
+          56.9,
+          -188.6
+        ],
+        [
+          45.4,
+          -114.2
+        ]
+      ],
+      "upperFootOffsetAt240": [
+        34,
+        -49.1
+      ]
+    }
+  ]
+}

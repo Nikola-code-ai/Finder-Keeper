@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>The shelves are the library — first viewport</title>
+<style>
+  html,body{margin:0;width:1440px;height:900px;overflow:hidden;background:#f4f1ea;color:#1a1a1a;font-family:Georgia,serif}
+  .wall{position:absolute;inset:0 0 280px 0;background:#ebe6dc;border-bottom:3px solid #1a1a1a}
+  .floor{position:absolute;left:0;right:0;bottom:0;height:280px;background:repeating-linear-gradient(90deg,#ded8cc 0 60px,#e9e4da 60px 120px)}
+  .case{position:absolute;top:30px;width:400px;height:560px;border:4px solid #1a1a1a;background:#f4f1ea}
+  .case.l{left:30px}.case.r{right:30px}
+  .row{position:relative;height:110px;border-bottom:4px solid #1a1a1a;background:repeating-linear-gradient(90deg,#1a1a1a 0 7px,#fff 7px 16px,#8a8378 16px 23px,#fff 23px 30px)}
+  .row.empty{background:repeating-linear-gradient(90deg,#1a1a1a 0 7px,#fff 7px 16px,transparent 16px 100%)}
+  .row em{position:absolute;left:-4px;bottom:-4px;font-style:normal;font-size:22px;background:#fff;border:3px solid #1a1a1a;padding:4px 12px;white-space:nowrap}
+  .row em b{color:#5c564d;font-weight:normal;margin-left:10px}
+  .window{position:absolute;right:460px;top:40px;width:200px;height:320px;border:4px solid #1a1a1a;border-radius:100px 100px 0 0;background:#fff}
+  .spider{position:absolute;right:540px;top:120px;width:20px;height:20px;background:#1a1a1a;border-radius:50%}
+  .desk{position:absolute;left:470px;top:420px;width:200px;height:90px;background:#8a8378;border:3px solid #1a1a1a}
+  .keeper{position:absolute;left:635px;top:220px;width:170px;height:300px}
+  .keeper .head{width:90px;height:90px;border:3px solid #1a1a1a;border-radius:50%;background:#fff;margin:0 auto}
+  .keeper .body{width:150px;height:200px;border:3px solid #1a1a1a;border-radius:70px 70px 0 0;background:#8a8378;margin:-6px auto 0}
+  .counter{position:absolute;left:440px;right:440px;top:500px;height:400px;background:#6d6256;border:4px solid #1a1a1a;border-bottom:0}
+  .counter:before{content:"";position:absolute;left:-30px;right:-30px;top:0;height:70px;background:#8a7f70;border:4px solid #1a1a1a}
+  .book{position:absolute;left:170px;top:-24px;width:220px;height:110px;background:#fff;border:3px solid #1a1a1a}
+  .book:after{content:"";position:absolute;left:50%;top:0;bottom:0;width:3px;background:#1a1a1a}
+  .slip{position:absolute;left:40px;right:40px;top:130px;height:140px;background:#fff;border:3px solid #1a1a1a;transform:rotate(-1deg);padding:20px 26px;font-size:32px;font-style:italic;color:#5c564d;box-shadow:6px 8px 0 #1a1a1a22}
+  .slip b{display:block;font-style:normal;font-size:24px;color:#1a1a1a;margin-bottom:8px}
+  .slip span{position:absolute;right:22px;bottom:16px;width:44px;height:44px;border-radius:50%;background:#1a1a1a}
+  .found{position:absolute;left:60px;top:300px;width:200px;height:80px;background:#fff;border:3px solid #1a1a1a;box-shadow:8px 8px 0 #fff,10px 10px 0 #1a1a1a;font-size:22px;padding:10px 14px}
+  .route{position:absolute;left:300px;top:260px;width:160px;height:0;border-top:3px dashed #1a1a1a;transform:rotate(-38deg);transform-origin:left}
+  .route:after{content:"onto the shelf";position:absolute;left:40px;top:-34px;font-size:22px;transform:rotate(38deg)}
+  .label{position:absolute;font-size:24px;background:#fff;border:2px solid #1a1a1a;padding:6px 14px;box-shadow:3px 3px 0 #1a1a1a}
+  .label i{display:block;font-style:normal;font-size:22px;color:#5c564d}
+  .status{position:absolute;left:460px;bottom:24px;font-size:22px;background:#1a1a1a;color:#f4f1ea;padding:6px 14px}
+</style></head><body>
+<div class="wall"></div><div class="floor"></div>
+<div class="case l">
+  <div class="row"><em>Starter shelf <b>6</b></em></div>
+  <div class="row"><em>Reading now <b>3</b></em></div>
+  <div class="row empty"><em>Distributed systems <b>1</b></em></div>
+  <div class="row empty"><em>New shelf <b>+</b></em></div>
+  <div class="row empty"></div>
+</div>
+<div class="case r">
+  <div class="row"><em>Everything <b>10</b></em></div>
+  <div class="row empty"><em>Arriving <b>1 processing</b></em></div>
+  <div class="row empty"></div><div class="row empty"></div><div class="row empty"></div>
+</div>
+<div class="window"></div><div class="spider"></div>
+<div class="desk"></div>
+<div class="label" style="left:470px;top:350px">The desks<i>saved passages</i></div>
+<div class="label" style="right:470px;top:380px">The window<i>the wider web</i></div>
+<div class="keeper"><div class="head"></div><div class="body"></div></div>
+<div class="counter">
+  <div class="book"></div>
+  <div class="label" style="left:410px;top:-16px">The book<i>ask</i></div>
+  <div class="slip"><b>Your slip</b>Find me a book, paper, or article…<span></span></div>
+  <div class="found">Found paper<br>free full text ✓</div>
+  <div class="route"></div>
+</div>
+<div class="status">Keeper is at his desk · idle</div>
+</body></html>

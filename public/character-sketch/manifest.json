@@ -1,0 +1,698 @@
+{
+  "version": 2,
+  "name": "Keeper — rough ink",
+  "width": 256,
+  "height": 320,
+  "anchor": [
+    0.5,
+    0.95
+  ],
+  "defaultState": "idle",
+  "reducedMotion": "/character-sketch/idle/00.webp",
+  "uniqueDrawings": 48,
+  "production": "48 distinct AI-generated black-ink-style drawings, cropped from four source sheets; no pose is synthesized by transforms.",
+  "states": {
+    "walk": {
+      "frames": [
+        "/character-sketch/walk/00.webp",
+        "/character-sketch/walk/01.webp",
+        "/character-sketch/walk/02.webp",
+        "/character-sketch/walk/03.webp",
+        "/character-sketch/walk/04.webp",
+        "/character-sketch/walk/05.webp"
+      ],
+      "fps": 5,
+      "loop": true,
+      "anchors": {
+        "feet": [
+          0.5,
+          0.95
+        ],
+        "hand": [
+          0.52,
+          0.66
+        ]
+      },
+      "frameAnchors": [
+        {
+          "feet": [
+            0.5004931004008809,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.49888284678285266,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.5010727360827734,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.5008891351655445,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.4991931879365901,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.49996071842257517,
+            0.95
+          ]
+        }
+      ]
+    },
+    "away": {
+      "frames": [
+        "/character-sketch/away/00.webp",
+        "/character-sketch/away/01.webp",
+        "/character-sketch/away/02.webp",
+        "/character-sketch/away/03.webp",
+        "/character-sketch/away/04.webp",
+        "/character-sketch/away/05.webp"
+      ],
+      "fps": 4,
+      "loop": true,
+      "anchors": {
+        "feet": [
+          0.5,
+          0.95
+        ],
+        "hand": [
+          0.57,
+          0.66
+        ]
+      },
+      "frameAnchors": [
+        {
+          "feet": [
+            0.4987451459714274,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.5005690144816474,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.500507066472118,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.5006467787663097,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.4998728377512536,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.5015217713638183,
+            0.95
+          ]
+        }
+      ]
+    },
+    "idle": {
+      "frames": [
+        "/character-sketch/idle/00.webp",
+        "/character-sketch/idle/01.webp",
+        "/character-sketch/idle/02.webp",
+        "/character-sketch/idle/03.webp"
+      ],
+      "fps": 2,
+      "loop": true,
+      "anchors": {
+        "feet": [
+          0.5,
+          0.95
+        ],
+        "seat": [
+          0.3094215645695364,
+          0.7042977373068433
+        ],
+        "hand": [
+          0.62,
+          0.38
+        ]
+      },
+      "frameAnchors": [
+        {
+          "feet": [
+            0.5014944199568786,
+            0.95
+          ],
+          "seat": [
+            0.3094215645695364,
+            0.7042977373068433
+          ]
+        },
+        {
+          "feet": [
+            0.5007483574270248,
+            0.95
+          ],
+          "seat": [
+            0.32627104028697573,
+            0.7081815673289183
+          ]
+        },
+        {
+          "feet": [
+            0.5012082101818316,
+            0.95
+          ],
+          "seat": [
+            0.30283354028697573,
+            0.7050565673289183
+          ]
+        },
+        {
+          "feet": [
+            0.498253158861686,
+            0.95
+          ],
+          "seat": [
+            0.31455229028697573,
+            0.7025593267108168
+          ]
+        }
+      ]
+    },
+    "stand": {
+      "frames": [
+        "/character-sketch/stand/00.webp",
+        "/character-sketch/stand/01.webp",
+        "/character-sketch/stand/02.webp",
+        "/character-sketch/stand/03.webp"
+      ],
+      "fps": 4,
+      "loop": false,
+      "anchors": {
+        "feet": [
+          0.5,
+          0.95
+        ],
+        "seat": [
+          0.31,
+          0.72
+        ],
+        "hand": [
+          0.58,
+          0.66
+        ]
+      },
+      "frameAnchors": [
+        {
+          "feet": [
+            0.49817989106342964,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.5014099804854775,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.4980736221428522,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.49887710132422614,
+            0.95
+          ]
+        }
+      ]
+    },
+    "peek": {
+      "frames": [
+        "/character-sketch/peek/00.webp",
+        "/character-sketch/peek/01.webp",
+        "/character-sketch/peek/02.webp",
+        "/character-sketch/peek/03.webp"
+      ],
+      "fps": 3,
+      "loop": false,
+      "anchors": {
+        "feet": [
+          0.5,
+          0.95
+        ],
+        "hand": [
+          0.7716697709713025,
+          0.4848509933774835
+        ]
+      },
+      "frameAnchors": [
+        {
+          "feet": [
+            0.49875315224384376,
+            0.95
+          ],
+          "hand": [
+            0.783086713576159,
+            0.7090369757174393
+          ]
+        },
+        {
+          "feet": [
+            0.5002454551565592,
+            0.95
+          ],
+          "hand": [
+            0.8086282422737308,
+            0.6354235651214128
+          ]
+        },
+        {
+          "feet": [
+            0.500323917716364,
+            0.95
+          ],
+          "hand": [
+            0.8248999724061811,
+            0.5635485651214128
+          ]
+        },
+        {
+          "feet": [
+            0.4986839122521842,
+            0.95
+          ],
+          "hand": [
+            0.7716697709713025,
+            0.4848509933774835
+          ]
+        }
+      ]
+    },
+    "reach": {
+      "frames": [
+        "/character-sketch/reach/00.webp",
+        "/character-sketch/reach/01.webp",
+        "/character-sketch/reach/02.webp",
+        "/character-sketch/reach/03.webp"
+      ],
+      "fps": 4,
+      "loop": false,
+      "anchors": {
+        "feet": [
+          0.5,
+          0.95
+        ],
+        "hand": [
+          0.9549958425720622,
+          0.4392738359201774
+        ]
+      },
+      "frameAnchors": [
+        {
+          "feet": [
+            0.4987351968807698,
+            0.95
+          ],
+          "hand": [
+            0.9118365437915743,
+            0.37313608647450114
+          ]
+        },
+        {
+          "feet": [
+            0.4991372341219974,
+            0.95
+          ],
+          "hand": [
+            0.9112389135254989,
+            0.4206000554323725
+          ]
+        },
+        {
+          "feet": [
+            0.49968928739829405,
+            0.95
+          ],
+          "hand": [
+            0.931783536585366,
+            0.4283190133037694
+          ]
+        },
+        {
+          "feet": [
+            0.4514397699068359,
+            0.95
+          ],
+          "hand": [
+            0.9549958425720622,
+            0.4392738359201774
+          ]
+        }
+      ]
+    },
+    "rummage": {
+      "frames": [
+        "/character-sketch/rummage/00.webp",
+        "/character-sketch/rummage/01.webp",
+        "/character-sketch/rummage/02.webp",
+        "/character-sketch/rummage/03.webp",
+        "/character-sketch/search/00.webp",
+        "/character-sketch/search/01.webp",
+        "/character-sketch/search/02.webp",
+        "/character-sketch/search/03.webp"
+      ],
+      "fps": 4,
+      "loop": true,
+      "anchors": {
+        "feet": [
+          0.5,
+          0.95
+        ],
+        "hand": [
+          0.7879798364745012,
+          0.5705307649667406
+        ]
+      },
+      "frameAnchors": [
+        {
+          "feet": [
+            0.50125865206774,
+            0.95
+          ],
+          "hand": [
+            0.8460712305986696,
+            0.6631790465631929
+          ]
+        },
+        {
+          "feet": [
+            0.5009588290007694,
+            0.95
+          ],
+          "hand": [
+            0.8187707871396896,
+            0.5429531596452328
+          ]
+        },
+        {
+          "feet": [
+            0.5002722392918645,
+            0.95
+          ],
+          "hand": [
+            0.8432216601995566,
+            0.6549404101995566
+          ]
+        },
+        {
+          "feet": [
+            0.5003894029128652,
+            0.95
+          ],
+          "hand": [
+            0.7879798364745012,
+            0.5705307649667406
+          ]
+        },
+        {
+          "feet": [
+            0.5001521096764853,
+            0.95
+          ],
+          "hand": [
+            0.7512911872384938,
+            0.6119508368200837
+          ]
+        },
+        {
+          "feet": [
+            0.5003428655908413,
+            0.95
+          ],
+          "hand": [
+            0.7565703451882845,
+            0.5626569037656903
+          ]
+        },
+        {
+          "feet": [
+            0.4988461750480423,
+            0.95
+          ],
+          "hand": [
+            0.8033145920502092,
+            0.5924293933054393
+          ]
+        },
+        {
+          "feet": [
+            0.4992710884885161,
+            0.95
+          ],
+          "hand": [
+            0.7643828451882845,
+            0.5412787656903765
+          ]
+        }
+      ]
+    },
+    "pull": {
+      "frames": [
+        "/character-sketch/pull/00.webp",
+        "/character-sketch/pull/01.webp",
+        "/character-sketch/pull/02.webp",
+        "/character-sketch/pull/03.webp"
+      ],
+      "fps": 4,
+      "loop": false,
+      "anchors": {
+        "feet": [
+          0.5,
+          0.95
+        ],
+        "hand": [
+          0.698231360864745,
+          0.4812985033259423
+        ]
+      },
+      "frameAnchors": [
+        {
+          "feet": [
+            0.5005126159931979,
+            0.95
+          ],
+          "hand": [
+            0.686512610864745,
+            0.4772935144124169
+          ]
+        },
+        {
+          "feet": [
+            0.49850931175159446,
+            0.95
+          ],
+          "hand": [
+            0.7330671424611974,
+            0.4927314301552107
+          ]
+        },
+        {
+          "feet": [
+            0.49882595341438035,
+            0.95
+          ],
+          "hand": [
+            0.7127996812638582,
+            0.5032843680709534
+          ]
+        },
+        {
+          "feet": [
+            0.49852508815551894,
+            0.95
+          ],
+          "hand": [
+            0.698231360864745,
+            0.4812985033259423
+          ]
+        }
+      ]
+    },
+    "carry": {
+      "frames": [
+        "/character-sketch/carry/00.webp",
+        "/character-sketch/carry/01.webp",
+        "/character-sketch/carry/02.webp",
+        "/character-sketch/carry/03.webp"
+      ],
+      "fps": 4,
+      "loop": true,
+      "anchors": {
+        "feet": [
+          0.5,
+          0.95
+        ],
+        "hand": [
+          0.53,
+          0.47
+        ]
+      },
+      "frameAnchors": [
+        {
+          "feet": [
+            0.501033235138012,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.49837440715446146,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.4986431314370876,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.4990942127161555,
+            0.95
+          ]
+        }
+      ]
+    },
+    "shrug": {
+      "frames": [
+        "/character-sketch/shrug/00.webp",
+        "/character-sketch/shrug/01.webp",
+        "/character-sketch/shrug/02.webp",
+        "/character-sketch/shrug/03.webp"
+      ],
+      "fps": 3,
+      "loop": false,
+      "anchors": {
+        "feet": [
+          0.5,
+          0.95
+        ],
+        "hand": [
+          0.79,
+          0.68
+        ]
+      },
+      "frameAnchors": [
+        {
+          "feet": [
+            0.499648457989224,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.49968089579869457,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.49995893888534154,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.5013929967459192,
+            0.95
+          ]
+        }
+      ]
+    },
+    "search": {
+      "frames": [
+        "/character-sketch/search/00.webp",
+        "/character-sketch/search/01.webp",
+        "/character-sketch/search/02.webp",
+        "/character-sketch/search/03.webp"
+      ],
+      "fps": 4,
+      "loop": true,
+      "anchors": {
+        "feet": [
+          0.5,
+          0.95
+        ],
+        "hand": [
+          0.7643828451882845,
+          0.5412787656903765
+        ]
+      },
+      "frameAnchors": [
+        {
+          "feet": [
+            0.5001521096764853,
+            0.95
+          ],
+          "hand": [
+            0.7512911872384938,
+            0.6119508368200837
+          ]
+        },
+        {
+          "feet": [
+            0.5003428655908413,
+            0.95
+          ],
+          "hand": [
+            0.7565703451882845,
+            0.5626569037656903
+          ]
+        },
+        {
+          "feet": [
+            0.4988461750480423,
+            0.95
+          ],
+          "hand": [
+            0.8033145920502092,
+            0.5924293933054393
+          ]
+        },
+        {
+          "feet": [
+            0.4992710884885161,
+            0.95
+          ],
+          "hand": [
+            0.7643828451882845,
+            0.5412787656903765
+          ]
+        }
+      ]
+    }
+  }
+}

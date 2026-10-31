@@ -1,0 +1,48 @@
+import ipaddress
+
+from fastapi import HTTPException, Request
+
+from .config import settings
+
+
+def current_owner(request: Request) -> str:
+    if settings.auth_mode == "local":
+        if settings.app_env == "production":
+            raise HTTPException(503, "Local authentication is disabled in production")
+        try:
+            local_peer = ipaddress.ip_address(request.client.host).is_loopback
+        except (ValueError, AttributeError):
+            local_peer = False
+        host = request.url.hostname
+        if not local_peer or host not in {"localhost", "127.0.0.1", "::1"}:
+            raise HTTPException(403, "Local library access is restricted to this computer")
+        origin = request.headers.get("origin")
+        if origin and origin.rstrip("/") not in settings.allowed_origins.split(","):
+            raise HTTPException(403, "This origin cannot access the local library")
+        return "local-user"
+    token = request.headers.get("authorization", "")
+    if not token.startswith("Bearer "):
+        raise HTTPException(401, "Sign in to access your library")
+    try:
+        import firebase_admin
+        from firebase_admin import auth
+        if not firebase_admin._apps:
+            firebase_admin.initialize_app(options={"projectId": settings.firebase_project_id})
+        claims = auth.verify_id_token(token[7:], check_revoked=True)
+        return claims["uid"]
+    except Exception:
+        raise HTTPException(401, "Your sign-in has expired. Please sign in again.") from None
+
+
+def verify_worker(request: Request):
+    token = request.headers.get("authorization", "")
+    if not settings.tasks_service_account or not token.startswith("Bearer "):
+        raise HTTPException(401, "Worker identity is required")
+    try:
+        from google.auth.transport.requests import Request as GoogleRequest
+        from google.oauth2 import id_token
+        claims = id_token.verify_oauth2_token(token[7:], GoogleRequest(), audience=settings.worker_url)
+        if claims.get("email") != settings.tasks_service_account or not claims.get("email_verified"):
+            raise ValueError("Unexpected worker identity")
+    except Exception:
+        raise HTTPException(403, "Invalid worker identity") from None

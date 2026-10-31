@@ -1,0 +1,29 @@
+{
+  "result": "passed",
+  "frame_count": 264,
+  "markers": {
+    "idle": 1,
+    "dispatch": 25,
+    "web": 49,
+    "walk": 73,
+    "documents": 97,
+    "read": 121,
+    "return": 145,
+    "present": 169,
+    "error": 193,
+    "cancelled": 211,
+    "web-return": 223,
+    "web-settle": 247
+  },
+  "motion_checks": {
+    "spider settle displacement": 4.505751763014605,
+    "spider return displacement": 4.505751763014605,
+    "walk displacement": 3.28417425292737,
+    "return displacement": 3.28417425292737,
+    "spider departure displacement": 4.505751763014605,
+    "page hinge rotation": 3.1415927410125732,
+    "document lift": 0.09000003337860107,
+    "offered paper": 0.4235563545718453,
+    "spider gait": 0.18374391195419199
+  }
+}

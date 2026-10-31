@@ -1,0 +1,74 @@
+{
+  "source": "source.png",
+  "canvas": {
+    "width": 384,
+    "height": 480
+  },
+  "hipAnchor": [
+    0.36,
+    0.68
+  ],
+  "packaging": "Only crop, uniform resize, transparent padding and lossless encoding. Original alpha preserved.",
+  "frames": [
+    {
+      "pose": "reach",
+      "crop": {
+        "left": 0,
+        "top": 30,
+        "width": 768,
+        "height": 968
+      },
+      "hip": [
+        232,
+        568
+      ],
+      "grip": [
+        610,
+        623
+      ],
+      "packaging": {
+        "left": 56,
+        "top": 135,
+        "resized": {
+          "width": 273,
+          "height": 344
+        },
+        "scale": 0.35546875
+      },
+      "gripFromHipAt240": [
+        67.18359375,
+        9.772727272727272
+      ]
+    },
+    {
+      "pose": "pull",
+      "crop": {
+        "left": 768,
+        "top": 30,
+        "width": 768,
+        "height": 968
+      },
+      "hip": [
+        970,
+        574
+      ],
+      "grip": [
+        1425,
+        695
+      ],
+      "packaging": {
+        "left": 66,
+        "top": 133,
+        "resized": {
+          "width": 273,
+          "height": 344
+        },
+        "scale": 0.35546875
+      },
+      "gripFromHipAt240": [
+        80.869140625,
+        21.5
+      ]
+    }
+  ]
+}

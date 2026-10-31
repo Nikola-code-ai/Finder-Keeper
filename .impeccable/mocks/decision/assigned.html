@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Three stations — first viewport</title>
+<style>
+  html,body{margin:0;width:1440px;height:900px;overflow:hidden;background:#f4f1ea;color:#1a1a1a;font-family:Georgia,serif}
+  .scene{position:absolute;inset:0;overflow:hidden}
+  .room{position:absolute;top:0;left:-360px;width:2160px;height:900px;background:
+    repeating-linear-gradient(0deg,#e7e2d8 0 2px,transparent 2px 46px)}
+  .wall{position:absolute;top:0;bottom:300px;background:#ebe6dc;border-bottom:3px solid #1a1a1a}
+  .shelf{position:absolute;top:40px;height:520px;background:repeating-linear-gradient(90deg,#1a1a1a 0 6px,#f4f1ea 6px 14px,#8a8378 14px 20px,#f4f1ea 20px 26px);border:3px solid #1a1a1a;outline:4px solid #f4f1ea}
+  .floor{position:absolute;left:0;right:0;bottom:0;height:300px;background:repeating-linear-gradient(90deg,#ded8cc 0 60px,#e9e4da 60px 120px)}
+  .window{position:absolute;right:120px;top:60px;width:300px;height:460px;border:4px solid #1a1a1a;border-radius:150px 150px 0 0;background:#fff}
+  .web{position:absolute;right:140px;top:80px;width:120px;height:120px;border:2px dashed #8a8378;border-radius:50%}
+  .spider{position:absolute;right:190px;top:150px;width:22px;height:22px;background:#1a1a1a;border-radius:50%}
+  .desk{position:absolute;left:40px;top:500px;width:360px;height:120px;background:#8a8378;border:3px solid #1a1a1a}
+  .desk + .desk{top:650px;width:320px}
+  .papers{position:absolute;width:90px;height:60px;background:#fff;border:2px solid #1a1a1a;box-shadow:4px 4px 0 #fff,6px 6px 0 #1a1a1a}
+  .keeper{position:absolute;left:1030px;top:250px;width:170px;height:300px}
+  .keeper .head{width:90px;height:90px;border:3px solid #1a1a1a;border-radius:50%;background:#fff;margin:0 auto}
+  .keeper .body{width:150px;height:200px;border:3px solid #1a1a1a;border-radius:70px 70px 0 0;background:#8a8378;margin:-6px auto 0}
+  .counter{position:absolute;left:700px;right:260px;top:540px;height:360px;background:#6d6256;border:4px solid #1a1a1a;border-bottom:0}
+  .counter:before{content:"";position:absolute;left:-20px;right:-20px;top:0;height:70px;background:#8a7f70;border:4px solid #1a1a1a}
+  .book{position:absolute;left:150px;top:-20px;width:220px;height:110px;background:#fff;border:3px solid #1a1a1a;border-radius:4px}
+  .book:after{content:"";position:absolute;left:50%;top:0;bottom:0;width:3px;background:#1a1a1a}
+  .slip{position:absolute;left:140px;right:140px;top:140px;height:150px;background:#fff;border:3px solid #1a1a1a;transform:rotate(-1.5deg);padding:22px 28px;font-size:34px;font-style:italic;color:#5c564d;box-shadow:6px 8px 0 #1a1a1a22}
+  .slip b{display:block;font-style:normal;font-size:24px;color:#1a1a1a;margin-bottom:10px}
+  .slip span{position:absolute;right:24px;bottom:18px;width:44px;height:44px;border:3px solid #1a1a1a;border-radius:50%;background:#1a1a1a}
+  .label{position:absolute;font-size:24px;letter-spacing:.04em;background:#fff;border:2px solid #1a1a1a;padding:6px 14px;box-shadow:3px 3px 0 #1a1a1a}
+  .label i{display:block;font-style:normal;font-size:22px;color:#5c564d}
+  .edge{position:absolute;top:0;bottom:0;width:160px;pointer-events:none}
+  .edge.l{left:0;background:linear-gradient(90deg,#f4f1eaee,transparent)}
+  .edge.r{right:0;background:linear-gradient(270deg,#f4f1eaee,transparent)}
+  .arrow{position:absolute;top:420px;font-size:48px;color:#1a1a1a}
+  .status{position:absolute;left:720px;bottom:24px;font-size:22px;background:#1a1a1a;color:#f4f1ea;padding:6px 14px}
+  .lib{position:absolute;right:30px;top:30px;font-size:22px;border:2px solid #1a1a1a;background:#fff;padding:6px 14px}
+</style></head><body>
+<div class="scene">
+  <div class="room">
+    <div class="wall" style="left:0;right:0"></div>
+    <div class="shelf" style="left:0;width:380px"></div>
+    <div class="shelf" style="left:1200px;width:380px"></div>
+    <div class="shelf" style="left:1620px;width:120px"></div>
+    <div class="floor"></div>
+    <div class="window"></div><div class="web"></div><div class="spider"></div>
+    <div class="desk"><div class="papers" style="left:30px;top:-30px"></div><div class="papers" style="left:200px;top:-26px"></div></div>
+    <div class="desk"><div class="papers" style="left:60px;top:-30px"></div></div>
+    <div class="label" style="left:60px;top:440px">The desks<i>he checks what you saved</i></div>
+    <div class="label" style="right:150px;top:540px">The window<i>the spider goes out onto the web</i></div>
+  </div>
+  <div class="keeper"><div class="head"></div><div class="body"></div></div>
+  <div class="counter">
+    <div class="book"></div>
+    <div class="label" style="left:400px;top:-10px">The book<i>ask, answered from your library</i></div>
+    <div class="slip"><b>Your slip</b>Find me a book, paper, or article…<span></span></div>
+  </div>
+  <div class="edge l"></div><div class="edge r"></div>
+  <div class="arrow" style="left:28px">←</div><div class="arrow" style="right:28px">→</div>
+  <div class="status">Keeper is at his desk · idle</div>
+  <div class="lib">Collections · 0 documents</div>
+</div>
+</body></html>

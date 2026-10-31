@@ -1,0 +1,67 @@
+{
+  "generator": "Native Blender 4.5.2 LTS; procedural geometry and materials",
+  "image_size": [
+    1536,
+    1024
+  ],
+  "camera_type": "ORTHO",
+  "object_count": 1220,
+  "frames": {
+    "1": {
+      "central_clerk_visible": true,
+      "documents_clerk_visible": false,
+      "spider_visible": true
+    },
+    "2": {
+      "central_clerk_visible": false,
+      "documents_clerk_visible": true,
+      "spider_visible": true
+    },
+    "3": {
+      "central_clerk_visible": true,
+      "documents_clerk_visible": false,
+      "spider_visible": false
+    }
+  },
+  "hotspots": {
+    "reading_book": {
+      "x_percent": 53.95,
+      "y_percent": 44.63
+    },
+    "seated_clerk": {
+      "x_percent": 54.28,
+      "y_percent": 53.74
+    },
+    "documents_upper": {
+      "x_percent": 21.38,
+      "y_percent": 33.58
+    },
+    "documents_lower": {
+      "x_percent": 22.37,
+      "y_percent": 57.94
+    },
+    "spider": {
+      "x_percent": 80.46,
+      "y_percent": 43.37
+    },
+    "web_gate": {
+      "x_percent": 81.58,
+      "y_percent": 21.65
+    },
+    "chair": {
+      "x_percent": 54.28,
+      "y_percent": 62.38
+    }
+  },
+  "source": "art/clerk-room/blender/clerk-room.blend",
+  "script": "art/clerk-room/blender/build_room.py",
+  "images": [
+    "public/clerk-room/blender.png",
+    "public/clerk-room/blender-documents.png",
+    "public/clerk-room/blender-web.png"
+  ],
+  "documentation": [
+    "https://docs.blender.org/api/4.5/bpy.ops.render.html",
+    "https://docs.blender.org/api/4.5/bpy.ops.object.html"
+  ]
+}

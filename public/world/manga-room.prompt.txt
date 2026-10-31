@@ -1,0 +1,8 @@
+Use case: illustration-story.
+Asset type: background panel for a monochrome manga-style interactive library website; real interface objects and a character will be overlaid later.
+Primary request: one landscape 3:2 hand-drawn pen-and-ink manga library room background, spacious and immersive, with a lightly worn hand-inked comic panel border. Perspective ceiling beams and tall wall shelves recede into a quiet back wall. A few stacks of paper and old books sit at the far left and far right edges. The entire central 60 percent and lower foreground remain mostly empty light paper with only sparse floor-perspective lines, reserved for the real UI and moving character.
+Style: thin precise black ink line work, restrained irregular crosshatching, very subtle screentone and faint grunge paper grain, editorial manga environmental drawing, slightly imperfect handmade edges. Clean grayscale only, white/off-white light paper and near-black ink, no colors. Generous breathing room, especially center and lower third. Wide eye-level scene with convincing two-point perspective. Architecture and texture concentrated near upper and side edges; center is deliberately very low contrast and minimally detailed.
+Constraints: no people, no characters, no mascots, no text, no lettering or signs, no UI mockup, no buttons, no boxes representing interface cards, no chest, no laptop, no watermark. No photorealism, no painterly rendering, no colored sepia, no dense central shelves, no busy high-contrast center. Output one complete landscape background image.
+
+Generation: built-in imagegen tool, 2026-10-19.
+Output: manga-room.png, 1536 x 1024, RGB. Original generated image retained in Codex generated_images.

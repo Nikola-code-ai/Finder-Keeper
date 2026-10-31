@@ -1,0 +1,116 @@
+{
+  "status": "passed",
+  "phaseCount": 12,
+  "frameCount": 264,
+  "totalAtlasBytes": 7564488,
+  "atlases": {
+    "idle": {
+      "frames": 24,
+      "distinctFrames": 24,
+      "atlasDimensions": [
+        4608,
+        2048
+      ],
+      "bytes": 691614
+    },
+    "dispatch": {
+      "frames": 24,
+      "distinctFrames": 24,
+      "atlasDimensions": [
+        4608,
+        2048
+      ],
+      "bytes": 695292
+    },
+    "web": {
+      "frames": 24,
+      "distinctFrames": 24,
+      "atlasDimensions": [
+        4608,
+        2048
+      ],
+      "bytes": 694636
+    },
+    "walk": {
+      "frames": 24,
+      "distinctFrames": 24,
+      "atlasDimensions": [
+        4608,
+        2048
+      ],
+      "bytes": 683104
+    },
+    "documents": {
+      "frames": 24,
+      "distinctFrames": 24,
+      "atlasDimensions": [
+        4608,
+        2048
+      ],
+      "bytes": 674580
+    },
+    "read": {
+      "frames": 24,
+      "distinctFrames": 24,
+      "atlasDimensions": [
+        4608,
+        2048
+      ],
+      "bytes": 686406
+    },
+    "return": {
+      "frames": 24,
+      "distinctFrames": 24,
+      "atlasDimensions": [
+        4608,
+        2048
+      ],
+      "bytes": 679852
+    },
+    "present": {
+      "frames": 24,
+      "distinctFrames": 24,
+      "atlasDimensions": [
+        4608,
+        2048
+      ],
+      "bytes": 685648
+    },
+    "error": {
+      "frames": 18,
+      "distinctFrames": 18,
+      "atlasDimensions": [
+        4608,
+        1536
+      ],
+      "bytes": 516680
+    },
+    "cancelled": {
+      "frames": 12,
+      "distinctFrames": 12,
+      "atlasDimensions": [
+        4608,
+        1024
+      ],
+      "bytes": 344124
+    },
+    "web-return": {
+      "frames": 24,
+      "distinctFrames": 24,
+      "atlasDimensions": [
+        4608,
+        2048
+      ],
+      "bytes": 690874
+    },
+    "web-settle": {
+      "frames": 18,
+      "distinctFrames": 18,
+      "atlasDimensions": [
+        4608,
+        1536
+      ],
+      "bytes": 521678
+    }
+  }
+}

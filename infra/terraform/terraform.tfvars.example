@@ -1,0 +1,13 @@
+# Copy to terraform.tfvars and replace with a project you own with billing enabled.
+# The default Cloud SQL tier exceeds the current $20/month budget. Do not apply
+# this optional example as part of local setup.
+acknowledge_paid_cloud_resources = false
+project_id    = "your-project-id"
+region        = "us-central1"
+prefix        = "finder-keeper"
+database_tier = "db-g1-small"
+
+# For an existing Firebase project import its resources first, or set false and
+# pass Firebase's public client configuration to scripts/deploy-gcp.sh.
+enable_firebase_auth    = true
+auth_authorized_domains = []

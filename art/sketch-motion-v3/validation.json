@@ -1,0 +1,631 @@
+{
+  "drawings": 48,
+  "passed": true,
+  "note": "File/alpha/landmark integrity. Semantic limb alternation was separately inspected on contact sheets; these checks do not replace visual inspection.",
+  "results": [
+    {
+      "state": "walk",
+      "index": 0,
+      "opaqueBounds": [
+        48,
+        51,
+        208,
+        301
+      ],
+      "opaquePixels": 14546,
+      "transparentPixels": 64691,
+      "maxOpaqueChannelDifference": 11
+    },
+    {
+      "state": "walk",
+      "index": 1,
+      "opaqueBounds": [
+        63,
+        51,
+        193,
+        301
+      ],
+      "opaquePixels": 12477,
+      "transparentPixels": 67257,
+      "maxOpaqueChannelDifference": 8
+    },
+    {
+      "state": "walk",
+      "index": 2,
+      "opaqueBounds": [
+        68,
+        50,
+        187,
+        301
+      ],
+      "opaquePixels": 13216,
+      "transparentPixels": 66632,
+      "maxOpaqueChannelDifference": 10
+    },
+    {
+      "state": "walk",
+      "index": 3,
+      "opaqueBounds": [
+        74,
+        52,
+        182,
+        301
+      ],
+      "opaquePixels": 12732,
+      "transparentPixels": 67224,
+      "maxOpaqueChannelDifference": 9
+    },
+    {
+      "state": "walk",
+      "index": 4,
+      "opaqueBounds": [
+        53,
+        50,
+        202,
+        301
+      ],
+      "opaquePixels": 13088,
+      "transparentPixels": 66667,
+      "maxOpaqueChannelDifference": 8
+    },
+    {
+      "state": "walk",
+      "index": 5,
+      "opaqueBounds": [
+        56,
+        52,
+        199,
+        301
+      ],
+      "opaquePixels": 13375,
+      "transparentPixels": 66331,
+      "maxOpaqueChannelDifference": 9
+    },
+    {
+      "state": "walk",
+      "index": 6,
+      "opaqueBounds": [
+        48,
+        48,
+        207,
+        301
+      ],
+      "opaquePixels": 14840,
+      "transparentPixels": 64735,
+      "maxOpaqueChannelDifference": 8
+    },
+    {
+      "state": "walk",
+      "index": 7,
+      "opaqueBounds": [
+        55,
+        49,
+        200,
+        302
+      ],
+      "opaquePixels": 13157,
+      "transparentPixels": 66680,
+      "maxOpaqueChannelDifference": 8
+    },
+    {
+      "state": "walk",
+      "index": 8,
+      "opaqueBounds": [
+        72,
+        50,
+        183,
+        302
+      ],
+      "opaquePixels": 13423,
+      "transparentPixels": 66175,
+      "maxOpaqueChannelDifference": 11
+    },
+    {
+      "state": "walk",
+      "index": 9,
+      "opaqueBounds": [
+        71,
+        50,
+        185,
+        301
+      ],
+      "opaquePixels": 12930,
+      "transparentPixels": 66699,
+      "maxOpaqueChannelDifference": 9
+    },
+    {
+      "state": "walk",
+      "index": 10,
+      "opaqueBounds": [
+        52,
+        51,
+        204,
+        301
+      ],
+      "opaquePixels": 13292,
+      "transparentPixels": 66134,
+      "maxOpaqueChannelDifference": 8
+    },
+    {
+      "state": "walk",
+      "index": 11,
+      "opaqueBounds": [
+        57,
+        48,
+        199,
+        301
+      ],
+      "opaquePixels": 13615,
+      "transparentPixels": 66018,
+      "maxOpaqueChannelDifference": 9
+    },
+    {
+      "state": "away",
+      "index": 0,
+      "opaqueBounds": [
+        61,
+        53,
+        194,
+        301
+      ],
+      "opaquePixels": 14601,
+      "transparentPixels": 65382,
+      "maxOpaqueChannelDifference": 10
+    },
+    {
+      "state": "away",
+      "index": 1,
+      "opaqueBounds": [
+        71,
+        52,
+        184,
+        301
+      ],
+      "opaquePixels": 13678,
+      "transparentPixels": 66507,
+      "maxOpaqueChannelDifference": 9
+    },
+    {
+      "state": "away",
+      "index": 2,
+      "opaqueBounds": [
+        74,
+        52,
+        181,
+        301
+      ],
+      "opaquePixels": 13348,
+      "transparentPixels": 66764,
+      "maxOpaqueChannelDifference": 11
+    },
+    {
+      "state": "away",
+      "index": 3,
+      "opaqueBounds": [
+        56,
+        53,
+        200,
+        301
+      ],
+      "opaquePixels": 14381,
+      "transparentPixels": 65630,
+      "maxOpaqueChannelDifference": 13
+    },
+    {
+      "state": "away",
+      "index": 4,
+      "opaqueBounds": [
+        74,
+        50,
+        182,
+        301
+      ],
+      "opaquePixels": 14028,
+      "transparentPixels": 66102,
+      "maxOpaqueChannelDifference": 9
+    },
+    {
+      "state": "away",
+      "index": 5,
+      "opaqueBounds": [
+        72,
+        50,
+        182,
+        302
+      ],
+      "opaquePixels": 13700,
+      "transparentPixels": 66400,
+      "maxOpaqueChannelDifference": 9
+    },
+    {
+      "state": "away",
+      "index": 6,
+      "opaqueBounds": [
+        53,
+        52,
+        201,
+        301
+      ],
+      "opaquePixels": 14669,
+      "transparentPixels": 65263,
+      "maxOpaqueChannelDifference": 8
+    },
+    {
+      "state": "away",
+      "index": 7,
+      "opaqueBounds": [
+        61,
+        51,
+        194,
+        301
+      ],
+      "opaquePixels": 15020,
+      "transparentPixels": 64894,
+      "maxOpaqueChannelDifference": 9
+    },
+    {
+      "state": "crawl",
+      "index": 0,
+      "opaqueBounds": [
+        28,
+        143,
+        226,
+        302
+      ],
+      "opaquePixels": 14084,
+      "transparentPixels": 66051,
+      "maxOpaqueChannelDifference": 10
+    },
+    {
+      "state": "crawl",
+      "index": 1,
+      "opaqueBounds": [
+        14,
+        141,
+        241,
+        302
+      ],
+      "opaquePixels": 15321,
+      "transparentPixels": 64508,
+      "maxOpaqueChannelDifference": 9
+    },
+    {
+      "state": "crawl",
+      "index": 2,
+      "opaqueBounds": [
+        13,
+        141,
+        241,
+        302
+      ],
+      "opaquePixels": 14890,
+      "transparentPixels": 65006,
+      "maxOpaqueChannelDifference": 11
+    },
+    {
+      "state": "crawl",
+      "index": 3,
+      "opaqueBounds": [
+        24,
+        145,
+        233,
+        301
+      ],
+      "opaquePixels": 15118,
+      "transparentPixels": 64841,
+      "maxOpaqueChannelDifference": 10
+    },
+    {
+      "state": "crawl",
+      "index": 4,
+      "opaqueBounds": [
+        16,
+        155,
+        239,
+        301
+      ],
+      "opaquePixels": 15050,
+      "transparentPixels": 64848,
+      "maxOpaqueChannelDifference": 13
+    },
+    {
+      "state": "crawl",
+      "index": 5,
+      "opaqueBounds": [
+        22,
+        158,
+        234,
+        302
+      ],
+      "opaquePixels": 13692,
+      "transparentPixels": 66269,
+      "maxOpaqueChannelDifference": 9
+    },
+    {
+      "state": "crawl",
+      "index": 6,
+      "opaqueBounds": [
+        17,
+        159,
+        238,
+        302
+      ],
+      "opaquePixels": 14651,
+      "transparentPixels": 65279,
+      "maxOpaqueChannelDifference": 9
+    },
+    {
+      "state": "crawl",
+      "index": 7,
+      "opaqueBounds": [
+        21,
+        149,
+        233,
+        301
+      ],
+      "opaquePixels": 13734,
+      "transparentPixels": 66338,
+      "maxOpaqueChannelDifference": 9
+    },
+    {
+      "state": "climb",
+      "index": 0,
+      "opaqueBounds": [
+        56,
+        21,
+        198,
+        300
+      ],
+      "opaquePixels": 18051,
+      "transparentPixels": 60878,
+      "maxOpaqueChannelDifference": 11
+    },
+    {
+      "state": "climb",
+      "index": 1,
+      "opaqueBounds": [
+        57,
+        22,
+        198,
+        301
+      ],
+      "opaquePixels": 16986,
+      "transparentPixels": 62254,
+      "maxOpaqueChannelDifference": 14
+    },
+    {
+      "state": "climb",
+      "index": 2,
+      "opaqueBounds": [
+        53,
+        23,
+        204,
+        301
+      ],
+      "opaquePixels": 19450,
+      "transparentPixels": 59442,
+      "maxOpaqueChannelDifference": 12
+    },
+    {
+      "state": "climb",
+      "index": 3,
+      "opaqueBounds": [
+        57,
+        20,
+        198,
+        300
+      ],
+      "opaquePixels": 17760,
+      "transparentPixels": 61291,
+      "maxOpaqueChannelDifference": 11
+    },
+    {
+      "state": "climb",
+      "index": 4,
+      "opaqueBounds": [
+        59,
+        29,
+        197,
+        301
+      ],
+      "opaquePixels": 17286,
+      "transparentPixels": 61982,
+      "maxOpaqueChannelDifference": 13
+    },
+    {
+      "state": "climb",
+      "index": 5,
+      "opaqueBounds": [
+        65,
+        30,
+        191,
+        301
+      ],
+      "opaquePixels": 16437,
+      "transparentPixels": 62990,
+      "maxOpaqueChannelDifference": 10
+    },
+    {
+      "state": "climb",
+      "index": 6,
+      "opaqueBounds": [
+        58,
+        24,
+        198,
+        300
+      ],
+      "opaquePixels": 16780,
+      "transparentPixels": 62506,
+      "maxOpaqueChannelDifference": 9
+    },
+    {
+      "state": "climb",
+      "index": 7,
+      "opaqueBounds": [
+        65,
+        26,
+        192,
+        300
+      ],
+      "opaquePixels": 16577,
+      "transparentPixels": 62767,
+      "maxOpaqueChannelDifference": 9
+    },
+    {
+      "state": "climb",
+      "index": 8,
+      "opaqueBounds": [
+        56,
+        30,
+        201,
+        301
+      ],
+      "opaquePixels": 17304,
+      "transparentPixels": 61797,
+      "maxOpaqueChannelDifference": 10
+    },
+    {
+      "state": "climb",
+      "index": 9,
+      "opaqueBounds": [
+        60,
+        18,
+        194,
+        300
+      ],
+      "opaquePixels": 16708,
+      "transparentPixels": 62650,
+      "maxOpaqueChannelDifference": 9
+    },
+    {
+      "state": "climb",
+      "index": 10,
+      "opaqueBounds": [
+        57,
+        24,
+        199,
+        301
+      ],
+      "opaquePixels": 17757,
+      "transparentPixels": 61299,
+      "maxOpaqueChannelDifference": 12
+    },
+    {
+      "state": "climb",
+      "index": 11,
+      "opaqueBounds": [
+        60,
+        27,
+        194,
+        301
+      ],
+      "opaquePixels": 16884,
+      "transparentPixels": 62296,
+      "maxOpaqueChannelDifference": 11
+    },
+    {
+      "state": "picked",
+      "index": 0,
+      "opaqueBounds": [
+        71,
+        39,
+        185,
+        301
+      ],
+      "opaquePixels": 14839,
+      "transparentPixels": 65456,
+      "maxOpaqueChannelDifference": 12
+    },
+    {
+      "state": "picked",
+      "index": 1,
+      "opaqueBounds": [
+        66,
+        40,
+        190,
+        302
+      ],
+      "opaquePixels": 14808,
+      "transparentPixels": 65208,
+      "maxOpaqueChannelDifference": 11
+    },
+    {
+      "state": "picked",
+      "index": 2,
+      "opaqueBounds": [
+        67,
+        39,
+        188,
+        301
+      ],
+      "opaquePixels": 15234,
+      "transparentPixels": 64782,
+      "maxOpaqueChannelDifference": 10
+    },
+    {
+      "state": "picked",
+      "index": 3,
+      "opaqueBounds": [
+        76,
+        53,
+        180,
+        302
+      ],
+      "opaquePixels": 14956,
+      "transparentPixels": 65304,
+      "maxOpaqueChannelDifference": 10
+    },
+    {
+      "state": "landing",
+      "index": 0,
+      "opaqueBounds": [
+        56,
+        159,
+        197,
+        301
+      ],
+      "opaquePixels": 12624,
+      "transparentPixels": 67908,
+      "maxOpaqueChannelDifference": 10
+    },
+    {
+      "state": "landing",
+      "index": 1,
+      "opaqueBounds": [
+        56,
+        107,
+        200,
+        301
+      ],
+      "opaquePixels": 13758,
+      "transparentPixels": 66565,
+      "maxOpaqueChannelDifference": 12
+    },
+    {
+      "state": "landing",
+      "index": 2,
+      "opaqueBounds": [
+        67,
+        73,
+        187,
+        302
+      ],
+      "opaquePixels": 13471,
+      "transparentPixels": 66751,
+      "maxOpaqueChannelDifference": 9
+    },
+    {
+      "state": "landing",
+      "index": 3,
+      "opaqueBounds": [
+        79,
+        48,
+        177,
+        301
+      ],
+      "opaquePixels": 13338,
+      "transparentPixels": 66858,
+      "maxOpaqueChannelDifference": 10
+    }
+  ]
+}

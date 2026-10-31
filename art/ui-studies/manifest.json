@@ -1,0 +1,602 @@
+{
+  "version": 1,
+  "canvas": {
+    "width": 384,
+    "height": 480
+  },
+  "generation": "Built-in imagegen; exact prompts and generation details are recorded in PROMPTS.md.",
+  "packaging": "Original PNG sources copied without modification. Per-drawing extraction, a common uniform scale for each idle/active pair, transparent padding, and lossless WebP encoding only. Generated alpha is preserved, with ordinary resize resampling. No background removal or thresholding.",
+  "contactMeasurement": "Source anchors were visually measured in original-sheet pixel coordinates. Canonical anchors are normalized against the full output canvas, including transparent margins. Integer image placement introduces at most 0.5 px anchor error.",
+  "characters": {
+    "bookseller": {
+      "source": "art/ui-studies/bookseller-source.png",
+      "generatedSource": "/home/nikola/.codex/generated_images/01a155fd-b89f-7df1-b057-7fcd8c6420d3/exec-10e0512a-b708-4791-95e8-6d507d30c4d1.png",
+      "sourceDimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "contact": "seat",
+      "anchor": [
+        0.36,
+        0.68
+      ],
+      "note": "Rear underside of the seated hips, with apron and legs hanging in front of the support edge.",
+      "frames": [
+        {
+          "pose": "idle",
+          "src": "/characters/ui-studies/bookseller-idle.webp",
+          "sourceAnchor": [
+            230,
+            588
+          ],
+          "crop": {
+            "left": 0,
+            "top": 7,
+            "width": 754,
+            "height": 991
+          },
+          "uniformScale": 0.3551219512195121,
+          "resized": {
+            "width": 267,
+            "height": 351
+          },
+          "padding": {
+            "left": 57,
+            "top": 121
+          },
+          "achievedAnchor": [
+            0.3605354774535809,
+            0.6807980154725866
+          ],
+          "visibleBoundsAlpha128": {
+            "left": 125,
+            "top": 126,
+            "width": 186,
+            "height": 345
+          },
+          "bytes": 58124
+        },
+        {
+          "pose": "active",
+          "src": "/characters/ui-studies/bookseller-active.webp",
+          "sourceAnchor": [
+            960,
+            589
+          ],
+          "crop": {
+            "left": 777,
+            "top": 26,
+            "width": 673,
+            "height": 973
+          },
+          "uniformScale": 0.3551219512195121,
+          "resized": {
+            "width": 238,
+            "height": 344
+          },
+          "padding": {
+            "left": 74,
+            "top": 127
+          },
+          "achievedAnchor": [
+            0.36124009410599306,
+            0.679263018156903
+          ],
+          "visibleBoundsAlpha128": {
+            "left": 119,
+            "top": 131,
+            "width": 190,
+            "height": 338
+          },
+          "bytes": 58750
+        }
+      ]
+    },
+    "spider": {
+      "source": "art/ui-studies/spider-source.png",
+      "generatedSource": "/home/nikola/.codex/generated_images/01a155fd-b89f-7df1-b057-7fcd8c6420d3/exec-f32bac59-1919-47bc-b05b-550116cbd954.png",
+      "sourceDimensions": {
+        "width": 1774,
+        "height": 887
+      },
+      "contact": "feet",
+      "anchor": [
+        0.36,
+        0.83
+      ],
+      "note": "Horizontal support baseline beneath planted leg tips; x is the body/leg-spread center. Front legs hold the paper in the active drawing.",
+      "frames": [
+        {
+          "pose": "idle",
+          "src": "/characters/ui-studies/spider-idle.webp",
+          "sourceAnchor": [
+            444,
+            742
+          ],
+          "crop": {
+            "left": 25,
+            "top": 84,
+            "width": 840,
+            "height": 753
+          },
+          "uniformScale": 0.29600000000000004,
+          "resized": {
+            "width": 248,
+            "height": 222
+          },
+          "padding": {
+            "left": 15,
+            "top": 204
+          },
+          "achievedAnchor": [
+            0.36121031746031745,
+            0.8291500664010625
+          ],
+          "visibleBoundsAlpha128": {
+            "left": 18,
+            "top": 219,
+            "width": 241,
+            "height": 179
+          },
+          "bytes": 47710
+        },
+        {
+          "pose": "active",
+          "src": "/characters/ui-studies/spider-active.webp",
+          "sourceAnchor": [
+            1352,
+            742
+          ],
+          "crop": {
+            "left": 912,
+            "top": 128,
+            "width": 844,
+            "height": 713
+          },
+          "uniformScale": 0.29600000000000004,
+          "resized": {
+            "width": 249,
+            "height": 210
+          },
+          "padding": {
+            "left": 8,
+            "top": 218
+          },
+          "achievedAnchor": [
+            0.3588813191153239,
+            0.8309198223468911
+          ],
+          "visibleBoundsAlpha128": {
+            "left": 19,
+            "top": 222,
+            "width": 235,
+            "height": 177
+          },
+          "bytes": 48822
+        }
+      ],
+      "walk": {
+        "source": "art/ui-studies/spider-crawl-source.png",
+        "generatedSource": "/home/nikola/.codex/generated_images/01a155fd-b89f-7df1-b057-7fcd8c6420d3/exec-5bd5b5f7-e92e-4a53-a535-0b822c022555.png",
+        "sourceDimensions": {
+          "width": 2172,
+          "height": 724
+        },
+        "anchor": [
+          0.36,
+          0.83
+        ],
+        "contact": "feet",
+        "fps": 6,
+        "loop": true,
+        "note": "Four original alternating-leg drawings. All four share a padded 575x724 source cell and identical 240x302 resize, preserving constant body scale. Baselines are measured at planted leg tips. Visible crown-to-ground height matches the idle sprite within approximately 2 px. Divisions follow actual transparent gaps, not equal columns.",
+        "frames": [
+          {
+            "index": 0,
+            "src": "/characters/ui-studies/spider-walk-0.webp",
+            "sourceAnchor": [
+              294,
+              592
+            ],
+            "crop": {
+              "left": 0,
+              "top": 0,
+              "width": 575,
+              "height": 724
+            },
+            "paddedSourceDimensions": {
+              "width": 575,
+              "height": 724
+            },
+            "uniformScale": 0.41739130434782606,
+            "resized": {
+              "width": 240,
+              "height": 302
+            },
+            "padding": {
+              "left": 16,
+              "top": 151
+            },
+            "achievedAnchor": [
+              0.36123188405797096,
+              0.8290400552486188
+            ],
+            "visibleBoundsAlpha128": {
+              "left": 23,
+              "top": 219,
+              "width": 231,
+              "height": 179
+            },
+            "bytes": 47070
+          },
+          {
+            "index": 1,
+            "src": "/characters/ui-studies/spider-walk-1.webp",
+            "sourceAnchor": [
+              828,
+              592
+            ],
+            "crop": {
+              "left": 575,
+              "top": 0,
+              "width": 540,
+              "height": 724
+            },
+            "paddedSourceDimensions": {
+              "width": 575,
+              "height": 724
+            },
+            "uniformScale": 0.41739130434782606,
+            "resized": {
+              "width": 240,
+              "height": 302
+            },
+            "padding": {
+              "left": 33,
+              "top": 151
+            },
+            "achievedAnchor": [
+              0.36093749999999997,
+              0.8290400552486188
+            ],
+            "visibleBoundsAlpha128": {
+              "left": 36,
+              "top": 219,
+              "width": 221,
+              "height": 179
+            },
+            "bytes": 46150
+          },
+          {
+            "index": 2,
+            "src": "/characters/ui-studies/spider-walk-2.webp",
+            "sourceAnchor": [
+              1370,
+              593
+            ],
+            "crop": {
+              "left": 1115,
+              "top": 0,
+              "width": 525,
+              "height": 724
+            },
+            "paddedSourceDimensions": {
+              "width": 575,
+              "height": 724
+            },
+            "uniformScale": 0.41739130434782606,
+            "resized": {
+              "width": 240,
+              "height": 302
+            },
+            "padding": {
+              "left": 32,
+              "top": 151
+            },
+            "achievedAnchor": [
+              0.36050724637681153,
+              0.8299090699815838
+            ],
+            "visibleBoundsAlpha128": {
+              "left": 33,
+              "top": 219,
+              "width": 212,
+              "height": 180
+            },
+            "bytes": 45676
+          },
+          {
+            "index": 3,
+            "src": "/characters/ui-studies/spider-walk-3.webp",
+            "sourceAnchor": [
+              1902,
+              593
+            ],
+            "crop": {
+              "left": 1640,
+              "top": 0,
+              "width": 532,
+              "height": 724
+            },
+            "paddedSourceDimensions": {
+              "width": 575,
+              "height": 724
+            },
+            "uniformScale": 0.41739130434782606,
+            "resized": {
+              "width": 240,
+              "height": 302
+            },
+            "padding": {
+              "left": 29,
+              "top": 151
+            },
+            "achievedAnchor": [
+              0.36030344202898545,
+              0.8299090699815838
+            ],
+            "visibleBoundsAlpha128": {
+              "left": 33,
+              "top": 218,
+              "width": 212,
+              "height": 181
+            },
+            "bytes": 46080
+          }
+        ]
+      }
+    },
+    "wanderer": {
+      "source": "art/ui-studies/wanderer-source.png",
+      "generatedSource": "/home/nikola/.codex/generated_images/01a155fd-b89f-7df1-b057-7fcd8c6420d3/exec-1b9a59d4-bc5a-4898-99ec-ec1892dd8b33.png",
+      "sourceDimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "contact": "seat",
+      "anchor": [
+        0.36,
+        0.68
+      ],
+      "note": "Rear underside of the hips, beside the satchel; loose legs and boots hang over the front edge.",
+      "frames": [
+        {
+          "pose": "idle",
+          "src": "/characters/ui-studies/wanderer-idle.webp",
+          "sourceAnchor": [
+            285,
+            575
+          ],
+          "crop": {
+            "left": 41,
+            "top": 0,
+            "width": 727,
+            "height": 977
+          },
+          "uniformScale": 0.32572706935123036,
+          "resized": {
+            "width": 236,
+            "height": 317
+          },
+          "padding": {
+            "left": 59,
+            "top": 140
+          },
+          "achievedAnchor": [
+            0.35991589293901877,
+            0.6803458717161379
+          ],
+          "visibleBoundsAlpha128": {
+            "left": 100,
+            "top": 144,
+            "width": 154,
+            "height": 312
+          },
+          "bytes": 55266
+        },
+        {
+          "pose": "active",
+          "src": "/characters/ui-studies/wanderer-active.webp",
+          "sourceAnchor": [
+            1001,
+            577
+          ],
+          "crop": {
+            "left": 769,
+            "top": 24,
+            "width": 737,
+            "height": 1000
+          },
+          "uniformScale": 0.32572706935123036,
+          "resized": {
+            "width": 240,
+            "height": 326
+          },
+          "padding": {
+            "left": 63,
+            "top": 146
+          },
+          "achievedAnchor": [
+            0.3608060549525101,
+            0.6797458333333334
+          ],
+          "visibleBoundsAlpha128": {
+            "left": 96,
+            "top": 157,
+            "width": 192,
+            "height": 293
+          },
+          "bytes": 55550
+        }
+      ]
+    },
+    "mage": {
+      "source": "art/ui-studies/mage-source.png",
+      "generatedSource": "/home/nikola/.codex/generated_images/01a155fd-b89f-7df1-b057-7fcd8c6420d3/exec-7bb05519-ade6-4116-bd4d-0f174daab3c1.png",
+      "sourceDimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "contact": "seat",
+      "anchor": [
+        0.36,
+        0.68
+      ],
+      "note": "Underside of the seated robe/hips. The sheet is split at x=816, rather than its midpoint, to preserve the entire idle right boot.",
+      "frames": [
+        {
+          "pose": "idle",
+          "src": "/characters/ui-studies/mage-idle.webp",
+          "sourceAnchor": [
+            291,
+            630
+          ],
+          "crop": {
+            "left": 0,
+            "top": 22,
+            "width": 812,
+            "height": 972
+          },
+          "uniformScale": 0.36954314720812176,
+          "resized": {
+            "width": 300,
+            "height": 359
+          },
+          "padding": {
+            "left": 31,
+            "top": 102
+          },
+          "achievedAnchor": [
+            0.3607091543513958,
+            0.6803326474622772
+          ],
+          "visibleBoundsAlpha128": {
+            "left": 88,
+            "top": 104,
+            "width": 231,
+            "height": 355
+          },
+          "bytes": 68568
+        },
+        {
+          "pose": "active",
+          "src": "/characters/ui-studies/mage-active.webp",
+          "sourceAnchor": [
+            997,
+            630
+          ],
+          "crop": {
+            "left": 829,
+            "top": 31,
+            "width": 693,
+            "height": 993
+          },
+          "uniformScale": 0.36954314720812176,
+          "resized": {
+            "width": 256,
+            "height": 367
+          },
+          "padding": {
+            "left": 76,
+            "top": 105
+          },
+          "achievedAnchor": [
+            0.3595328282828283,
+            0.6799639140651226
+          ],
+          "visibleBoundsAlpha128": {
+            "left": 87,
+            "top": 108,
+            "width": 232,
+            "height": 351
+          },
+          "bytes": 70964
+        }
+      ]
+    },
+    "inventor": {
+      "source": "art/ui-studies/inventor-source.png",
+      "generatedSource": "/home/nikola/.codex/generated_images/01a155fd-b89f-7df1-b057-7fcd8c6420d3/exec-20e21349-b8de-42d8-8de5-c04b4520fc73.png",
+      "sourceDimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "contact": "seat",
+      "anchor": [
+        0.36,
+        0.68
+      ],
+      "note": "Rear underside of the seated trousers; patched knees and boots extend in front of the support edge.",
+      "frames": [
+        {
+          "pose": "idle",
+          "src": "/characters/ui-studies/inventor-idle.webp",
+          "sourceAnchor": [
+            281,
+            617
+          ],
+          "crop": {
+            "left": 0,
+            "top": 12,
+            "width": 764,
+            "height": 982
+          },
+          "uniformScale": 0.3577395577395577,
+          "resized": {
+            "width": 273,
+            "height": 351
+          },
+          "padding": {
+            "left": 38,
+            "top": 110
+          },
+          "achievedAnchor": [
+            0.36044189027050616,
+            0.6796821961982349
+          ],
+          "visibleBoundsAlpha128": {
+            "left": 107,
+            "top": 114,
+            "width": 191,
+            "height": 346
+          },
+          "bytes": 62758
+        },
+        {
+          "pose": "active",
+          "src": "/characters/ui-studies/inventor-active.webp",
+          "sourceAnchor": [
+            993,
+            617
+          ],
+          "crop": {
+            "left": 825,
+            "top": 21,
+            "width": 657,
+            "height": 1003
+          },
+          "uniformScale": 0.3577395577395577,
+          "resized": {
+            "width": 235,
+            "height": 359
+          },
+          "padding": {
+            "left": 78,
+            "top": 113
+          },
+          "achievedAnchor": [
+            0.35961282343987827,
+            0.6798417248255234
+          ],
+          "visibleBoundsAlpha128": {
+            "left": 105,
+            "top": 120,
+            "width": 195,
+            "height": 340
+          },
+          "bytes": 62178
+        }
+      ]
+    }
+  }
+}

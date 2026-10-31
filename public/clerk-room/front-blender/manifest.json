@@ -1,0 +1,119 @@
+{
+  "version": 1,
+  "width": 768,
+  "height": 512,
+  "fps": 12,
+  "poster": "/clerk-room/front-blender/poster.webp",
+  "phases": {
+    "idle": {
+      "src": "/clerk-room/front-blender/idle.webp",
+      "frames": 24,
+      "columns": 6,
+      "rows": 4,
+      "durationMs": 2000,
+      "loop": true,
+      "startFrame": 1
+    },
+    "dispatch": {
+      "src": "/clerk-room/front-blender/dispatch.webp",
+      "frames": 24,
+      "columns": 6,
+      "rows": 4,
+      "durationMs": 2000,
+      "loop": false,
+      "startFrame": 25
+    },
+    "web": {
+      "src": "/clerk-room/front-blender/web.webp",
+      "frames": 24,
+      "columns": 6,
+      "rows": 4,
+      "durationMs": 2000,
+      "loop": true,
+      "startFrame": 49
+    },
+    "walk": {
+      "src": "/clerk-room/front-blender/walk.webp",
+      "frames": 24,
+      "columns": 6,
+      "rows": 4,
+      "durationMs": 2000,
+      "loop": false,
+      "startFrame": 73
+    },
+    "documents": {
+      "src": "/clerk-room/front-blender/documents.webp",
+      "frames": 24,
+      "columns": 6,
+      "rows": 4,
+      "durationMs": 2000,
+      "loop": true,
+      "startFrame": 97
+    },
+    "read": {
+      "src": "/clerk-room/front-blender/read.webp",
+      "frames": 24,
+      "columns": 6,
+      "rows": 4,
+      "durationMs": 2000,
+      "loop": true,
+      "startFrame": 121
+    },
+    "return": {
+      "src": "/clerk-room/front-blender/return.webp",
+      "frames": 24,
+      "columns": 6,
+      "rows": 4,
+      "durationMs": 2000,
+      "loop": false,
+      "startFrame": 145
+    },
+    "present": {
+      "src": "/clerk-room/front-blender/present.webp",
+      "frames": 24,
+      "columns": 6,
+      "rows": 4,
+      "durationMs": 2000,
+      "loop": false,
+      "startFrame": 169
+    },
+    "error": {
+      "src": "/clerk-room/front-blender/error.webp",
+      "frames": 18,
+      "columns": 6,
+      "rows": 3,
+      "durationMs": 1500,
+      "loop": false,
+      "startFrame": 193
+    },
+    "cancelled": {
+      "src": "/clerk-room/front-blender/cancelled.webp",
+      "frames": 12,
+      "columns": 6,
+      "rows": 2,
+      "durationMs": 1000,
+      "loop": false,
+      "startFrame": 211
+    },
+    "web-return": {
+      "src": "/clerk-room/front-blender/web-return.webp",
+      "frames": 24,
+      "columns": 6,
+      "rows": 4,
+      "durationMs": 2000,
+      "loop": false,
+      "startFrame": 223
+    },
+    "web-settle": {
+      "src": "/clerk-room/front-blender/web-settle.webp",
+      "frames": 18,
+      "columns": 6,
+      "rows": 3,
+      "durationMs": 1500,
+      "loop": false,
+      "startFrame": 247
+    }
+  },
+  "view": "Visitor across the counter; front-facing older shopkeeper",
+  "source": "Native Blender geometry with articulated keyframed motion"
+}

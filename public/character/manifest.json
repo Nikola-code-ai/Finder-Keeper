@@ -1,0 +1,143 @@
+{
+  "version": 1,
+  "name": "The Keeper",
+  "width": 384,
+  "height": 512,
+  "anchor": {
+    "x": 0.5,
+    "y": 0.9609375
+  },
+  "hero": "/character/hero.webp",
+  "box": "/character/box.webp",
+  "seated": "/character/seated.webp",
+  "reducedMotion": "/character/idle/00.webp",
+  "uniqueDrawings": 60,
+  "production": "AI-assisted hand-drawn-style raster animation; discrete poses with frame-by-frame playback.",
+  "sequences": {
+    "idle": {
+      "frames": [
+        "/character/idle/00.webp",
+        "/character/idle/01.webp",
+        "/character/idle/02.webp",
+        "/character/idle/03.webp",
+        "/character/idle/04.webp",
+        "/character/idle/05.webp",
+        "/character/idle/06.webp",
+        "/character/idle/07.webp",
+        "/character/idle/08.webp",
+        "/character/idle/09.webp",
+        "/character/idle/10.webp",
+        "/character/idle/11.webp"
+      ],
+      "fps": 3,
+      "loop": true,
+      "atlas": {
+        "url": "/character/idle-atlas.webp",
+        "columns": 4,
+        "rows": 3,
+        "frameWidth": 384,
+        "frameHeight": 512
+      }
+    },
+    "stand": {
+      "frames": [
+        "/character/stand/00.webp",
+        "/character/stand/01.webp",
+        "/character/stand/02.webp",
+        "/character/stand/03.webp",
+        "/character/stand/04.webp",
+        "/character/stand/05.webp",
+        "/character/stand/06.webp",
+        "/character/stand/07.webp",
+        "/character/stand/08.webp",
+        "/character/stand/09.webp",
+        "/character/stand/10.webp",
+        "/character/stand/11.webp"
+      ],
+      "fps": 8,
+      "loop": false,
+      "atlas": {
+        "url": "/character/stand-atlas.webp",
+        "columns": 4,
+        "rows": 3,
+        "frameWidth": 384,
+        "frameHeight": 512
+      }
+    },
+    "walkAway": {
+      "frames": [
+        "/character/walkAway/00.webp",
+        "/character/walkAway/01.webp",
+        "/character/walkAway/02.webp",
+        "/character/walkAway/03.webp",
+        "/character/walkAway/04.webp",
+        "/character/walkAway/05.webp",
+        "/character/walkAway/06.webp",
+        "/character/walkAway/07.webp",
+        "/character/walkAway/08.webp",
+        "/character/walkAway/09.webp",
+        "/character/walkAway/10.webp",
+        "/character/walkAway/11.webp"
+      ],
+      "fps": 10,
+      "loop": true,
+      "atlas": {
+        "url": "/character/walkAway-atlas.webp",
+        "columns": 4,
+        "rows": 3,
+        "frameWidth": 384,
+        "frameHeight": 512
+      }
+    },
+    "walkBack": {
+      "frames": [
+        "/character/walkBack/00.webp",
+        "/character/walkBack/01.webp",
+        "/character/walkBack/02.webp",
+        "/character/walkBack/03.webp",
+        "/character/walkBack/04.webp",
+        "/character/walkBack/05.webp",
+        "/character/walkBack/06.webp",
+        "/character/walkBack/07.webp",
+        "/character/walkBack/08.webp",
+        "/character/walkBack/09.webp",
+        "/character/walkBack/10.webp",
+        "/character/walkBack/11.webp"
+      ],
+      "fps": 10,
+      "loop": true,
+      "atlas": {
+        "url": "/character/walkBack-atlas.webp",
+        "columns": 4,
+        "rows": 3,
+        "frameWidth": 384,
+        "frameHeight": 512
+      }
+    },
+    "sit": {
+      "frames": [
+        "/character/sit/00.webp",
+        "/character/sit/01.webp",
+        "/character/sit/02.webp",
+        "/character/sit/03.webp",
+        "/character/sit/04.webp",
+        "/character/sit/05.webp",
+        "/character/sit/06.webp",
+        "/character/sit/07.webp",
+        "/character/sit/08.webp",
+        "/character/sit/09.webp",
+        "/character/sit/10.webp",
+        "/character/sit/11.webp"
+      ],
+      "fps": 8,
+      "loop": false,
+      "atlas": {
+        "url": "/character/sit-atlas.webp",
+        "columns": 4,
+        "rows": 3,
+        "frameWidth": 384,
+        "frameHeight": 512
+      }
+    }
+  }
+}

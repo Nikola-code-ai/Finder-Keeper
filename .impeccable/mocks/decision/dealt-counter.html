@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>The counter, held still — first viewport</title>
+<style>
+  html,body{margin:0;width:1440px;height:900px;overflow:hidden;background:#f4f1ea;color:#1a1a1a;font-family:Georgia,serif}
+  .wall{position:absolute;inset:0 0 260px 0;background:#ebe6dc;border-bottom:3px solid #1a1a1a}
+  .floor{position:absolute;left:0;right:0;bottom:0;height:260px;background:repeating-linear-gradient(90deg,#ded8cc 0 60px,#e9e4da 60px 120px)}
+  .shelf{position:absolute;top:20px;height:380px;background:repeating-linear-gradient(90deg,#1a1a1a 0 6px,#f4f1ea 6px 14px,#8a8378 14px 20px,#f4f1ea 20px 26px);border:3px solid #1a1a1a}
+  .cab{position:absolute;left:40px;top:410px;width:300px;height:200px;border:4px solid #1a1a1a;background:#8a8378;display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:6px;padding:6px}
+  .cab div{background:#f4f1ea;border:2px solid #1a1a1a;font-size:22px;padding:4px 8px;white-space:nowrap;overflow:hidden}
+  .cab div b{float:right;color:#5c564d;font-weight:normal}
+  .desk{position:absolute;left:380px;top:430px;width:220px;height:90px;background:#8a8378;border:3px solid #1a1a1a}
+  .window{position:absolute;right:60px;top:30px;width:280px;height:420px;border:4px solid #1a1a1a;border-radius:140px 140px 0 0;background:#fff}
+  .spider{position:absolute;right:170px;top:140px;width:22px;height:22px;background:#1a1a1a;border-radius:50%}
+  .keeper{position:absolute;left:640px;top:190px;width:180px;height:320px}
+  .keeper .head{width:96px;height:96px;border:3px solid #1a1a1a;border-radius:50%;background:#fff;margin:0 auto}
+  .keeper .body{width:160px;height:210px;border:3px solid #1a1a1a;border-radius:76px 76px 0 0;background:#8a8378;margin:-6px auto 0}
+  .counter{position:absolute;left:360px;right:360px;top:470px;height:430px;background:#6d6256;border:4px solid #1a1a1a;border-bottom:0}
+  .counter:before{content:"";position:absolute;left:-40px;right:-40px;top:0;height:80px;background:#8a7f70;border:4px solid #1a1a1a}
+  .book{position:absolute;left:200px;top:-26px;width:230px;height:114px;background:#fff;border:3px solid #1a1a1a}
+  .book:after{content:"";position:absolute;left:50%;top:0;bottom:0;width:3px;background:#1a1a1a}
+  .slip{position:absolute;left:30px;width:360px;top:130px;height:150px;background:#fff;border:3px solid #1a1a1a;transform:rotate(-2deg);padding:20px 24px;font-size:30px;font-style:italic;color:#5c564d;box-shadow:6px 8px 0 #1a1a1a22}
+  .slip b{display:block;font-style:normal;font-size:24px;color:#1a1a1a;margin-bottom:8px}
+  .slip span{position:absolute;right:20px;bottom:16px;width:44px;height:44px;border-radius:50%;background:#1a1a1a}
+  .paper{position:absolute;width:260px;height:120px;background:#fff;border:3px solid #1a1a1a;font-size:22px;padding:12px 16px;line-height:1.3}
+  .paper small{display:block;font-size:22px;color:#5c564d}
+  .tray{position:absolute;right:30px;top:120px;width:160px;height:110px;border:3px dashed #1a1a1a;background:#fff;font-size:22px;padding:10px 12px;text-align:center}
+  .label{position:absolute;font-size:24px;background:#fff;border:2px solid #1a1a1a;padding:6px 14px;box-shadow:3px 3px 0 #1a1a1a}
+  .label i{display:block;font-style:normal;font-size:22px;color:#5c564d}
+  .status{position:absolute;left:380px;bottom:24px;font-size:22px;background:#1a1a1a;color:#f4f1ea;padding:6px 14px}
+</style></head><body>
+<div class="wall"></div><div class="floor"></div>
+<div class="shelf" style="left:30px;width:330px"></div>
+<div class="shelf" style="left:900px;width:200px"></div>
+<div class="cab"><div>Starter shelf <b>6</b></div><div>Reading now <b>3</b></div><div>Distributed systems <b>1</b></div><div>New collection <b>+</b></div></div>
+<div class="label" style="left:40px;top:360px">Collections<i>the drawer cabinet</i></div>
+<div class="desk"></div>
+<div class="label" style="left:380px;top:370px">The desks<i>saved passages</i></div>
+<div class="window"></div><div class="spider"></div>
+<div class="label" style="right:80px;top:470px">The window<i>the wider web</i></div>
+<div class="keeper"><div class="head"></div><div class="body"></div></div>
+<div class="counter">
+  <div class="book"></div>
+  <div class="label" style="left:450px;top:-18px">The book<i>ask</i></div>
+  <div class="slip"><b>Your slip</b>Find me a book, paper, or article…<span></span></div>
+  <div class="paper" style="left:420px;top:120px;transform:rotate(3deg)">Free Culture — Lessig<small>PDF · free full text ✓</small></div>
+  <div class="paper" style="left:445px;top:160px;transform:rotate(-2deg)">Designing Data-Intensive…<small>catalogue entry · preview only</small></div>
+  <div class="paper" style="left:470px;top:200px;transform:rotate(1deg)">Operating Systems: Three Easy Pieces<small>HTML · free full text ✓ · save?</small></div>
+  <div class="tray">Uploads tray<br>drop a PDF or EPUB</div>
+</div>
+<div class="status">Keeper is at his desk · 3 found, 1 unverified</div>
+</body></html>

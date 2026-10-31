@@ -1,0 +1,35 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/assigned.html"
+        ],
+        "createdAt": "2026-10-31T04:33:12.510Z",
+        "reason": "Claude: decision-round composition skeleton, not shipping UI; its paper ground is the user-pinned black-and-white ink world (user chose the ink illustration in this session); the build palette is decided in the surface brief"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/dealt-shelves.html"
+        ],
+        "createdAt": "2026-10-31T04:33:12.518Z",
+        "reason": "Claude: decision-round composition skeleton, not shipping UI; its paper ground is the user-pinned black-and-white ink world (user chose the ink illustration in this session); the build palette is decided in the surface brief"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/dealt-counter.html"
+        ],
+        "createdAt": "2026-10-31T04:33:12.525Z",
+        "reason": "Claude: decision-round composition skeleton, not shipping UI; its paper ground is the user-pinned black-and-white ink world (user chose the ink illustration in this session); the build palette is decided in the surface brief"
+      }
+    ]
+  }
+}

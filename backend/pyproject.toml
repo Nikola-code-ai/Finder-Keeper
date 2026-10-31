@@ -1,0 +1,40 @@
+[project]
+name = "finder-keeper-api"
+version = "0.1.0"
+description = "Private document discovery, storage, and semantic retrieval"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "uvicorn[standard]>=0.34,<1",
+  "python-multipart>=0.0.20,<1",
+  "sqlalchemy>=2.0.38,<3",
+  "pgvector>=0.4,<1",
+  "psycopg[binary]>=3.2,<4",
+  "fastembed>=0.7,<1",
+  "numpy>=2,<3",
+  "pypdf>=6,<7",
+  "beautifulsoup4>=4.13,<5",
+  "httpx>=0.28,<1",
+  "reportlab>=4.3,<5",
+  "google-cloud-storage>=3,<4",
+  "google-cloud-tasks>=2.19,<3",
+  "firebase-admin>=7,<8",
+  "google-genai>=1.30,<2",
+  "pydantic-settings>=2.8,<3",
+  "requests>=2.32,<3",
+  "pdfplumber>=0.11,<1",
+]
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "ruff>=0.12,<1"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = ["integration: uses actual downloaded embedding weights"]
+
+[tool.ruff]
+line-length = 110
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]

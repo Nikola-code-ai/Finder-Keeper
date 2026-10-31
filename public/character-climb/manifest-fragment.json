@@ -1,0 +1,119 @@
+{
+  "width": 256,
+  "height": 320,
+  "uniqueDrawings": 12,
+  "states": {
+    "climb": {
+      "frames": [
+        "/character-climb/climb/00.webp",
+        "/character-climb/climb/01.webp",
+        "/character-climb/climb/02.webp",
+        "/character-climb/climb/03.webp",
+        "/character-climb/climb/04.webp",
+        "/character-climb/climb/05.webp",
+        "/character-climb/climb/06.webp",
+        "/character-climb/climb/07.webp"
+      ],
+      "fps": 10,
+      "loop": true,
+      "anchors": {
+        "feet": [
+          0.5,
+          0.95
+        ]
+      },
+      "frameAnchors": [
+        {
+          "feet": [
+            0.5000185444028398,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.4982062618796963,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.5004072650621801,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.4162133350319516,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.4786303461633517,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.49230651456081115,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.48483036888398173,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.44913231400153614,
+            0.95
+          ]
+        }
+      ]
+    },
+    "clamber": {
+      "frames": [
+        "/character-climb/clamber/00.webp",
+        "/character-climb/clamber/01.webp",
+        "/character-climb/clamber/02.webp",
+        "/character-climb/clamber/03.webp"
+      ],
+      "fps": 10,
+      "loop": false,
+      "anchors": {
+        "feet": [
+          0.5,
+          0.95
+        ]
+      },
+      "frameAnchors": [
+        {
+          "feet": [
+            0.2727189518907759,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.5010507667331335,
+            0.8998233564431566
+          ]
+        },
+        {
+          "feet": [
+            0.18187172816935565,
+            1.1273038251931564
+          ]
+        },
+        {
+          "feet": [
+            0.4302564491373422,
+            0.9341007001931566
+          ]
+        }
+      ]
+    }
+  }
+}

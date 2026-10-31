@@ -1,0 +1,305 @@
+{
+  "version": 1,
+  "width": 256,
+  "height": 320,
+  "anchor": [
+    0.5,
+    0.95
+  ],
+  "uniqueDrawings": 32,
+  "production": "32 separately generated raster drawings. Sprite extraction, rescaling, and anchoring only; no artificial inbetween poses or crossfades.",
+  "preserves": "/character-sketch/idle/00.webp",
+  "states": {
+    "walk": {
+      "frames": [
+        "/character-motion-v2/walk/00.webp",
+        "/character-motion-v2/walk/01.webp",
+        "/character-motion-v2/walk/02.webp",
+        "/character-motion-v2/walk/03.webp",
+        "/character-motion-v2/walk/04.webp",
+        "/character-motion-v2/walk/05.webp",
+        "/character-motion-v2/walk/06.webp",
+        "/character-motion-v2/walk/07.webp",
+        "/character-motion-v2/walk/08.webp",
+        "/character-motion-v2/walk/09.webp",
+        "/character-motion-v2/walk/10.webp",
+        "/character-motion-v2/walk/11.webp"
+      ],
+      "fps": 8,
+      "loop": true,
+      "anchors": {
+        "feet": [
+          0.5,
+          0.95
+        ],
+        "hand": [
+          0.52,
+          0.66
+        ]
+      },
+      "frameAnchors": [
+        {
+          "feet": [
+            0.5008319266460832,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.4984111107827517,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.4992605153188643,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.4998109511622116,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.5014510450990117,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.49995480735381714,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.5004484807359542,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.5016534772741091,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.5013226356623972,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.49970148700443284,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.49845273400739365,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.5019045900622525,
+            0.95
+          ]
+        }
+      ]
+    },
+    "away": {
+      "frames": [
+        "/character-motion-v2/away/00.webp",
+        "/character-motion-v2/away/01.webp",
+        "/character-motion-v2/away/02.webp",
+        "/character-motion-v2/away/03.webp",
+        "/character-motion-v2/away/04.webp",
+        "/character-motion-v2/away/05.webp",
+        "/character-motion-v2/away/06.webp",
+        "/character-motion-v2/away/07.webp",
+        "/character-motion-v2/away/08.webp",
+        "/character-motion-v2/away/09.webp",
+        "/character-motion-v2/away/10.webp",
+        "/character-motion-v2/away/11.webp"
+      ],
+      "fps": 8,
+      "loop": true,
+      "anchors": {
+        "feet": [
+          0.5,
+          0.95
+        ],
+        "hand": [
+          0.57,
+          0.66
+        ]
+      },
+      "frameAnchors": [
+        {
+          "feet": [
+            0.49813287494367653,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.4988366189221255,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.5011683604814979,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.4980651642939793,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.49825426259161015,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.49971556047027116,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.5008843207050179,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.49957546838740163,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.5003779504169829,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.5003392846925578,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.501715083005667,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.5009660431781924,
+            0.95
+          ]
+        }
+      ]
+    },
+    "stand": {
+      "frames": [
+        "/character-motion-v2/stand/00.webp",
+        "/character-motion-v2/stand/01.webp",
+        "/character-motion-v2/stand/02.webp",
+        "/character-motion-v2/stand/03.webp",
+        "/character-motion-v2/stand/04.webp",
+        "/character-motion-v2/stand/05.webp",
+        "/character-motion-v2/stand/06.webp",
+        "/character-motion-v2/stand/07.webp"
+      ],
+      "fps": 6,
+      "loop": false,
+      "anchors": {
+        "feet": [
+          0.5,
+          0.95
+        ],
+        "seat": [
+          0.2676108589385475,
+          0.7535963687150838
+        ]
+      },
+      "frameAnchors": [
+        {
+          "feet": [
+            0.5007983540961622,
+            0.95
+          ],
+          "seat": [
+            0.2676108589385475,
+            0.7535963687150838
+          ]
+        },
+        {
+          "feet": [
+            0.49953307918691975,
+            0.95
+          ],
+          "seat": [
+            0.26922743055555554,
+            0.7509809027777778
+          ]
+        },
+        {
+          "feet": [
+            0.4989656819856252,
+            0.95
+          ],
+          "seat": [
+            0.3054315476190476,
+            0.7275132275132274
+          ]
+        },
+        {
+          "feet": [
+            0.5016356165303115,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.501361818685581,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.5001874904821881,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.4997349666324585,
+            0.95
+          ]
+        },
+        {
+          "feet": [
+            0.4998604113597096,
+            0.95
+          ]
+        }
+      ],
+      "contactNotes": "Frames 0–1 settle forward on the invisible seat; frame 2 is the final forward shift; frames 3–7 have left the seat and use the feet anchor."
+    }
+  }
+}
