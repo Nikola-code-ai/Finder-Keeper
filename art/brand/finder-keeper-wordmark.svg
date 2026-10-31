@@ -1,13 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 256" width="1040" height="256">
   <title>Finder &amp; Keeper wordmark</title>
-  <defs>
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;1,500&amp;display=swap');
-      .word { font-family: 'EB Garamond', Garamond, 'Times New Roman', serif; font-style: italic; font-weight: 500; font-size: 128px; fill: #efe9da; }
-      .amp { font-family: 'EB Garamond', Garamond, 'Times New Roman', serif; font-style: italic; font-weight: 500; font-size: 128px; fill: #d9d0b6; }
-      .tag { font-family: 'EB Garamond', Garamond, 'Times New Roman', serif; font-variant: small-caps; font-size: 34px; letter-spacing: 3px; fill: #d9d0b6; }
-    </style>
-  </defs>
   <rect width="1040" height="256" rx="28" fill="#35503a"/>
   <!-- The mark, at the left -->
   <g transform="translate(24 24) scale(0.8125)">
@@ -36,6 +28,6 @@
       </g>
     </g>
   </g>
-  <text x="268" y="150" class="word">finder <tspan class="amp">&amp;</tspan> keeper</text>
-  <text x="272" y="206" class="tag">a quiet research library</text>
+  <text x="268" y="150" font-family="EB Garamond, Garamond, 'Times New Roman', serif" font-style="italic" font-weight="500" font-size="128" fill="#efe9da">finder &amp; keeper</text>
+  <text x="272" y="206" font-family="EB Garamond, Garamond, 'Times New Roman', serif" font-size="34" letter-spacing="3" fill="#d9d0b6">A QUIET RESEARCH LIBRARY</text>
 </svg>
