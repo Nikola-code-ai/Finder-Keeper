@@ -102,7 +102,7 @@ def folio_case(name, x0, x1, y, rows, col, z0=.25, zh=5.6):
             box(f'{name} label {r}-{k}', (x + w / 2, y - .475, z + .08 + h * .55), (w * .62, .01, h * .22), sheet, col)
             x += w + .035; k += 1
     for s in (x0, x1): box(f'{name} side {s}', (s, y - .2, z0 + zh / 2), (.1, .64, zh), wooddeep, col)
-folio_case('left case', -7.8, -2.0, 2.9, 6, COL['ROOM_BACK'], zh=6.6)
+folio_case('left case', -7.8, -1.6, 2.9, 6, COL['ROOM_BACK'], zh=6.6)
 folio_case('right case', 2.0, 4.8, 2.9, 6, COL['ROOM_BACK'], zh=6.6)
 # A botanical print between the cases.
 box('print frame', (-.1, 2.95, 4.0), (1.3, .08, 1.7), wooddeep, COL['ROOM_BACK']); box('print sheet', (-.1, 2.9, 4.0), (1.1, .02, 1.5), sheet, COL['ROOM_BACK'])
@@ -118,14 +118,14 @@ for i in range(5):
     rod(f'web strand {i}', (WX + 1.1, WY - .1, 5.2 - i * .02), (WX + .15 + i * .05, WY - .1, 4.0 + i * .2), .006, sheet, COL['ROOM_MID'])
 for i in range(3): rod(f'web spiral {i}', (WX + .9 - i * .2, WY - .1, 5.1 - i * .25), (WX + .4 - i * .1, WY - .1, 4.6 - i * .15), .005, sheet, COL['ROOM_MID'])
 # The desks (left) with drawers, and the counter (centre).
-DESK_X, DESK_Y, DESK_TOP = -3.7, -.6, 1.65
-box('desk top', (DESK_X, DESK_Y, DESK_TOP), (3.6, 1.9, .12), woodlight, COL['ROOM_MID'], bevel=.02)
-box('desk body', (DESK_X, DESK_Y + .15, 1.0), (3.5, 1.5, 1.2), wood, COL['ROOM_MID'])
+DESK_X, DESK_Y, DESK_TOP = -3.55, -.6, 1.65
+box('desk top', (DESK_X, DESK_Y, DESK_TOP), (3.1, 1.9, .12), woodlight, COL['ROOM_MID'], bevel=.02)
+box('desk body', (DESK_X, DESK_Y + .15, 1.0), (3.0, 1.5, 1.2), wood, COL['ROOM_MID'])
 DRAWERS = []
 for r in range(2):
     for c in range(3):
-        x = DESK_X - 1.12 + c * 1.12; z = 1.33 - r * .5
-        box(f'drawer front {r}{c}', (x, DESK_Y - .62, z), (1.02, .06, .42), woodlight, COL['ROOM_MID'], bevel=.01)
+        x = DESK_X - .95 + c * .95; z = 1.33 - r * .5
+        box(f'drawer front {r}{c}', (x, DESK_Y - .62, z), (.86, .06, .42), woodlight, COL['ROOM_MID'], bevel=.01)
         box(f'drawer plate {r}{c}', (x, DESK_Y - .66, z + .02), (.38, .02, .14), sheet, COL['ROOM_MID'])
         ring(f'drawer pull {r}{c}', (x, DESK_Y - .68, z - .1), .05, .012, metal, COL['ROOM_MID'], rot=(math.pi / 2, 0, 0))
         DRAWERS.append((r, c, x, z))
@@ -134,9 +134,9 @@ box('counter body', (0.6, -.9, .9), (5.9, 1.3, 1.6), wood, COL['ROOM_MID'])
 # Front layer: what stands between the visitor and the Keeper.
 box('counter lip', (0.6, -1.78, 1.72), (6.1, .18, .2), woodlight, COL['ROOM_FRONT'], bevel=.02)
 box('counter face', (0.6, -1.75, .9), (6.0, .1, 1.5), wooddeep, COL['ROOM_FRONT'])
-box('desk face', (DESK_X, DESK_Y - .55, .95), (3.6, .08, 1.3), wooddeep, COL['ROOM_FRONT'])
+box('desk face', (DESK_X, DESK_Y - .55, .95), (3.1, .08, 1.3), wooddeep, COL['ROOM_FRONT'])
 for r, c, x, z in DRAWERS:
-    box(f'desk face drawer {r}{c}', (x, DESK_Y - .60, z), (1.0, .05, .40), wood, COL['ROOM_FRONT'])
+    box(f'desk face drawer {r}{c}', (x, DESK_Y - .60, z), (.84, .05, .40), wood, COL['ROOM_FRONT'])
     box(f'desk face plate {r}{c}', (x, DESK_Y - .64, z + .02), (.36, .02, .13), sheet, COL['ROOM_FRONT'])
 rod('lamp cord', (0.6, -.6, 9), (0.6, -.6, 6.3), .015, ink, COL['ROOM_BACK']); sphere('lamp shade', (0.6, -.6, 6.1), (.55, .55, .3), cloth, COL['ROOM_BACK']); sphere('lamp bulb', (0.6, -.6, 5.95), (.18, .18, .14), sheet, COL['ROOM_BACK'])
 # A plant at the far right, in front.
@@ -148,11 +148,11 @@ box('plant pot', (7.0, -2.6, .55), (.7, .7, .7), wooddeep, COL['ROOM_FRONT'])
 DRAWER_COLS = []
 for r, c, x, z in DRAWERS:
     col = collection(f'DRAWER_{r}{c}'); DRAWER_COLS.append(col)
-    box(f'open drawer box {r}{c}', (x, DESK_Y - 1.05, z - .05), (1.0, .9, .34), wood, col)
-    box(f'open drawer cavity {r}{c}', (x, DESK_Y - 1.05, z + .0), (.9, .8, .26), wooddeep, col)
-    box(f'open drawer front {r}{c}', (x, DESK_Y - 1.52, z), (1.02, .06, .42), woodlight, col, bevel=.01)
+    box(f'open drawer box {r}{c}', (x, DESK_Y - 1.05, z - .05), (.84, .9, .34), wood, col)
+    box(f'open drawer cavity {r}{c}', (x, DESK_Y - 1.05, z + .0), (.74, .8, .26), wooddeep, col)
+    box(f'open drawer front {r}{c}', (x, DESK_Y - 1.52, z), (.86, .06, .42), woodlight, col, bevel=.01)
     box(f'open drawer plate {r}{c}', (x, DESK_Y - 1.56, z + .02), (.38, .02, .14), sheet, col)
-    for k in range(4): box(f'open drawer sheet {r}{c}-{k}', (x - .3 + k * .2, DESK_Y - 1.0 - k * .05, z + .05 + k * .03), (.6, .7, .01), sheet, col, rot=(0, .05 * (k - 1.5), .08 * (k % 2 - .5)))
+    for k in range(4): box(f'open drawer sheet {r}{c}-{k}', (x - .22 + k * .15, DESK_Y - 1.0 - k * .05, z + .05 + k * .03), (.5, .7, .01), sheet, col, rot=(0, .05 * (k - 1.5), .08 * (k % 2 - .5)))
 
 # ---------------------------------------------------------------- the Keeper: one fused body on an armature
 KX, KY = 0.0, 0.1
@@ -198,21 +198,21 @@ for s in (-1, 1): part(f'lapel {s}', 'box', (KX + s * .17, KY - .35, 2.35), (.14
 shells = [bpy.data.objects[n] for n in ('apron', 'apron bib', 'collar', 'lapel -1', 'lapel 1')]
 # Head features (follow the head bone).
 feat = []
-feat.append(part('face', 'sphere', (KX, KY - .34, 3.12), (.26, .14, .28), skin))
+feat.append(part('face', 'sphere', (KX, KY - .30, 3.10), (.28, .14, .30), skin))
 for s in (-1, 1):
     feat.append(part(f'ear {s}', 'sphere', (KX + s * .40, KY, 3.08), (.07, .06, .11), skin))
-    feat.append(part(f'eye white {s}', 'sphere', (KX + s * .15, KY - .38, 3.18), (.075, .03, .06), eyew))
-    feat.append(part(f'pupil {s}', 'sphere', (KX + s * .15, KY - .405, 3.175), (.03, .015, .034), ink))
-    feat.append(part(f'brow {s}', 'sphere', (KX + s * .15, KY - .40, 3.28), (.11, .03, .03), hair))
-    feat.append(ring(f'spectacle {s}', (KX + s * .16, KY - .42, 3.17), .11, .012, metal, COL['KEEPER'], rot=(math.pi / 2, 0, 0)))
-    feat.append(part(f'temple {s}', 'rod', (KX + s * .27, KY - .41, 3.17), (KX + s * .40, KY - .02, 3.15), .01, metal))
-    feat.append(part(f'side hair {s}', 'sphere', (KX + s * .34, KY + .08, 3.25), (.14, .2, .24), hair))
-    feat.append(part(f'moustache {s}', 'sphere', (KX + s * .09, KY - .42, 2.98), (.12, .06, .05), hair))
-feat.append(part('spectacle bridge', 'rod', (KX - .05, KY - .43, 3.17), (KX + .05, KY - .43, 3.17), .01, metal))
-feat.append(part('nose', 'sphere', (KX, KY - .43, 3.06), (.08, .11, .09), skin))
-feat.append(part('beard', 'sphere', (KX, KY - .22, 2.84), (.32, .26, .24), hair))
-feat.append(part('back hair', 'sphere', (KX, KY + .18, 3.22), (.3, .2, .3), hair))
-feat.append(part('smile', 'rod', (KX - .1, KY - .47, 2.97), (KX + .1, KY - .47, 2.97), .012, ink))
+    feat.append(part(f'eye white {s}', 'sphere', (KX + s * .15, KY - .455, 3.18), (.085, .035, .075), eyew))
+    feat.append(part(f'pupil {s}', 'sphere', (KX + s * .15, KY - .49, 3.175), (.04, .02, .045), ink))
+    feat.append(part(f'brow {s}', 'sphere', (KX + s * .15, KY - .475, 3.29), (.11, .03, .03), hair))
+    feat.append(ring(f'spectacle {s}', (KX + s * .16, KY - .51, 3.17), .115, .012, metal, COL['KEEPER'], rot=(math.pi / 2, 0, 0)))
+    feat.append(part(f'temple {s}', 'rod', (KX + s * .275, KY - .50, 3.17), (KX + s * .40, KY - .02, 3.15), .01, metal))
+    feat.append(part(f'side hair {s}', 'sphere', (KX + s * .36, KY + .10, 3.18), (.10, .17, .19), hair))
+    feat.append(part(f'moustache {s}', 'sphere', (KX + s * .08, KY - .50, 2.995), (.11, .05, .045), hair))
+feat.append(part('spectacle bridge', 'rod', (KX - .05, KY - .52, 3.17), (KX + .05, KY - .52, 3.17), .01, metal))
+feat.append(part('nose', 'sphere', (KX, KY - .50, 3.07), (.07, .10, .08), skin))
+feat.append(part('beard', 'sphere', (KX, KY - .30, 2.80), (.27, .22, .20), hair))
+feat.append(part('back hair', 'sphere', (KX, KY + .20, 3.22), (.26, .18, .26), hair))
+feat.append(part('smile', 'rod', (KX - .09, KY - .52, 2.96), (KX + .09, KY - .52, 2.96), .012, ink))
 # Hands (follow the hand bones) and the things he holds.
 hands = {}
 for s in (-1, 1):
@@ -300,7 +300,7 @@ def sun(name, rot, energy, color=(1, 1, 1)):
 sun('key', (math.radians(52), math.radians(-18), math.radians(-25)), 3.2, (1, .97, .9))
 sun('fill', (math.radians(70), math.radians(20), math.radians(40)), 1.1, (.85, .95, .9))
 bpy.ops.object.camera_add(location=(0.4, -9.5, 3.0)); cam = bpy.context.object; cam.name = 'camera'; link(cam, COL['LIGHTS'])
-cam.rotation_euler = (Vector((0.4, 1.5, 2.5)) - cam.location).to_track_quat('-Z', 'Y').to_euler(); cam.data.lens = 30; scene.camera = cam
+cam.rotation_euler = (Vector((0.4, 1.5, 2.15)) - cam.location).to_track_quat('-Z', 'Y').to_euler(); cam.data.lens = 30; scene.camera = cam
 scene.render.engine = 'BLENDER_EEVEE'; scene.render.resolution_x = W; scene.render.resolution_y = H; scene.render.resolution_percentage = 100
 scene.render.image_settings.file_format = 'PNG'; scene.render.image_settings.color_mode = 'RGBA'; scene.render.film_transparent = True; scene.render.fps = 12
 scene.render.use_freestyle = True; scene.render.line_thickness = 1.7
@@ -317,7 +317,7 @@ def lerp(a, b, t): return tuple(x + (y - x) * t for x, y in zip(a, b))
 def smooth(t): t = max(0, min(1, t)); return t * t * (3 - 2 * t)
 REST_HAND = {-1: (KX - .58, KY - .72, 1.95), 1: (KX + .58, KY - .72, 1.95)}
 REST_FOOT = {-1: (KX - .23, KY, .25), 1: (KX + .23, KY, .25)}
-DESK_STAND = (DESK_X + 1.2, DESK_Y + .95)  # where he stands to work the desk, beside it
+DESK_STAND = (DESK_X + 1.25, DESK_Y + .95)  # where he stands to work the desk, beside it
 SPIDER_HOME = (1.9, -.7, 1.98); SPIDER_WEB = (WX + .6, WY - .25, 4.7)
 def key_all(frame):
     for pb in arm.pose.bones: pb.keyframe_insert('rotation_euler', frame=frame)
@@ -396,6 +396,7 @@ PHASES = {'greet': (18, False), 'idle': (24, True), 'dispatch': (24, False), 'we
 
 # ---------------------------------------------------------------- landmarks (normalized image coordinates for the UI)
 from bpy_extras.object_utils import world_to_camera_view
+bpy.context.view_layer.update()  # the camera's matrix is stale until the depsgraph runs
 def ndc(p):
     v = world_to_camera_view(scene, cam, Vector(p)); return [round(v.x, 4), round(1 - v.y, 4)]
 landmarks = {
@@ -435,5 +436,5 @@ if 'keeper' in MODE or 'all' in MODE:
     scene.frame_end = offset - 1; scene.frame_set(1); scene.render.resolution_percentage = 100
     (SOURCE / 'phases.json').write_text(json.dumps(manifest_phases, indent=2))
 (SOURCE / 'landmarks.json').write_text(json.dumps({'width': W, 'height': H, 'landmarks': landmarks}, indent=2))
-bpy.ops.wm.save_as_mainfile(filepath=str(SOURCE / 'herbarium.blend'), compress=True)
+if 'landmarks' not in MODE: bpy.ops.wm.save_as_mainfile(filepath=str(SOURCE / 'herbarium.blend'), compress=True)
 print('DONE', MODE, flush=True)

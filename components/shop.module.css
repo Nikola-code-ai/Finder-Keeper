@@ -5,7 +5,7 @@
   --shadow: 0 2px 5px #1a1f1540, 0 10px 24px #1a1f1533; --lift: 0 6px 14px #1a1f1555, 0 24px 44px #1a1f1540;
   --academic: var(--font-academic), 'EB Garamond', Garamond, 'Times New Roman', serif;
   --tooth: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='t'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .3 0 0 0 0 .25 0 0 0 0 .15 0 0 0 .14 0'/></filter><rect width='180' height='180' filter='url(%23t)'/></svg>");
-  --art-h: 150dvh; --art-top: -25dvh; --slip-h: 128px;
+  --art-h: 130dvh; --art-top: -15dvh; --slip-h: 128px;
   position: relative; height: 100dvh; overflow: hidden; background: var(--cloth); color: var(--ink); font-family: var(--academic); font-feature-settings: 'onum' 0, 'tnum' 1;
 }
 .shop *, .shop *::before, .shop *::after { box-sizing: border-box; }
@@ -14,7 +14,7 @@
 .shop button:focus-visible, .shop a:focus-visible, .shop input:focus-visible, .shop select:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 .shop button:disabled { cursor: default; opacity: 1; }
 .shop :global(.visually-hidden) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-@media (max-width: 1023px) { .shop { --art-h: 120dvh; --art-top: -12dvh; } }
+@media (max-width: 1023px) { .shop { --art-h: 115dvh; --art-top: -7.5dvh; } }
 @media (max-width: 760px) { .shop { --art-h: 100dvh; --art-top: 0px; --slip-h: 150px; } }
 
 /* Small caps are the label voice; italic is the visitor's own hand and the title voice. */
@@ -47,7 +47,7 @@
 .frame:not([data-current='true']) .papers, .frame:not([data-current='true']) .drawer { opacity: 0; pointer-events: none; }
 
 /* Labels on a string: the shop's own signage, one size everywhere. */
-.tag { position: absolute; z-index: 7; left: var(--l); top: var(--t); transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; padding: 0; min-width: 44px; background: none; color: inherit; }
+.tag { position: absolute; z-index: 5; left: calc(var(--l) * 1%); top: calc(var(--art-top) + var(--t) * var(--art-h) / 100); transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; padding: 0; min-width: 44px; background: none; color: inherit; }
 .tag::before { content: ''; width: 1px; height: 22px; background: var(--sheet); opacity: .8; }
 .tagCard { padding: 7px 12px 8px; box-shadow: var(--shadow); font: 500 15px/1.15 var(--academic); font-variant-caps: small-caps; letter-spacing: .04em; color: var(--ink); white-space: nowrap; transform: rotate(var(--tilt, -1.5deg)); transition: transform .3s cubic-bezier(.16, .84, .24, 1), box-shadow .3s; }
 .tagCard small { display: block; margin-top: 2px; font: italic 400 13px/1.3 var(--academic); font-variant-caps: normal; letter-spacing: 0; color: var(--ink-soft); }
@@ -256,7 +256,7 @@
   .sign small { display: none; }
   .tools { top: 50px; left: 12px; padding: 2px 4px; }
   .tools button { padding: 4px 5px; font-size: 11px; }
-  .tag { left: var(--lm, var(--l)); top: var(--tm, var(--t)); }
+  .tag { left: calc(var(--lm, var(--l)) * 1%); top: calc(var(--art-top) + var(--tm, var(--t)) * var(--art-h) / 100); }
   .tagCard { font-size: 14px; padding: 6px 10px 7px; max-width: 236px; overflow: hidden; text-overflow: ellipsis; }
   .tagCard small { overflow: hidden; text-overflow: ellipsis; }
   .edge { top: 26%; padding: 8px 9px; font-size: 13px; }

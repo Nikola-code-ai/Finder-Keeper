@@ -1,0 +1,80 @@
+{
+  "greet": {
+    "frames": 18,
+    "loop": false,
+    "startFrame": 1,
+    "durationMs": 1500
+  },
+  "idle": {
+    "frames": 24,
+    "loop": true,
+    "startFrame": 19,
+    "durationMs": 2000
+  },
+  "dispatch": {
+    "frames": 24,
+    "loop": false,
+    "startFrame": 43,
+    "durationMs": 2000
+  },
+  "web": {
+    "frames": 24,
+    "loop": true,
+    "startFrame": 67,
+    "durationMs": 2000
+  },
+  "walk": {
+    "frames": 24,
+    "loop": false,
+    "startFrame": 91,
+    "durationMs": 2000
+  },
+  "documents": {
+    "frames": 24,
+    "loop": true,
+    "startFrame": 115,
+    "durationMs": 2000
+  },
+  "read": {
+    "frames": 24,
+    "loop": true,
+    "startFrame": 139,
+    "durationMs": 2000
+  },
+  "return": {
+    "frames": 24,
+    "loop": false,
+    "startFrame": 163,
+    "durationMs": 2000
+  },
+  "present": {
+    "frames": 24,
+    "loop": false,
+    "startFrame": 187,
+    "durationMs": 2000
+  },
+  "error": {
+    "frames": 18,
+    "loop": false,
+    "startFrame": 211,
+    "durationMs": 1500
+  },
+  "cancelled": {
+    "frames": 12,
+    "loop": false,
+    "startFrame": 229,
+    "durationMs": 1000
+  },
+  "web-return": {
+    "frames": 24,
+    "loop": false,
+    "startFrame": 241,
+    "durationMs": 2000
+  },
+  "web-settle": {
+    "frames": 18,
+    "loop": false,
+    "startFrame": 265,
+    "durationMs": 1500
+  }
+}

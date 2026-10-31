@@ -52,7 +52,7 @@ export function stationFor(operation: KeeperOperation | SearchMode): Station {
   return operation === 'discover' ? 'window' : operation === 'ask' ? 'counter' : 'desks';
 }
 // Labels hang on their objects in painting coordinates; a phone frame is narrower, so a few hang a little differently there.
-const at = (l: number, t: number, tilt = -1.5, phone?: [number, number]) => ({ '--l': `${l}%`, '--t': `${t}%`, '--tilt': `${tilt}deg`, ...(phone ? { '--lm': `${phone[0]}%`, '--tm': `${phone[1]}%` } : {}) }) as CSSProperties;
+const at = (l: number, t: number, tilt = -1.5, phone?: [number, number]) => ({ '--l': l, '--t': t, '--tilt': `${tilt}deg`, ...(phone ? { '--lm': phone[0], '--tm': phone[1] } : {}) }) as CSSProperties;
 const kindOf = (doc: Document) => doc.is_starter || doc.kind === 'starter' ? 'starter note' : (doc.kind || 'document').toLowerCase();
 
 export default function Shop(props: ShopProps) {
@@ -67,7 +67,7 @@ export default function Shop(props: ShopProps) {
   const [plates, setPlates] = useState<Record<string, [number, number, number, number]>>({});
   const marks = (manifest?.landmarks as Landmarks | undefined) ?? null;
   const openDrawer = openFolio === null ? null : (marks?.drawers[folioIndexRef.current[openFolio] ?? -1]?.id ?? null);
-  const STATIONS = marks ? DEFAULT_STATIONS.map(s => ({ ...s, x: Math.round((s.id === 'desks' ? marks.desks[0] : s.id === 'counter' ? marks.counter[0] : marks.window[0]) * 100) })) : DEFAULT_STATIONS;
+  const STATIONS = marks ? DEFAULT_STATIONS.map(s => ({ ...s, x: Math.round((s.id === 'desks' ? marks.desks[0] : s.id === 'counter' ? (marks as Landmarks & { keeperHead: [number, number] }).keeperHead[0] : marks.window[0]) * 100) })) : DEFAULT_STATIONS;
   const scroller = useRef<HTMLDivElement>(null);
   const frames = useRef<Partial<Record<Station, HTMLDivElement | null>>>({});
   const settle = useRef(0);
@@ -108,6 +108,12 @@ export default function Shop(props: ShopProps) {
     update(); media.addEventListener('change', update);
     return () => media.removeEventListener('change', update);
   }, []);
+
+  useEffect(() => {
+    if (!marks || plain) return;
+    const counter = frames.current.counter; const el = scroller.current;
+    if (counter && el && !props.activity.active) { el.scrollTo({ left: counter.offsetLeft, behavior: 'instant' }); el.style.setProperty('--sx', `${counter.offsetLeft}px`); setStation('counter'); }
+  }, [marks]);
 
   // The camera follows the request to the station doing the work.
   useEffect(() => {
@@ -183,7 +189,7 @@ export default function Shop(props: ShopProps) {
   folioIndexRef.current = Object.fromEntries(shown.map((f, i) => [f.id ?? 'all', i]));
   const drawerStyle = (index: number): CSSProperties => {
     const d = marks?.drawers[index]; if (!d) return {};
-    return { position: 'absolute', left: `${d.at[0] * 100}%`, top: `${d.at[1] * 100}%`, transform: 'translate(-50%, -50%)' };
+    return { position: 'absolute', left: `${d.at[0] * 100}%`, top: `calc(var(--art-top) + ${d.at[1] * 100} * var(--art-h) / 100)`, transform: 'translate(-50%, -50%)' };
   };
 
   return <div className={styles.shop} data-shop data-station={station} data-pose={presentation.pose} data-request-active={props.activity.active} data-paused={props.paused || reducedMotion} data-reading={props.reading} data-plain={plain} data-drawer={drawer}>
@@ -228,8 +234,8 @@ export default function Shop(props: ShopProps) {
           {more > 0 && <button className={styles.folioMore} onClick={openDrawerPanel}>{more} more {more === 1 ? 'folio' : 'folios'} in the drawers</button>}
         </div>
 
-        <button className={styles.tag} style={marks ? at(marks.tray[0] * 100, marks.tray[1] * 100, 1.5) : at(6, 32, 1.5)} onClick={openDrawerPanel} aria-expanded={drawer} aria-controls="shop-drawer"><span className={styles.tagCard}>The tray<small>add a document</small></span></button>
-        <button className={styles.tag} style={marks ? at(marks.desksLabel[0] * 100, marks.desksLabel[1] * 100, -1.5) : at(19, 32, -1.5)} onClick={() => chooseJob('search')} disabled={props.disabled} aria-pressed={props.mode === 'search'}><span className={styles.tagCard}>The desks<small>open a drawer, search what you keep</small></span></button>
+        <button className={styles.tag} style={marks ? at(marks.tray[0] * 100 + 2, marks.desks[1] * 100 - 20, 1.5) : at(6, 32, 1.5)} onClick={openDrawerPanel} aria-expanded={drawer} aria-controls="shop-drawer"><span className={styles.tagCard}>The tray<small>add a document</small></span></button>
+        <button className={styles.tag} style={marks ? at(marks.desks[0] * 100 + 4, marks.desks[1] * 100 - 34, -1.5) : at(19, 32, -1.5)} onClick={() => chooseJob('search')} disabled={props.disabled} aria-pressed={props.mode === 'search'}><span className={styles.tagCard}>The desks<small>open a drawer, search what you keep</small></span></button>
         <button className={styles.tag} style={marks ? at(marks.register[0] * 100 + 8, marks.register[1] * 100 - 2, -1.5) : at(60, 69, -1.5)} onClick={() => chooseJob('ask')} disabled={props.disabled} aria-pressed={props.mode === 'ask'}><span className={styles.tagCard}>The register<small>ask, answered from your library</small></span></button>
         <button className={styles.tag} style={marks ? at(marks.windowLabel[0] * 100, marks.windowLabel[1] * 100, 1.5) : at(85, 56, 1.5)} onClick={() => chooseJob('discover')} disabled={props.disabled} aria-pressed={props.mode === 'discover'}><span className={styles.tagCard}>The window<small>send the spider onto the web</small></span></button>
 
