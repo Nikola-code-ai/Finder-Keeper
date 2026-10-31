@@ -1,0 +1,17 @@
+.door { --cloth: #35503a; --sheet: #efe9da; --ink: #2a2a26; --ink-soft: #4d4a42; --academic: var(--font-academic), 'EB Garamond', Garamond, serif; position: relative; min-height: 100dvh; overflow: hidden; background: var(--cloth); color: var(--ink); font-family: var(--academic); display: grid; place-items: center; padding: 24px; }
+.room { position: absolute; inset: 0; }
+.room img { position: absolute; left: 50%; top: 50%; width: max(100%, 150dvh); height: auto; transform: translate(-50%, -50%); user-select: none; }
+.back { filter: saturate(.85) brightness(.9); }
+.keeper { width: auto !important; height: 68% !important; left: 50% !important; top: 58% !important; }
+.card { position: relative; width: min(520px, 100%); padding: 26px 28px 22px; background: var(--sheet); border: 1px solid var(--ink-soft); box-shadow: 0 6px 14px #1a1f1566, 0 30px 60px #1a1f1555; transform: rotate(-.5deg); }
+.sign { display: inline-block; margin-bottom: 18px; font: italic 500 24px/1 var(--academic); color: var(--ink); text-decoration: none; }
+.sign small { display: block; margin-top: 5px; font: 400 12px/1.2 var(--academic); font-variant-caps: small-caps; letter-spacing: .05em; font-style: normal; color: var(--ink-soft); }
+.card h1 { font: italic 400 34px/1.1 var(--academic); }
+.card p { margin-top: 10px; font: 400 16px/1.55 var(--academic); color: var(--ink); }
+.quiet { display: flex; align-items: center; gap: 8px; margin-top: 14px; font: italic 400 14px/1.5 var(--academic); color: var(--ink-soft); }
+.enter { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; padding: 11px 18px; border: 1.5px solid var(--ink); border-radius: 1px; background: var(--ink); color: var(--sheet); font: 500 16px/1.2 var(--academic); font-variant-caps: small-caps; letter-spacing: .05em; text-decoration: none; cursor: pointer; transition: transform .25s cubic-bezier(.16, .84, .24, 1); }
+.enter:hover:not(:disabled) { transform: translateY(-2px); }
+.enter:disabled { opacity: .6; cursor: default; }
+.error { margin-top: 12px; padding: 10px 12px; border: 1px dashed var(--ink-soft); font: 400 14px/1.5 var(--academic); }
+.footnote { margin-top: 18px; padding-top: 12px; border-top: 1px dashed var(--ink-soft); font: italic 400 13px/1.5 var(--academic); color: var(--ink-soft); }
+@media (max-width: 760px) { .card { padding: 20px 18px 18px; } .card h1 { font-size: 28px; } }
