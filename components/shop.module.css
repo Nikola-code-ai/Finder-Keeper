@@ -261,9 +261,11 @@
   .tagCard small { overflow: hidden; text-overflow: ellipsis; }
   .edge { top: 26%; padding: 8px 9px; font-size: 13px; }
   .folios { left: 2%; top: 46%; width: 27%; grid-template-columns: repeat(2, 1fr); gap: 8% 4%; }
-  .folios[data-placed='true'] .folio { width: min(26cqw, 150px); }
-  .folioName { font-size: 12px; } .folioCount { font-size: 11px; }
-  .fanSheet span { font-size: 13px; } .fanSheet small { font-size: 11px; }
+  .folios[data-placed='true'] .folio { width: min(30cqw, 150px); }
+  .fan { left: -45%; right: -45%; }
+  .fanSheet { padding: 7px 8px 6px 16px; }
+  .folioName { font-size: 11px; padding: 2px 5px; } .folioCount { font-size: 10px; }
+  .fanSheet span { font-size: 12px; } .fanSheet small { font-size: 10px; }
   .fan { left: 0; right: -40%; }
   .frame .papers, .frame[data-station='counter'] .papers, .frame[data-station='desks'] .papers, .frame[data-station='window'] .papers { left: 10px; right: 10px; width: auto; top: 44%; max-height: 56%; padding-bottom: calc(var(--slip-h) + 96px); }
   .drawer { top: 12%; left: 10px; right: 10px; width: auto; max-height: calc(88% - var(--slip-h)); padding: 14px 14px 18px; }

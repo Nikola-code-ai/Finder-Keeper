@@ -1,0 +1,229 @@
+{
+  "version": 2,
+  "frameWidth": 1100,
+  "frameHeight": 548,
+  "fps": 12,
+  "box": [
+    0.1734567901234568,
+    0.18518518518518517,
+    1.0,
+    0.8027777777777778
+  ],
+  "phases": {
+    "greet": {
+      "src": "/herbarium/keeper-greet.webp",
+      "frames": 18,
+      "columns": 6,
+      "rows": 3,
+      "durationMs": 1500,
+      "loop": false
+    },
+    "idle": {
+      "src": "/herbarium/keeper-idle.webp",
+      "frames": 24,
+      "columns": 6,
+      "rows": 4,
+      "durationMs": 2000,
+      "loop": true
+    },
+    "dispatch": {
+      "src": "/herbarium/keeper-dispatch.webp",
+      "frames": 24,
+      "columns": 6,
+      "rows": 4,
+      "durationMs": 2000,
+      "loop": false
+    },
+    "web": {
+      "src": "/herbarium/keeper-web.webp",
+      "frames": 24,
+      "columns": 6,
+      "rows": 4,
+      "durationMs": 2000,
+      "loop": true
+    },
+    "walk": {
+      "src": "/herbarium/keeper-walk.webp",
+      "frames": 24,
+      "columns": 6,
+      "rows": 4,
+      "durationMs": 2000,
+      "loop": false
+    },
+    "documents": {
+      "src": "/herbarium/keeper-documents.webp",
+      "frames": 24,
+      "columns": 6,
+      "rows": 4,
+      "durationMs": 2000,
+      "loop": true
+    },
+    "read": {
+      "src": "/herbarium/keeper-read.webp",
+      "frames": 24,
+      "columns": 6,
+      "rows": 4,
+      "durationMs": 2000,
+      "loop": true
+    },
+    "return": {
+      "src": "/herbarium/keeper-return.webp",
+      "frames": 24,
+      "columns": 6,
+      "rows": 4,
+      "durationMs": 2000,
+      "loop": false
+    },
+    "present": {
+      "src": "/herbarium/keeper-present.webp",
+      "frames": 24,
+      "columns": 6,
+      "rows": 4,
+      "durationMs": 2000,
+      "loop": false
+    },
+    "error": {
+      "src": "/herbarium/keeper-error.webp",
+      "frames": 18,
+      "columns": 6,
+      "rows": 3,
+      "durationMs": 1500,
+      "loop": false
+    },
+    "cancelled": {
+      "src": "/herbarium/keeper-cancelled.webp",
+      "frames": 12,
+      "columns": 6,
+      "rows": 2,
+      "durationMs": 1000,
+      "loop": false
+    },
+    "web-return": {
+      "src": "/herbarium/keeper-web-return.webp",
+      "frames": 24,
+      "columns": 6,
+      "rows": 4,
+      "durationMs": 2000,
+      "loop": false
+    },
+    "web-settle": {
+      "src": "/herbarium/keeper-web-settle.webp",
+      "frames": 18,
+      "columns": 6,
+      "rows": 3,
+      "durationMs": 1500,
+      "loop": false
+    }
+  },
+  "poster": "/herbarium/keeper-poster.webp",
+  "landmarks": {
+    "desks": [
+      0.1333,
+      0.5919
+    ],
+    "desksLabel": [
+      0.1305,
+      0.4667
+    ],
+    "tray": [
+      -0.0081,
+      0.5226
+    ],
+    "counter": [
+      0.5194,
+      0.5863
+    ],
+    "register": [
+      0.5532,
+      0.5694
+    ],
+    "keeperHead": [
+      0.4651,
+      0.3837
+    ],
+    "window": [
+      0.9076,
+      0.3421
+    ],
+    "windowLabel": [
+      0.9023,
+      0.5547
+    ],
+    "web": [
+      0.9609,
+      0.2248
+    ],
+    "spiderHome": [
+      0.6412,
+      0.5479
+    ],
+    "drawers": [
+      {
+        "id": "00",
+        "at": [
+          0.013,
+          0.6531
+        ],
+        "open": [
+          -0.044,
+          0.6823
+        ]
+      },
+      {
+        "id": "01",
+        "at": [
+          0.1074,
+          0.6531
+        ],
+        "open": [
+          0.0615,
+          0.6823
+        ]
+      },
+      {
+        "id": "02",
+        "at": [
+          0.2018,
+          0.6531
+        ],
+        "open": [
+          0.167,
+          0.6823
+        ]
+      },
+      {
+        "id": "10",
+        "at": [
+          0.0152,
+          0.7264
+        ],
+        "open": [
+          -0.0412,
+          0.764
+        ]
+      },
+      {
+        "id": "11",
+        "at": [
+          0.1092,
+          0.7264
+        ],
+        "open": [
+          0.0637,
+          0.764
+        ]
+      },
+      {
+        "id": "12",
+        "at": [
+          0.2032,
+          0.7264
+        ],
+        "open": [
+          0.1687,
+          0.764
+        ]
+      }
+    ]
+  }
+}
