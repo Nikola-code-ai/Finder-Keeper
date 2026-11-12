@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { ArrowRight, HardDrive } from 'lucide-react';
+import { cognitoSignIn } from '@/lib/session';
 import styles from './sign-in.module.css';
 
-type Mode = 'checking' | 'local' | 'cloud' | 'unconfigured';
+type Mode = 'checking' | 'local' | 'cloud' | 'cognito' | 'unconfigured';
 
 /** The shop door: sign in with Google to open your library. Locally there is one user and the door is already open. */
 export default function SignIn() {
@@ -16,7 +17,9 @@ export default function SignIn() {
       try {
         const [config, status] = await Promise.all([fetch('/config').then(r => r.json()), fetch('/api/status', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null)]);
         if (status && !status.auth_required) { setMode('local'); return; }
-        setMode(config.firebase?.apiKey && config.firebase?.projectId ? 'cloud' : 'unconfigured');
+        setMode(config.cognito ? 'cognito' : config.firebase?.apiKey && config.firebase?.projectId ? 'cloud' : 'unconfigured');
+        const failed = new URLSearchParams(location.search).get('error');
+        if (failed) setError(failed.slice(0, 200));
       } catch { setMode('unconfigured'); }
     })();
   }, []);
@@ -48,10 +51,13 @@ export default function SignIn() {
       <p>Find openly available documents, keep them in your drawers, and ask the Keeper about what you have kept. Your library is yours; lend a drawer to a friend when you like.</p>
       {mode === 'checking' && <p className={styles.quiet}>Checking the door…</p>}
       {mode === 'local' && <><p className={styles.quiet}><HardDrive size={15} /> This copy runs on your own computer with one reader, so there is nothing to sign into.</p><a className={styles.enter} href="/">Come in <ArrowRight size={16} /></a></>}
+      {mode === 'cognito' && <button className={styles.enter} onClick={() => { setBusy(true); cognitoSignIn('/'); }} disabled={busy}>{busy ? 'Opening…' : 'Come in'} <ArrowRight size={16} /></button>}
       {mode === 'cloud' && <button className={styles.enter} onClick={signIn} disabled={busy}>{busy ? 'Opening…' : 'Come in with Google'} <ArrowRight size={16} /></button>}
       {mode === 'unconfigured' && <p className={styles.quiet}>Sign-in has not been set up on this installation yet.</p>}
       {error && <p className={styles.error} role="alert">{error}</p>}
-      <p className={styles.footnote}>No passwords are kept here. Google tells the shop who you are; the shop keeps only your documents and whom you lent them to.</p>
+      <p className={styles.footnote}>{mode === 'cognito'
+        ? 'Sign in or create an account with your email address. The shop keeps only your documents and whom you lent them to.'
+        : 'No passwords are kept here. Google tells the shop who you are; the shop keeps only your documents and whom you lent them to.'}</p>
     </section>
   </main>;
 }

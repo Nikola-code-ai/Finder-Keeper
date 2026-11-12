@@ -32,6 +32,10 @@ def current_owner(request: Request) -> str:
     token = request.headers.get("x-user-authorization") or request.headers.get("authorization", "")
     if not token.startswith("Bearer "):
         raise HTTPException(401, "Sign in to access your library")
+    if settings.auth_mode == "cognito":
+        claims = verify_cognito(token[7:])
+        request.state.claims = claims
+        return claims["sub"]
     try:
         import firebase_admin
         from firebase_admin import auth
@@ -43,6 +47,30 @@ def current_owner(request: Request) -> str:
         return claims["uid"]
     except Exception:
         raise HTTPException(401, "Your sign-in has expired. Please sign in again.") from None
+
+
+_jwks = None
+
+
+def verify_cognito(token: str) -> dict:
+    """Verify a Cognito user pool ID token: signature (JWKS), issuer, audience, expiry and token use."""
+    global _jwks
+    import jwt
+    issuer = f"https://cognito-idp.{settings.aws_region}.amazonaws.com/{settings.cognito_user_pool_id}"
+    try:
+        if _jwks is None:
+            _jwks = jwt.PyJWKClient(f"{issuer}/.well-known/jwks.json", cache_keys=True, lifespan=3600)
+        key = _jwks.get_signing_key_from_jwt(token).key
+        claims = jwt.decode(token, key, algorithms=["RS256"], audience=settings.cognito_client_id, issuer=issuer,
+                            options={"require": ["exp", "iat", "sub", "aud", "iss", "token_use"]})
+        if claims.get("token_use") != "id":
+            raise ValueError("Not an ID token")
+    except Exception:
+        raise HTTPException(401, "Your sign-in has expired. Please sign in again.") from None
+    # Sharing goes by address, so only a verified address counts.
+    if not claims.get("email_verified"):
+        claims.pop("email", None)
+    return claims
 
 
 def verify_worker(request: Request):

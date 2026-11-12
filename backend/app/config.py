@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     worker_mode: bool = False
     startup_tasks: bool = True
     firebase_check_revoked: bool = True
+    cognito_user_pool_id: str = ""
+    cognito_client_id: str = ""
     model_dir: Path | None = None
     google_cloud_project: str = ""
     firebase_project_id: str = ""
@@ -64,12 +66,14 @@ class Settings(BaseSettings):
         return self.max_upload_mb * 1024 * 1024
 
     def validate_runtime(self):
-        if self.auth_mode not in {"local", "firebase"}:
-            raise RuntimeError("AUTH_MODE must be local or firebase")
+        if self.auth_mode not in {"local", "firebase", "cognito"}:
+            raise RuntimeError("AUTH_MODE must be local, firebase or cognito")
+        if self.auth_mode == "cognito" and not (self.cognito_user_pool_id and self.cognito_client_id and self.aws_region):
+            raise RuntimeError("AUTH_MODE=cognito requires COGNITO_USER_POOL_ID, COGNITO_CLIENT_ID and AWS_REGION")
         if self.app_env == "production":
-            if self.auth_mode != "firebase":
-                raise RuntimeError("Production requires AUTH_MODE=firebase")
-            if not self.firebase_project_id:
+            if self.auth_mode == "local":
+                raise RuntimeError("Production requires AUTH_MODE=firebase or cognito")
+            if self.auth_mode == "firebase" and not self.firebase_project_id:
                 raise RuntimeError("Production requires FIREBASE_PROJECT_ID")
             if not ((self.storage_backend == "gcs" and self.gcs_bucket_name) or (self.storage_backend == "s3" and self.s3_bucket_name)):
                 raise RuntimeError("Production requires private GCS or S3 storage")

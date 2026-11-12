@@ -22,15 +22,12 @@ Parameters:
   DbName:
     Type: String
     Default: finder_keeper
-  FirebaseProjectId:
+  SiteDomain:
     Type: String
-  FirebaseApiKey:
-    Type: String
-    Description: Firebase web API key (public client configuration, not a secret)
-  FirebaseAuthDomain:
-    Type: String
-  FirebaseAppId:
-    Type: String
+    Default: ""
+    Description: >-
+      The CloudFront domain, fed back by deploy.sh after the first create (Cognito's callback URL needs it,
+      and referencing the distribution directly would make a dependency cycle).
   ContactEmail:
     Type: String
     Default: ""
@@ -48,6 +45,7 @@ Parameters:
 
 Conditions:
   HasOpenAlexKey: !Not [!Equals [!Ref OpenAlexApiKey, ""]]
+  HasSiteDomain: !Not [!Equals [!Ref SiteDomain, ""]]
 
 Resources:
   # ---------- Storage and queue ----------
@@ -227,9 +225,9 @@ Resources:
       Environment:
         Variables:
           APP_ENV: production
-          AUTH_MODE: firebase
-          FIREBASE_PROJECT_ID: !Ref FirebaseProjectId
-          FIREBASE_CHECK_REVOKED: "false"
+          AUTH_MODE: cognito
+          COGNITO_USER_POOL_ID: !Ref UserPool
+          COGNITO_CLIENT_ID: !Ref UserPoolClient
           STORAGE_BACKEND: s3
           S3_BUCKET_NAME: !Sub finder-keeper-files-${AWS::AccountId}-${AWS::Region}
           JOBS_QUEUE_URL: !Ref JobsQueue
@@ -264,9 +262,9 @@ Resources:
       Environment:
         Variables:
           APP_ENV: production
-          AUTH_MODE: firebase
-          FIREBASE_PROJECT_ID: !Ref FirebaseProjectId
-          FIREBASE_CHECK_REVOKED: "false"
+          AUTH_MODE: cognito
+          COGNITO_USER_POOL_ID: !Ref UserPool
+          COGNITO_CLIENT_ID: !Ref UserPoolClient
           STORAGE_BACKEND: s3
           S3_BUCKET_NAME: !Sub finder-keeper-files-${AWS::AccountId}-${AWS::Region}
           JOBS_QUEUE_URL: !Ref JobsQueue
@@ -306,13 +304,12 @@ Resources:
       Environment:
         Variables:
           APP_ENV: production
-          AUTH_MODE: firebase
+          AUTH_MODE: cognito
           API_INTERNAL_URL: !GetAtt ApiFunctionUrl.FunctionUrl
           AWS_IAM_PROXY_AUTH: "true"
-          FIREBASE_PROJECT_ID: !Ref FirebaseProjectId
-          FIREBASE_API_KEY: !Ref FirebaseApiKey
-          FIREBASE_AUTH_DOMAIN: !Ref FirebaseAuthDomain
-          FIREBASE_APP_ID: !Ref FirebaseAppId
+          COGNITO_DOMAIN: !Sub "${UserPoolDomain}.auth.${AWS::Region}.amazoncognito.com"
+          COGNITO_CLIENT_ID: !Ref UserPoolClient
+          SITE_URL: !If [HasSiteDomain, !Sub "https://${SiteDomain}", "https://localhost"]
 
   WebFunctionUrl:
     Type: AWS::Lambda::Url
@@ -336,6 +333,67 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: "*"
       InvokedViaFunctionUrl: true
+
+  # ---------- Sign-in (Cognito) ----------
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      UserPoolName: finder-keeper-readers
+      UserPoolTier: ESSENTIALS
+      DeletionProtection: ACTIVE
+      UsernameAttributes: [email]
+      AutoVerifiedAttributes: [email]
+      UsernameConfiguration: { CaseSensitive: false }
+      AdminCreateUserConfig: { AllowAdminCreateUserOnly: false }
+      AccountRecoverySetting:
+        RecoveryMechanisms: [{ Name: verified_email, Priority: 1 }]
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 12
+          RequireLowercase: true
+          RequireUppercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+          TemporaryPasswordValidityDays: 3
+      MfaConfiguration: OPTIONAL
+      EnabledMfas: [SOFTWARE_TOKEN_MFA]
+
+  UserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      UserPoolId: !Ref UserPool
+      Domain: !Sub finder-keeper-${AWS::AccountId}
+      ManagedLoginVersion: 2
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: finder-keeper-web
+      UserPoolId: !Ref UserPool
+      GenerateSecret: false
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthFlows: [code]
+      AllowedOAuthScopes: [openid, email, profile]
+      SupportedIdentityProviders: [COGNITO]
+      CallbackURLs: [!If [HasSiteDomain, !Sub "https://${SiteDomain}/auth/callback", "https://localhost/auth/callback"]]
+      LogoutURLs: [!If [HasSiteDomain, !Sub "https://${SiteDomain}/", "https://localhost/"]]
+      ExplicitAuthFlows: [ALLOW_REFRESH_TOKEN_AUTH]
+      PreventUserExistenceErrors: ENABLED
+      EnableTokenRevocation: true
+      IdTokenValidity: 15
+      AccessTokenValidity: 15
+      RefreshTokenValidity: 30
+      TokenValidityUnits: { IdToken: minutes, AccessToken: minutes, RefreshToken: days }
+      RefreshTokenRotation: { Feature: ENABLED, RetryGracePeriodSeconds: 10 }
+
+  ManagedLoginStyle:
+    Type: AWS::Cognito::ManagedLoginBranding
+    Properties:
+      UserPoolId: !Ref UserPool
+      ClientId: !Ref UserPoolClient
+      UseCognitoProvidedValues: true
 
   # ---------- CDN ----------
   SecurityHeaders:
@@ -382,8 +440,12 @@ Outputs:
   SiteUrl:
     Value: !Sub https://${Distribution.DomainName}
   SiteDomain:
-    Description: Add this to Firebase Authentication > Settings > Authorized domains
+    Description: Passed back as the SiteDomain parameter so Cognito accepts the site's callback URL
     Value: !GetAtt Distribution.DomainName
+  UserPoolId:
+    Value: !Ref UserPool
+  SignInDomain:
+    Value: !Sub "https://${UserPoolDomain}.auth.${AWS::Region}.amazoncognito.com"
   ApiFunctionUrl:
     Value: !GetAtt ApiFunctionUrl.FunctionUrl
   FilesBucketName:

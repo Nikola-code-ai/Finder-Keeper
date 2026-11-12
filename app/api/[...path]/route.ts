@@ -1,11 +1,12 @@
 import { AwsV4Signer } from 'aws4fetch';
 import { GoogleAuth } from 'google-auth-library';
+import { cognitoEnabled, sameOrigin, session, withCookies } from '@/lib/cognito-server';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 const googleAuth = new GoogleAuth();
 type Context = { params: Promise<{ path: string[] }> };
 async function proxy(request: Request, context: Context) {
-  const localMode = process.env.AUTH_MODE !== 'firebase' && process.env.APP_ENV !== 'production';
+  const localMode = (process.env.AUTH_MODE || 'local') === 'local' && process.env.APP_ENV !== 'production';
   if (localMode) {
     const requestUrl = new URL(request.url);
     const host = request.headers.get('host') || '';
@@ -31,6 +32,15 @@ async function proxy(request: Request, context: Context) {
   const headers = new Headers();
   for (const key of ['authorization','content-type','range','if-range','accept','origin']) {
     const value = request.headers.get(key); if (value) headers.set(key, value);
+  }
+  // Cognito: the signed-in reader is the HttpOnly session cookie, never a header the page supplies.
+  let setCookies: string[] = [];
+  if (cognitoEnabled()) {
+    if (!sameOrigin(request)) return Response.json({ detail: 'This request must come from the library itself.' }, { status: 403 });
+    headers.delete('authorization');
+    const current = await session(request);
+    setCookies = current.setCookies;
+    if (current.idToken) headers.set('authorization', `Bearer ${current.idToken}`);
   }
   try {
     if (process.env.CLOUD_RUN_PROXY_AUTH === 'true') {
@@ -60,9 +70,9 @@ async function proxy(request: Request, context: Context) {
       const value = response.headers.get(key); if (value) outputHeaders.set(key, value);
     }
     outputHeaders.set('Cache-Control', 'private, no-store');
-    return new Response(response.body, { status: response.status, headers: outputHeaders });
+    return withCookies(new Response(response.body, { status: response.status, headers: outputHeaders }), setCookies);
   } catch {
-    return Response.json({ detail: 'The library service is not available yet. Please try again in a moment.' }, { status: 503 });
+    return withCookies(Response.json({ detail: 'The library service is not available yet. Please try again in a moment.' }, { status: 503 }), setCookies);
   }
 }
 export { proxy as GET, proxy as POST, proxy as PATCH, proxy as DELETE, proxy as PUT, proxy as HEAD };

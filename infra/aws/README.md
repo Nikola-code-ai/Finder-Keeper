@@ -17,11 +17,11 @@ Browser ──HTTPS──> CloudFront ──> finder-keeper-web (Lambda, Next.js
 | Piece | AWS service | Notes |
 | --- | --- | --- |
 | Web app | Lambda container (`Dockerfile.web`) + Lambda Web Adapter, response streaming | Public function URL; CloudFront caches `/_next/static/*` only |
-| API | Lambda container (`Dockerfile.api`), `AWS_IAM` function URL | Only the web function's role can call it. The user's Firebase token travels in `X-User-Authorization` |
+| API | Lambda container (`Dockerfile.api`), `AWS_IAM` function URL | Only the web function's role can call it. The reader's Cognito ID token travels in `X-User-Authorization` and is verified against the user pool's keys |
 | Jobs | SQS + worker Lambda (same image, `WORKER_MODE=true`) | Batch size 1, 2 concurrent at most, 15 min timeout, 3 attempts and then the dead-letter queue |
 | Files | S3, private, SSE-S3, TLS only | Browsers upload straight to `incoming/` with a presigned POST (Lambda requests stop at 6 MB). The API moves the file into the library. Abandoned uploads expire after a day |
 | Database | Aurora PostgreSQL serverless, **express configuration** | No VPC and no NAT: the internet access gateway accepts only IAM auth tokens, verified over TLS (`verify-full`). Scales 0–4 ACU and pauses after 10 idle minutes |
-| Sign-in | Firebase (unchanged) | Add the CloudFront domain to Firebase's authorized domains |
+| Sign-in | Cognito user pool (Essentials), managed login, email + password | Next.js runs the authorization-code + PKCE exchange on the server. ID (15 min) and refresh (30 days, rotated) tokens live only in HttpOnly cookies. Sign-out revokes the refresh token |
 | Embeddings | fastembed `bge-small-en-v1.5`, baked into the API image | Answers use grounded extraction; Ollama is off on AWS |
 
 ## Deploy
@@ -29,18 +29,19 @@ Browser ──HTTPS──> CloudFront ──> finder-keeper-web (Lambda, Next.js
 Requirements: AWS CLI v2.33+ signed in (`aws login --profile finder-keeper`), Docker, and the backend venv (`backend/.venv`). Before running, confirm the selected Region in AWS Settings > View all projects > Overview > Additional Info > Region.
 
 ```sh
-FIREBASE_PROJECT_ID=... FIREBASE_API_KEY=... FIREBASE_AUTH_DOMAIN=... FIREBASE_APP_ID=... \
-  infra/aws/deploy.sh
+infra/aws/deploy.sh
 ```
+
+The script runs only from a clean `main`. Optional variables: `CONTACT_EMAIL`, `UNPAYWALL_EMAIL`, and `OPENALEX_API_KEY`.
 
 The script is idempotent. It runs these steps:
 
 1. Creates the Aurora express cluster `finder-keeper-db` if it is missing, then sets 0–4 ACU with auto-pause.
 2. Runs `python -m app.aws_bootstrap`. As the IAM-authenticated `postgres` admin, it creates the `finder_keeper` login role (`rds_iam`), its database, and `vector`. Then it creates the schema as that role.
 3. Builds both images for `linux/amd64` and pushes them to ECR (immutable tags, keep 5). The stack pins them by digest.
-4. Deploys `template.yaml` as stack `finder-keeper` and prints the site URL.
+4. Deploys `template.yaml` as stack `finder-keeper`. On the first run it deploys a second time to register the new CloudFront domain as Cognito's callback URL. Then it prints the site URL.
 
-After the first deploy, add the printed `SiteDomain` under Firebase console > Authentication > Settings > Authorized domains. To ship a new build, run the script again.
+To ship a new build, merge to `main` and run the script again.
 
 ## Cost (Free plan, light use)
 
@@ -49,7 +50,9 @@ Lambda (1M requests and 400,000 GB-seconds/month), SQS (1M requests), and CloudF
 ## Trade-offs to know
 
 - **Cold starts.** The first request after a quiet period can wait for Aurora to resume and for the API to load the embedding model. That can take a few seconds to a few tens of seconds.
-- **Revoked Firebase sessions.** Token revocation checks need Google service credentials, which the AWS functions do not have, so `FIREBASE_CHECK_REVOKED=false`. A signed-out or disabled user's existing token keeps working until it expires (at most 1 hour). To restore the check, set up GCP Workload Identity Federation for the API role.
+- **Session end.** Signing out revokes the refresh token, but the API checks ID tokens locally. A disabled user's current ID token keeps working until it expires, which takes at most 15 minutes.
+- **Email delivery.** Cognito sends verification and reset codes from its default sender, which is limited to about 50 emails a day. Before wider sign-ups, switch the user pool to Amazon SES.
+- **MFA** is optional and authenticator-app only. Google sign-in can be added later as a federated provider; it needs a Google OAuth client.
 - **Public web function URL.** CloudFront fronts the web function, but its function URL is also reachable directly. Origin access control is not used, because Lambda OAC requires browsers to sign POST bodies. The API itself accepts only the web function's role.
 - **Failed jobs** that exhaust three attempts land in `finder-keeper-jobs-dlq`, and the job record stays "Waiting for an automatic retry". Retry it from the app.
 
@@ -57,7 +60,7 @@ Lambda (1M requests and 400,000 GB-seconds/month), SQS (1M requests), and CloudF
 
 Logs live in CloudWatch under `/finder-keeper/{web,api,worker}` (14-day retention).
 
-Teardown (the bucket and its files are retained on purpose):
+Teardown. The bucket and the user pool are retained on purpose; the user pool also has deletion protection.
 
 ```sh
 aws cloudformation delete-stack --stack-name finder-keeper --profile finder-keeper
