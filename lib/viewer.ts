@@ -3,6 +3,7 @@
 // signed out (read-only) and remembers ticks, follows and notes once the reader has signed in.
 import { useEffect, useState } from 'react';
 import { api, setTokenProvider } from './api';
+import { cognitoUser } from './session';
 import type { ReaderProfile } from './types';
 
 export interface Viewer { ready: boolean; signedIn: boolean; local: boolean; name: string | null; handle: string | null }
@@ -20,6 +21,13 @@ export function useViewer(): Viewer {
         if (status && !status.auth_required) {
           const me = await api<ReaderProfile>('/me/profile').catch(() => null);
           if (live) setViewer({ ready: true, signedIn: true, local: true, name: me?.display_name || 'You', handle: me?.handle || null });
+          return;
+        }
+        if (config.cognito) {
+          setTokenProvider(null);
+          const user = await cognitoUser();
+          const me = user ? await api<ReaderProfile>('/me/profile').catch(() => null) : null;
+          if (live) setViewer({ ready: true, signedIn: !!user, local: false, name: user ? me?.display_name || user.name || 'You' : null, handle: me?.handle || null });
           return;
         }
         if (config.firebase?.apiKey && config.firebase?.projectId) {

@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowDownUp, ArrowRight, ArrowUp, ArrowUpRight, BookOpen, Check, ChevronDown, ChevronRight, CircleHelp, Ellipsis, FileText, Folder as FolderIcon, FolderPlus, Globe2, HardDrive, Library, Link, LoaderCircle, LogOut, MessageSquareText, Pause, Play, Plus, Search, ShieldCheck, Sparkles, Trash2, Upload, X } from 'lucide-react';
-import type { Auth, User } from 'firebase/auth';
+import { cognitoSignIn, cognitoSignOut, cognitoUser, type SessionUser } from '@/lib/session';
 import { api, setTokenProvider, uploadDocument } from '@/lib/api';
 import type { Discovery, DiscoveryKind, Document, Folder, Job, ReaderProfile, SearchMode, SearchResult, Share, SharedCollection, Status } from '@/lib/types';
 import { Bookseller, LibraryDrawer } from './bookseller';
@@ -47,9 +47,9 @@ export default function LibraryApp({ view = 'classic' }: { view?: 'classic' | 'c
   const [folderDialog, setFolderDialog] = useState<Folder | 'new' | null>(null), [folderName, setFolderName] = useState(''), [folderColor, setFolderColor] = useState('sage'), [folderParent, setFolderParent] = useState('');
   const [linkDialog, setLinkDialog] = useState(false), [linkValue, setLinkValue] = useState(''), [rights, setRights] = useState(false), [saving, setSaving] = useState(false);
   const [reader, setReader] = useState<{ document: Document; match?: SearchResult } | null>(null), [manageDoc, setManageDoc] = useState<Document | null>(null), [docTitle, setDocTitle] = useState(''), [docFolder, setDocFolder] = useState('');
-  const [deleteDoc, setDeleteDoc] = useState<Document | null>(null), [dragging, setDragging] = useState(false), [user, setUser] = useState<User | null>(null), [authReady, setAuthReady] = useState(false);
+  const [deleteDoc, setDeleteDoc] = useState<Document | null>(null), [dragging, setDragging] = useState(false), [user, setUser] = useState<SessionUser | null>(null), [authReady, setAuthReady] = useState(false);
   const [profile, setProfile] = useState<ReaderProfile | null>(null);
-  const authRef = useRef<Auth | null>(null), fileRef = useRef<HTMLInputElement>(null), inputRef = useRef<HTMLInputElement>(null), abortRef = useRef<AbortController | null>(null), mounted = useRef(true);
+  const authRef = useRef<{ signIn: () => Promise<void>; signOut: () => Promise<void> } | null>(null), userRef = useRef<SessionUser | null>(null), fileRef = useRef<HTMLInputElement>(null), inputRef = useRef<HTMLInputElement>(null), abortRef = useRef<AbortController | null>(null), mounted = useRef(true);
   const notify = useCallback((message: string) => setToast(message), []);
   const refresh = useCallback(async () => {
     try { const library = await api<{ folders: Folder[]; documents: Document[]; shared?: SharedCollection[] }>('/library'); if (!mounted.current) return; setFolders(library.folders); setDocuments(library.documents); setShared(library.shared || []); setLoadError(''); }
@@ -77,7 +77,7 @@ export default function LibraryApp({ view = 'classic' }: { view?: 'classic' | 'c
       const state = await api<Status>('/status');
       if (!mounted.current) return;
       setStatus(state);
-      if (!state.auth_required || authRef.current?.currentUser) await refresh();
+      if (!state.auth_required || userRef.current) await refresh();
     } catch (e) {
       if (mounted.current) setLoadError(e instanceof Error ? e.message : 'Could not reconnect to your library.');
     } finally {
@@ -91,12 +91,19 @@ export default function LibraryApp({ view = 'classic' }: { view?: 'classic' | 'c
     async function initialize() {
       try {
         const config = await fetch('/config').then(r => r.json());
-        if (config.firebase?.apiKey && config.firebase?.projectId) {
+        const signedIn = (current: SessionUser | null) => { if (!mounted.current) return; userRef.current = current; setUser(current); setAuthReady(true); if (current) refresh(); };
+        if (config.cognito) {
+          // AWS: the session is an HttpOnly cookie, so requests need no token from the page.
+          setTokenProvider(null);
+          authRef.current = { signIn: async () => cognitoSignIn(), signOut: async () => cognitoSignOut() };
+          signedIn(await cognitoUser());
+        } else if (config.firebase?.apiKey && config.firebase?.projectId) {
           const { initializeApp, getApps } = await import('firebase/app');
-          const { getAuth, onAuthStateChanged } = await import('firebase/auth');
-          const app = getApps()[0] || initializeApp(config.firebase); const auth = getAuth(app); authRef.current = auth;
+          const { getAuth, onAuthStateChanged, signInWithPopup, signOut, GoogleAuthProvider } = await import('firebase/auth');
+          const app = getApps()[0] || initializeApp(config.firebase); const auth = getAuth(app);
+          authRef.current = { signIn: async () => { await signInWithPopup(auth, new GoogleAuthProvider()); }, signOut: () => signOut(auth) };
           setTokenProvider(async () => auth.currentUser?.getIdToken());
-          unsubscribe = onAuthStateChanged(auth, async current => { if (!mounted.current) return; setUser(current); setAuthReady(true); if (current) refresh(); });
+          unsubscribe = onAuthStateChanged(auth, current => signedIn(current ? { name: current.displayName, email: current.email } : null));
         } else setAuthReady(true);
         const state = await api<Status>('/status'); if (!mounted.current) return; setStatus(state);
         if (!state.auth_required) await refresh(); else setLoading(false);
@@ -141,7 +148,7 @@ export default function LibraryApp({ view = 'classic' }: { view?: 'classic' | 'c
   }, [job?.id, job?.status, job?.error, refresh, notify]);
   const signIn = async () => {
     if (!authRef.current) { setError('Sign-in has not been configured for this installation.'); return; }
-    try { const { signInWithPopup, GoogleAuthProvider } = await import('firebase/auth'); await signInWithPopup(authRef.current, new GoogleAuthProvider()); } catch (e) { setError(e instanceof Error ? e.message : 'Sign-in did not complete.'); }
+    try { await authRef.current.signIn(); } catch (e) { setError(e instanceof Error ? e.message : 'Sign-in did not complete.'); }
   };
   const askInReader = async (text: string): Promise<ReaderAsk> => {
     const keeperId = beginKeeper('ask', undefined, `collection:${folder || 'all'}`);
@@ -254,7 +261,7 @@ export default function LibraryApp({ view = 'classic' }: { view?: 'classic' | 'c
     <input ref={fileRef} type="file" accept=".pdf,.epub,.txt,.md,.html,.htm" className="visually-hidden" aria-label="Upload document" onChange={e => { if (e.target.files?.[0]) upload(e.target.files[0]); }} />
     {view === 'workspace' ? <Workspace
       activity={keeperActivity} paused={spiderPaused} onPause={() => setSpiderPaused(value => !value)} onHelp={() => setShowHelp(true)}
-      status={status} signedOut={signedOut} loading={loading} loadError={loadError} reconnecting={reconnecting} onReconnect={reconnectLibrary} onSignIn={signIn} userName={user?.displayName || user?.email || profile?.display_name}
+      status={status} signedOut={signedOut} loading={loading} loadError={loadError} reconnecting={reconnecting} onReconnect={reconnectLibrary} onSignIn={signIn} userName={user?.name || user?.email || profile?.display_name}
       profile={profile} onProfile={setProfile} onPublishFolder={publishFolder} onRefresh={refresh} notify={notify} onError={setError}
       folders={folders} documents={documents} shared={shared} folder={folder} onFolder={id => setFolder(id)}
       mode={mode} onMode={next => { if (next === mode) return; setMode(next); if (!busy) clearSearch(); }} query={query} onQuery={setQuery} onSubmit={(text, nextMode) => runSearch(text, nextMode)} inputRef={inputRef}
@@ -319,6 +326,6 @@ export default function LibraryApp({ view = 'classic' }: { view?: 'classic' | 'c
       {status?.auth_required === false && <p className="help-footnote">This library runs on your computer with one user, so lending by address only takes effect once the cloud version with sign-in is live. Open links work now for anyone who can reach this computer.</p>}
     </Dialog>}
     {deleteDoc && <Dialog title="Let this one go?" onClose={() => setDeleteDoc(null)}><p className="dialog-description">“{deleteDoc.title}” will be removed from your library, including its file and search index.</p><div className="dialog-actions"><button className="button secondary" onClick={() => setDeleteDoc(null)}>Keep it</button><button className="button danger-button" onClick={async () => { try { await api(`/documents/${deleteDoc.id}`, { method: 'DELETE' }); setDeleteDoc(null); refresh(); clearSearch(); notify('Document removed.'); } catch (e) { setError(e instanceof Error ? e.message : 'Could not delete document.'); } }}>Delete document</button></div></Dialog>}
-    {showHelp && <Dialog title="For the things worth finding." onClose={() => setShowHelp(false)}><p className="dialog-description">Finder Keeper is your personal research room. A place to collect good documents, rediscover ideas, and follow your curiosity.</p><p className="dialog-description">{view === 'workspace' ? 'Library is your home: search, and your most recent documents on the Archival Shelf. Recall Passages finds the page you half-remember by its words and meaning, and opens it beside the passage. Synthesize answers a question from your own documents and links every claim to its source. Find Online checks public sources for free full text you can keep. Collections is the full catalogue: filter by type or title, and make, edit or lend collections. Add documents with the + button or by dropping a file on the page. Press ⌘K (Ctrl-K) to jump to search.' : view === 'counter' ? 'The shop is wider than your window: the desks to the left, the counter in the middle, the window to the right. Write on your label and point the Keeper at a station by its tag, or walk there with the arrows at the edges (or a swipe). He sends his spider out of the window to find free full text online; he opens a drawer at the desks for what you keep; he answers from the register with sources, and the register is beside every document you open. Your collections are the desk’s drawers: lean in and a drawer pulls out with its sheets. Pause stops the motion, never the request; Plain list lays everything out as a column.' : 'The shopkeeper keeps his seat at the counter while you browse. The drawers are your actual document collections. Choose a document to read it, or search within the open collection. The spider’s lost-and-found window takes you to online discovery; it follows the sill while a search runs. You can pause the spider’s motion while requests continue.'}</p><div className="help-steps"><div><Globe2 size={21} /><span><strong>Find something out there.</strong><p>Find free full text in PDF, EPUB, or web form. We check copies before showing them here; other catalog matches stay tucked away.</p></span></div><div><Library size={21} /><span><strong>Give it a home.</strong><p>Upload PDFs, EPUBs, text, or articles. Organize them into collections. Your files stay private.</p></span></div><div><Sparkles size={21} /><span><strong>Find it by what it means.</strong><p>Each passage gets a real semantic embedding. Describe an idea to find the document and page where it lives.</p></span></div></div><div className="local-info"><HardDrive size={18} /><span><strong>{status?.auth_required ? 'A private cloud library' : 'Running on your computer'}</strong><small>{status?.auth_required ? 'Your documents are tied to your account.' : 'Files, search embeddings, and answers stay local. Online discovery contacts public document sources.'}</small></span></div><p className="help-footnote">The included starter notes are original example documents, clearly labeled in the library. Answers should always be checked against their linked passages.</p>{user && <button className="text-button" onClick={async () => { clearSearch(); setReader(null); setManageDoc(null); setQuery(''); const { signOut } = await import('firebase/auth'); if (authRef.current) await signOut(authRef.current); setFolders([]); setDocuments([]); setShowHelp(false); }}><LogOut size={14} /> Sign out</button>}</Dialog>}
+    {showHelp && <Dialog title="For the things worth finding." onClose={() => setShowHelp(false)}><p className="dialog-description">Finder Keeper is your personal research room. A place to collect good documents, rediscover ideas, and follow your curiosity.</p><p className="dialog-description">{view === 'workspace' ? 'Library is your home: search, and your most recent documents on the Archival Shelf. Recall Passages finds the page you half-remember by its words and meaning, and opens it beside the passage. Synthesize answers a question from your own documents and links every claim to its source. Find Online checks public sources for free full text you can keep. Collections is the full catalogue: filter by type or title, and make, edit or lend collections. Add documents with the + button or by dropping a file on the page. Press ⌘K (Ctrl-K) to jump to search.' : view === 'counter' ? 'The shop is wider than your window: the desks to the left, the counter in the middle, the window to the right. Write on your label and point the Keeper at a station by its tag, or walk there with the arrows at the edges (or a swipe). He sends his spider out of the window to find free full text online; he opens a drawer at the desks for what you keep; he answers from the register with sources, and the register is beside every document you open. Your collections are the desk’s drawers: lean in and a drawer pulls out with its sheets. Pause stops the motion, never the request; Plain list lays everything out as a column.' : 'The shopkeeper keeps his seat at the counter while you browse. The drawers are your actual document collections. Choose a document to read it, or search within the open collection. The spider’s lost-and-found window takes you to online discovery; it follows the sill while a search runs. You can pause the spider’s motion while requests continue.'}</p><div className="help-steps"><div><Globe2 size={21} /><span><strong>Find something out there.</strong><p>Find free full text in PDF, EPUB, or web form. We check copies before showing them here; other catalog matches stay tucked away.</p></span></div><div><Library size={21} /><span><strong>Give it a home.</strong><p>Upload PDFs, EPUBs, text, or articles. Organize them into collections. Your files stay private.</p></span></div><div><Sparkles size={21} /><span><strong>Find it by what it means.</strong><p>Each passage gets a real semantic embedding. Describe an idea to find the document and page where it lives.</p></span></div></div><div className="local-info"><HardDrive size={18} /><span><strong>{status?.auth_required ? 'A private cloud library' : 'Running on your computer'}</strong><small>{status?.auth_required ? 'Your documents are tied to your account.' : 'Files, search embeddings, and answers stay local. Online discovery contacts public document sources.'}</small></span></div><p className="help-footnote">The included starter notes are original example documents, clearly labeled in the library. Answers should always be checked against their linked passages.</p>{user && <button className="text-button" onClick={async () => { clearSearch(); setReader(null); setManageDoc(null); setQuery(''); await authRef.current?.signOut(); setFolders([]); setDocuments([]); setShowHelp(false); }}><LogOut size={14} /> Sign out</button>}</Dialog>}
   </div>;
 }

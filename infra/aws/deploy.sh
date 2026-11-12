@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Deploy Finder-Keeper to AWS (serverless). Idempotent: rerun it to ship a new build.
 #
-#   FIREBASE_PROJECT_ID=... FIREBASE_API_KEY=... FIREBASE_AUTH_DOMAIN=... FIREBASE_APP_ID=... infra/aws/deploy.sh
+#   infra/aws/deploy.sh        (from a clean main; optional CONTACT_EMAIL, UNPAYWALL_EMAIL, OPENALEX_API_KEY)
 #
 # Creates billable resources in the project's Region. See infra/aws/README.md for costs and teardown.
 set -euo pipefail
@@ -24,9 +24,6 @@ CLUSTER="${DB_CLUSTER:-finder-keeper-db}"
 TAG="$(git -C "$ROOT" rev-parse --short HEAD)-$(date +%Y%m%d%H%M%S)"
 
 : "${AWS_REGION:?Set AWS_REGION to the selected Region of the project}"
-for name in FIREBASE_PROJECT_ID FIREBASE_API_KEY FIREBASE_AUTH_DOMAIN FIREBASE_APP_ID; do
-  [ -n "${!name:-}" ] || { echo "Missing $name (Firebase console > Project settings > Your apps)." >&2; exit 1; }
-done
 ACCOUNT="$(aws sts get-caller-identity --query Account --output text)"
 REGISTRY="$ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com"
 echo "Project $ACCOUNT, Region $AWS_REGION, stack $STACK, build $TAG"
@@ -65,15 +62,24 @@ digest() { aws ecr describe-images --repository-name "$1" --image-ids imageTag="
 API_IMAGE="$REGISTRY/finder-keeper-api@$(digest finder-keeper-api)"
 WEB_IMAGE="$REGISTRY/finder-keeper-web@$(digest finder-keeper-web)"
 
-# 4. Functions, queue, bucket, CDN.
-aws cloudformation deploy --stack-name "$STACK" --template-file "$ROOT/infra/aws/template.yaml" \
-  --capabilities CAPABILITY_IAM --no-fail-on-empty-changeset --tags project=finder-keeper \
-  --parameter-overrides \
-    ApiImageUri="$API_IMAGE" WebImageUri="$WEB_IMAGE" \
-    DbEndpoint="$DB_ENDPOINT" DbClusterResourceId="$DB_RESOURCE_ID" \
-    FirebaseProjectId="$FIREBASE_PROJECT_ID" FirebaseApiKey="$FIREBASE_API_KEY" \
-    FirebaseAuthDomain="$FIREBASE_AUTH_DOMAIN" FirebaseAppId="$FIREBASE_APP_ID" \
-    ContactEmail="${CONTACT_EMAIL:-}" UnpaywallEmail="${UNPAYWALL_EMAIL:-}" OpenAlexApiKey="${OPENALEX_API_KEY:-}"
+# 4. Functions, queue, bucket, sign-in, CDN. Cognito's callback URL needs the CloudFront domain, which exists only
+#    after the first create, so the first deploy is followed by a second pass that feeds the domain back in.
+output() { aws cloudformation describe-stacks --stack-name "$STACK" --query "Stacks[0].Outputs[?OutputKey=='$1'].OutputValue" --output text 2>/dev/null || true; }
+deploy_stack() {
+  aws cloudformation deploy --stack-name "$STACK" --template-file "$ROOT/infra/aws/template.yaml" \
+    --capabilities CAPABILITY_IAM --no-fail-on-empty-changeset --tags project=finder-keeper \
+    --parameter-overrides \
+      ApiImageUri="$API_IMAGE" WebImageUri="$WEB_IMAGE" SiteDomain="$1" \
+      DbEndpoint="$DB_ENDPOINT" DbClusterResourceId="$DB_RESOURCE_ID" \
+      ContactEmail="${CONTACT_EMAIL:-}" UnpaywallEmail="${UNPAYWALL_EMAIL:-}" OpenAlexApiKey="${OPENALEX_API_KEY:-}"
+}
+SITE_DOMAIN="$(output SiteDomain)"; [ "$SITE_DOMAIN" = "None" ] && SITE_DOMAIN=""
+deploy_stack "$SITE_DOMAIN"
+if [ "$(output SiteDomain)" != "$SITE_DOMAIN" ]; then
+  SITE_DOMAIN="$(output SiteDomain)"
+  echo "Registering https://$SITE_DOMAIN with Cognito"
+  deploy_stack "$SITE_DOMAIN"
+fi
 
 aws cloudformation describe-stacks --stack-name "$STACK" --query 'Stacks[0].Outputs[].[OutputKey,OutputValue]' --output table
-echo "Next: add the SiteDomain above to Firebase Authentication > Settings > Authorized domains."
+echo "Site: https://$SITE_DOMAIN"
