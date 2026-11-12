@@ -19,6 +19,11 @@ Decisions taken with the user on 2026-10-31:
 - `/sign-in`: the shop door, Google through the existing Firebase path when configured.
 - Brand: the mark and wordmark in `art/brand/` (a mounted specimen sheet with the spider's thread, the red stamp), exported through VectorCraft.
 
+## Done (2026-11-07): reading flows and the commons
+
+- **Reading flows** (`backend/app/flows.py`, `components/flows-view.tsx`, `components/flow-map.tsx`, `lib/flow-layout.ts`). The Keeper plans a path through the library for a goal: it recalls the passages that speak to it, lays the best documents out as a main path, and for each step follows the passage's own distinctive words to find a detour (a document off the main path) behind a fork ("Carry on" / "Go deeper"); the path ends in a Synthesize step that asks the library the goal. The planner is deterministic and offline; a local Ollama model, when present, only writes the step notes and titles (`embellish`), never chooses documents. Flows are drawn as a map (layered DAG, main path on the top lane, detours below) and as a checklist; steps are ticked per reader (`flow_progress`), a step opens once any path into it is done, so an untaken detour never blocks the finish. Flows can be renamed, hand-edited (`PATCH /api/flows/{id}` with a validated graph), published and deleted.
+- **The commons** (`backend/app/community.py`, `components/community-view.tsx`, public pages `/u/<handle>`, `/flows/<id>`, `/shelves/<id>`): reader profiles (handle, name, bio; made on first sight), open shelves (a published collection lists its catalogue; full text opens only under an open licence or for the starter notes), published flows that anyone can walk with their own ticks, reviews of books you keep (one per reader per work; reviews of the same work meet by title and first author), notes (comments) under shelves, flows and reviews, follows, and a feed (everyone, or the readers you follow). Public reads need no sign-in; every write is the signed-in reader's own.
+
 ## Next
 
 - Deploy to GCP Cloud Run + Cloud SQL (pgvector) from `infra/terraform` with `AUTH_MODE=firebase`; set Firebase env for `/config`; price the plan and set the budget ceiling (undecided in PRODUCT.md).

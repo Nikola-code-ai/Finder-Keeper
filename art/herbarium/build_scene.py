@@ -118,7 +118,7 @@ for i in range(5):
     rod(f'web strand {i}', (WX + 1.1, WY - .1, 5.2 - i * .02), (WX + .15 + i * .05, WY - .1, 4.0 + i * .2), .006, sheet, COL['ROOM_MID'])
 for i in range(3): rod(f'web spiral {i}', (WX + .9 - i * .2, WY - .1, 5.1 - i * .25), (WX + .4 - i * .1, WY - .1, 4.6 - i * .15), .005, sheet, COL['ROOM_MID'])
 # The desks (left) with drawers, and the counter (centre).
-DESK_X, DESK_Y, DESK_TOP = -3.55, -.6, 1.65
+DESK_X, DESK_Y, DESK_TOP = -3.15, -.6, 1.65
 box('desk top', (DESK_X, DESK_Y, DESK_TOP), (3.1, 1.9, .12), woodlight, COL['ROOM_MID'], bevel=.02)
 box('desk body', (DESK_X, DESK_Y + .15, 1.0), (3.0, 1.5, 1.2), wood, COL['ROOM_MID'])
 DRAWERS = []
@@ -129,11 +129,11 @@ for r in range(2):
         box(f'drawer plate {r}{c}', (x, DESK_Y - .66, z + .02), (.38, .02, .14), sheet, COL['ROOM_MID'])
         ring(f'drawer pull {r}{c}', (x, DESK_Y - .68, z - .1), .05, .012, metal, COL['ROOM_MID'], rot=(math.pi / 2, 0, 0))
         DRAWERS.append((r, c, x, z))
-box('counter top', (0.6, -1.0, 1.75), (6.0, 1.6, .14), woodlight, COL['ROOM_MID'], bevel=.02)
-box('counter body', (0.6, -.9, .9), (5.9, 1.3, 1.6), wood, COL['ROOM_MID'])
+box('counter top', (1.1, -1.0, 1.75), (6.0, 1.6, .14), woodlight, COL['ROOM_MID'], bevel=.02)
+box('counter body', (1.1, -.9, .9), (5.9, 1.3, 1.6), wood, COL['ROOM_MID'])
 # Front layer: what stands between the visitor and the Keeper.
-box('counter lip', (0.6, -1.78, 1.72), (6.1, .18, .2), woodlight, COL['ROOM_FRONT'], bevel=.02)
-box('counter face', (0.6, -1.75, .9), (6.0, .1, 1.5), wooddeep, COL['ROOM_FRONT'])
+box('counter lip', (1.1, -1.78, 1.72), (6.1, .18, .2), woodlight, COL['ROOM_FRONT'], bevel=.02)
+box('counter face', (1.1, -1.75, .9), (6.0, .1, 1.5), wooddeep, COL['ROOM_FRONT'])
 box('desk face', (DESK_X, DESK_Y - .55, .95), (3.1, .08, 1.3), wooddeep, COL['ROOM_FRONT'])
 for r, c, x, z in DRAWERS:
     box(f'desk face drawer {r}{c}', (x, DESK_Y - .60, z), (.84, .05, .40), wood, COL['ROOM_FRONT'])
@@ -401,7 +401,7 @@ def ndc(p):
     v = world_to_camera_view(scene, cam, Vector(p)); return [round(v.x, 4), round(1 - v.y, 4)]
 landmarks = {
     'desks': ndc((DESK_X, DESK_Y, DESK_TOP)), 'desksLabel': ndc((DESK_X, DESK_Y, DESK_TOP + .9)), 'tray': ndc((DESK_X - 1.5, DESK_Y, DESK_TOP + .5)),
-    'counter': ndc((0.6, -1.0, 1.75)), 'register': ndc((0.95, -.95, 1.86)), 'keeperHead': ndc((KX, KY, 3.15)),
+    'counter': ndc((1.1, -1.0, 1.75)), 'register': ndc((0.95, -.95, 1.86)), 'keeperHead': ndc((KX, KY, 3.15)),
     'window': ndc((WX, WY, 3.6)), 'windowLabel': ndc((WX, WY, 1.5)), 'web': ndc(SPIDER_WEB), 'spiderHome': ndc(SPIDER_HOME),
     'drawers': [{'id': f'{r}{c}', 'at': ndc((x, DESK_Y - .62, z)), 'open': ndc((x, DESK_Y - 1.5, z))} for r, c, x, z in DRAWERS],
 }
