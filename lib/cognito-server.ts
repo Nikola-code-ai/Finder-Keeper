@@ -69,7 +69,7 @@ export async function revoke(refreshToken: string) {
 export function tokenCookies(tokens: Tokens): string[] {
   const out: string[] = [];
   if (tokens.id_token) out.push(cookie(ID_COOKIE, tokens.id_token, Number(claims(tokens.id_token).exp || 0) - Date.now() / 1000));
-  // With refresh-token rotation Cognito returns a new refresh token; keep the old one otherwise.
+  // Cognito returns a refresh token only at sign-in; a refresh keeps the existing one.
   if (tokens.refresh_token) out.push(cookie(REFRESH_COOKIE, tokens.refresh_token, REFRESH_SECONDS));
   return out;
 }

@@ -386,7 +386,6 @@ Resources:
       AccessTokenValidity: 15
       RefreshTokenValidity: 30
       TokenValidityUnits: { IdToken: minutes, AccessToken: minutes, RefreshToken: days }
-      RefreshTokenRotation: { Feature: ENABLED, RetryGracePeriodSeconds: 10 }
 
   ManagedLoginStyle:
     Type: AWS::Cognito::ManagedLoginBranding
