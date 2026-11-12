@@ -45,7 +45,9 @@ read -r DB_ENDPOINT DB_RESOURCE_ID < <(aws rds describe-db-clusters --db-cluster
   --query 'DBClusters[0].[Endpoint,DbClusterResourceId]' --output text)
 
 # 2. Least-privilege database role, pgvector, and schema (connects with short-lived IAM tokens).
-(cd "$ROOT/backend" && DB_HOST="$DB_ENDPOINT" .venv/bin/python -m app.aws_bootstrap)
+# boto3 cannot read an `aws login` session without botocore[crt], so hand it the CLI's temporary credentials.
+(cd "$ROOT/backend" && eval "$(aws configure export-credentials --format env)" && unset AWS_PROFILE \
+  && DB_HOST="$DB_ENDPOINT" .venv/bin/python -m app.aws_bootstrap)
 
 # 3. Container images. Lambda needs single-platform Docker v2 manifests, hence --provenance=false.
 aws ecr get-login-password | docker login --username AWS --password-stdin "$REGISTRY" >/dev/null
