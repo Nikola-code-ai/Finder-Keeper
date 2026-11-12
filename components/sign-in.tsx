@@ -7,7 +7,7 @@ import styles from './sign-in.module.css';
 
 type Mode = 'checking' | 'local' | 'cloud' | 'cognito' | 'unconfigured';
 
-/** The shop door: sign in with Google to open your library. Locally there is one user and the door is already open. */
+/** The shop door: sign in (Cognito on AWS, Google via Firebase elsewhere) to open your library. Locally there is one user and the door is already open. */
 export default function SignIn() {
   const [mode, setMode] = useState<Mode>('checking');
   const [error, setError] = useState('');
