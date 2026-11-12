@@ -16,3 +16,6 @@ output/test-results/
 .DS_Store
 
 *.tsbuildinfo
+
+# Blender per-frame renders; pack.py turns them into public/herbarium sprites
+art/herbarium/frames/

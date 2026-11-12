@@ -1,3 +1,4 @@
+import { AwsV4Signer } from 'aws4fetch';
 import { GoogleAuth } from 'google-auth-library';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -21,7 +22,7 @@ async function proxy(request: Request, context: Context) {
     return Response.json({ detail: 'Invalid API path.' }, { status: 400 });
   }
   // Internal task endpoints are deliberately not exposed through the browser proxy.
-  if (!['status','library','folders','documents','search','ask','discover','import','jobs','health'].includes(path[0])) {
+  if (!['status','library','folders','documents','uploads','search','ask','discover','import','jobs','health','shares','shared','flows','community','me','comments','reviews','follows'].includes(path[0])) {
     return Response.json({ detail: 'Not found.' }, { status: 404 });
   }
   const base = (process.env.API_INTERNAL_URL || 'http://127.0.0.1:8010').replace(/\/$/, '');
@@ -40,7 +41,20 @@ async function proxy(request: Request, context: Context) {
     }
     const body = request.method === 'GET' || request.method === 'HEAD' ? undefined : await request.arrayBuffer();
     if (body && body.byteLength > 30 * 1024 * 1024) return Response.json({ detail: 'Please choose a file smaller than 30 MB.' }, { status: 413 });
-    const response = await fetch(target, { method: request.method, headers, body, redirect: 'manual', cache: 'no-store', signal: AbortSignal.timeout(180000) });
+    let outgoing: { headers: Headers } = { headers };
+    if (process.env.AWS_IAM_PROXY_AUTH === 'true') {
+      // The API's Lambda function URL accepts only SigV4 requests from this function's role. SigV4 needs
+      // Authorization, so the user's Firebase token moves to X-User-Authorization.
+      const user = headers.get('authorization');
+      headers.delete('authorization');
+      if (user) headers.set('x-user-authorization', user);
+      outgoing = await new AwsV4Signer({
+        url: target.toString(), method: request.method, headers, body, service: 'lambda',
+        region: process.env.AWS_REGION, accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!, sessionToken: process.env.AWS_SESSION_TOKEN,
+      }).sign();
+    }
+    const response = await fetch(target, { method: request.method, headers: outgoing.headers, body, redirect: 'manual', cache: 'no-store', signal: AbortSignal.timeout(180000) });
     const outputHeaders = new Headers();
     for (const key of ['content-type','content-disposition','content-range','accept-ranges','retry-after']) {
       const value = response.headers.get(key); if (value) outputHeaders.set(key, value);

@@ -19,7 +19,7 @@ class Embeddings:
             try:
                 if settings.embedding_provider == "fastembed":
                     from fastembed import TextEmbedding
-                    cache = settings.data_dir / "models"
+                    cache = settings.models_path
                     # A completed local model never needs a network request on subsequent starts.
                     locally_cached = settings.embedding_model == "BAAI/bge-small-en-v1.5" and any(cache.glob("models--Qdrant--bge-small-en-v1.5-onnx-Q/snapshots/*/model_optimized.onnx"))
                     self._model = TextEmbedding(

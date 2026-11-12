@@ -16,7 +16,7 @@ export function clerkPresentation(activity: KeeperActivity) {
   if (activity.active) {
     if (activity.operation === 'discover') return { pose: 'web', label: 'The spider is following your thread.', detail: 'Searching public sources for available full text.' } as const;
     if (activity.operation === 'ask') return { pose: 'reading', label: 'Keeper is reading at his desk.', detail: 'Gathering passages for an answer with sources.' } as const;
-    return { pose: 'documents', label: activity.operation === 'import' ? 'Keeper is making room for your document.' : 'Keeper is checking the document desks.', detail: activity.operation === 'import' ? 'Your document is being processed.' : 'Looking through saved passages by words and meaning.' } as const;
+    return { pose: 'documents', label: activity.operation === 'import' ? 'Keeper is mounting your document.' : 'Keeper is untying a folio at the desks.', detail: activity.operation === 'import' ? 'Your document is being mounted and labelled.' : 'Leafing through the sheets by words and meaning.' } as const;
   }
   const terminal = {
     success: ['Your findings are ready.', 'Open a result to read it in context.'],
@@ -24,7 +24,7 @@ export function clerkPresentation(activity: KeeperActivity) {
     error: ['That request needs another try.', 'Your library is still here.'],
     cancelled: ['The search has stopped.', 'Ready whenever you are.'],
   } as const;
-  const copy = activity.outcome ? terminal[activity.outcome] : ['Keeper is at his desk.', 'Choose an object in the room, or start below.'];
+  const copy = activity.outcome ? terminal[activity.outcome] : ['The Keeper has looked up from his folio.', 'Point him at the desks, the register, or the window.'];
   return { pose: 'idle', label: copy[0], detail: copy[1] } as const;
 }
 

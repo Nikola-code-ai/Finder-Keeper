@@ -166,7 +166,7 @@ def run_job(job_id):
             document = session.get(Document, document_id) if document_id else None
             if document and document.status != "ready":
                 document.status, document.error = "failed", message[:500]
-        if settings.tasks_queue and not isinstance(exc, ValueError):
+        if settings.queued and not isinstance(exc, ValueError):
             with Session.begin() as session:
                 job = session.get(Job, job_id)
                 if job and job.status != "cancelled":
@@ -175,7 +175,10 @@ def run_job(job_id):
 
 
 def dispatch(job_id):
-    if settings.tasks_queue:
+    if settings.jobs_queue_url:
+        # The worker Lambda receives this message; SQS redelivers it after a failure (see infra/aws).
+        sqs().send_message(QueueUrl=settings.jobs_queue_url, MessageBody=json.dumps({"job_id": job_id}))
+    elif settings.tasks_queue:
         from google.cloud import tasks_v2
         client = tasks_v2.CloudTasksClient()
         client.create_task(parent=settings.tasks_queue, task={
@@ -189,6 +192,17 @@ def dispatch(job_id):
         })
     else:
         executor.submit(run_job, job_id)
+
+
+_sqs = None
+
+
+def sqs():
+    global _sqs
+    if _sqs is None:
+        import boto3
+        _sqs = boto3.client("sqs", region_name=settings.aws_region or None)
+    return _sqs
 
 
 def recover_jobs():

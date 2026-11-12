@@ -5,7 +5,7 @@ import type { ClerkAnimationPhase } from '@/lib/clerk-animation';
 import type { KeeperOperation } from '@/lib/keeper-choreography';
 import styles from './clerk-illustrated-scene.module.css';
 
-type Props = { phase: ClerkAnimationPhase; time: number; paused: boolean; reducedMotion: boolean; operation?: KeeperOperation };
+type Props = { phase: ClerkAnimationPhase; time: number; paused: boolean; reducedMotion: boolean; operation?: KeeperOperation; room?: boolean };
 type Point = [number, number];
 const ART = '/clerk-room/front-illustrated';
 const clamp = (n: number) => Math.max(0, Math.min(1, n));
@@ -72,7 +72,7 @@ function Spider({ x, y, gait, scale = 1 }: { x: number; y: number; gait: number;
   </g>;
 }
 
-export default function ClerkIllustratedScene({ phase, time, paused, reducedMotion, operation }: Props) {
+export default function ClerkIllustratedScene({ phase, time, paused, reducedMotion, operation, room = true }: Props) {
   const uniqueId = useId().replace(/:/g, '');
   // Time is supplied by the request lifecycle; freezing it pauses every joint together.
   const t = reducedMotion ? 0 : time;
@@ -119,9 +119,10 @@ export default function ClerkIllustratedScene({ phase, time, paused, reducedMoti
   const spiderProgress = phase === 'dispatch' ? ease((t - .85) / 1.15) : phase === 'web' ? 1 : 0;
   const spiderX = q(spiderReturning ? mix(1060, 817, returnProgress) : phase === 'dispatch' ? mix(817, 1060, spiderProgress) : phase === 'web' ? 1060 + Math.sin(t * 1.3) * 17 : 817);
   const spiderY = q(spiderReturning ? mix(238, 495, returnProgress) - Math.sin(returnProgress * Math.PI) * 40 : phase === 'dispatch' ? mix(397, 238, spiderProgress) - Math.sin(spiderProgress * Math.PI) * 44 : phase === 'web' ? 238 + Math.sin(t * 2) * 22 : 495);
-  return <div className={styles.scene} data-scene="illustrated" data-animation-phase={phase} data-motion-paused={paused || reducedMotion}>
+  return <div className={styles.scene} data-scene="illustrated" data-room={room} data-animation-phase={phase} data-motion-paused={paused || reducedMotion}>
+    {/* The pencil room ships only where the scene owns its background; the herbarium shop paints its own layers around the puppet. */}
     {/* eslint-disable-next-line @next/next/no-img-element */}
-    <img className={styles.room} src={`${ART}/room.png`} alt="" draggable="false" />
+    {room && <img className={styles.room} src={`${ART}/room.png`} alt="" draggable="false" />}
     <svg className={styles.puppet} viewBox="0 0 1200 800" aria-hidden="true">
       <defs>
         <pattern id={`${uniqueId}-hatch`} width="5" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(32)"><path d="M .3 0 L 0 7 M 3 0 L 2.5 3" stroke="#615b50" strokeWidth=".65" opacity=".32" /><path d="M 0 3 L 5 2.2" stroke="#7b756a" strokeWidth=".45" opacity=".25" /></pattern>
@@ -141,9 +142,9 @@ export default function ClerkIllustratedScene({ phase, time, paused, reducedMoti
     </svg>
     {/* Desk occlusion keeps the keeper physically behind the visitor's counter. */}
     {/* eslint-disable-next-line @next/next/no-img-element */}
-    <img className={`${styles.room} ${styles.foreground}`} src={`${ART}/room.png`} alt="" draggable="false" />
+    {room && <img className={`${styles.room} ${styles.foreground}`} src={`${ART}/room.png`} alt="" draggable="false" />}
     {/* eslint-disable-next-line @next/next/no-img-element */}
-    <img className={`${styles.room} ${styles.leftForeground}`} src={`${ART}/room.png`} alt="" draggable="false" />
+    {room && <img className={`${styles.room} ${styles.leftForeground}`} src={`${ART}/room.png`} alt="" draggable="false" />}
     <svg className={styles.puppet} viewBox="0 0 1200 800" aria-hidden="true">
       <Book flip={pageFlip} id={uniqueId} />
       <g transform={`translate(${dx} 0)`} data-part="arms">

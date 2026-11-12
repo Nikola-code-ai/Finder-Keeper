@@ -5,6 +5,14 @@ from fastapi import HTTPException, Request
 from .config import settings
 
 
+def current_email(request: Request) -> str:
+    """The signed-in address, for sharing between friends. Local mode has one user."""
+    if settings.auth_mode == "local":
+        return "local-user@local"
+    claims = getattr(request.state, "claims", None) or {}
+    return (claims.get("email") or "").lower()
+
+
 def current_owner(request: Request) -> str:
     if settings.auth_mode == "local":
         if settings.app_env == "production":
@@ -20,7 +28,8 @@ def current_owner(request: Request) -> str:
         if origin and origin.rstrip("/") not in settings.allowed_origins.split(","):
             raise HTTPException(403, "This origin cannot access the local library")
         return "local-user"
-    token = request.headers.get("authorization", "")
+    # Behind an IAM-signed AWS proxy, SigV4 occupies Authorization and the user's token travels alongside it.
+    token = request.headers.get("x-user-authorization") or request.headers.get("authorization", "")
     if not token.startswith("Bearer "):
         raise HTTPException(401, "Sign in to access your library")
     try:
@@ -28,7 +37,9 @@ def current_owner(request: Request) -> str:
         from firebase_admin import auth
         if not firebase_admin._apps:
             firebase_admin.initialize_app(options={"projectId": settings.firebase_project_id})
-        claims = auth.verify_id_token(token[7:], check_revoked=True)
+        # The revocation lookup needs Google service credentials, which an AWS deployment does not carry.
+        claims = auth.verify_id_token(token[7:], check_revoked=settings.firebase_check_revoked)
+        request.state.claims = claims
         return claims["uid"]
     except Exception:
         raise HTTPException(401, "Your sign-in has expired. Please sign in again.") from None
