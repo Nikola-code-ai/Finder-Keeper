@@ -231,7 +231,7 @@ Resources:
           STORAGE_BACKEND: s3
           S3_BUCKET_NAME: !Sub finder-keeper-files-${AWS::AccountId}-${AWS::Region}
           JOBS_QUEUE_URL: !Ref JobsQueue
-          DATABASE_URL: !Sub postgresql://${DbUser}@${DbEndpoint}:5432/${DbName}?sslmode=verify-full&sslrootcert=system
+          DATABASE_URL: !Sub postgresql://${DbUser}@${DbEndpoint}:5432/${DbName}?sslmode=verify-full
           DB_IAM_AUTH: "true"
           STARTUP_TASKS: "false"
           SEED_LIBRARY: "false"
@@ -268,7 +268,7 @@ Resources:
           STORAGE_BACKEND: s3
           S3_BUCKET_NAME: !Sub finder-keeper-files-${AWS::AccountId}-${AWS::Region}
           JOBS_QUEUE_URL: !Ref JobsQueue
-          DATABASE_URL: !Sub postgresql://${DbUser}@${DbEndpoint}:5432/${DbName}?sslmode=verify-full&sslrootcert=system
+          DATABASE_URL: !Sub postgresql://${DbUser}@${DbEndpoint}:5432/${DbName}?sslmode=verify-full
           DB_IAM_AUTH: "true"
           STARTUP_TASKS: "false"
           SEED_LIBRARY: "false"
