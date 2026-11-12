@@ -65,6 +65,8 @@ done
 digest() { aws ecr describe-images --repository-name "$1" --image-ids imageTag="$TAG" --query 'imageDetails[0].imageDigest' --output text; }
 API_IMAGE="$REGISTRY/finder-keeper-api@$(digest finder-keeper-api)"
 WEB_IMAGE="$REGISTRY/finder-keeper-web@$(digest finder-keeper-web)"
+# The images now live in ECR; drop the local copies so repeated deploys do not fill the disk.
+docker rmi "$REGISTRY/finder-keeper-api:$TAG" "$REGISTRY/finder-keeper-web:$TAG" >/dev/null 2>&1 || true
 
 # 4. Functions, queue, bucket, sign-in, CDN. Cognito's callback URL needs the CloudFront domain, which exists only
 #    after the first create, so the first deploy is followed by a second pass that feeds the domain back in.
