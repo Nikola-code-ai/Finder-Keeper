@@ -21,7 +21,7 @@ Browser ──HTTPS──> CloudFront ──> finder-keeper-web (Lambda, Next.js
 | Jobs | SQS + worker Lambda (same image, `WORKER_MODE=true`) | Batch size 1, 2 concurrent at most, 15 min timeout, 3 attempts and then the dead-letter queue |
 | Files | S3, private, SSE-S3, TLS only | Browsers upload straight to `incoming/` with a presigned POST (Lambda requests stop at 6 MB). The API moves the file into the library. Abandoned uploads expire after a day |
 | Database | Aurora PostgreSQL serverless, **express configuration** | No VPC and no NAT: the internet access gateway accepts only IAM auth tokens, verified over TLS (`verify-full`). Scales 0–4 ACU and pauses after 10 idle minutes |
-| Sign-in | Cognito user pool (Essentials), managed login, email + password | Next.js runs the authorization-code + PKCE exchange on the server. ID (15 min) and refresh (30 days, rotated) tokens live only in HttpOnly cookies. Sign-out revokes the refresh token |
+| Sign-in | Cognito user pool (Essentials), managed login, email + password | Next.js runs the authorization-code + PKCE exchange on the server. ID (15 min) and refresh (30 days) tokens live only in HttpOnly cookies. Sign-out revokes the refresh token |
 | Embeddings | fastembed `bge-small-en-v1.5`, baked into the API image | Answers use grounded extraction; Ollama is off on AWS |
 
 ## Deploy
