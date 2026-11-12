@@ -9,6 +9,7 @@ import os
 import re
 
 import boto3
+import certifi
 import psycopg
 
 ADMIN_USER = os.environ.get("DB_ADMIN_USER", "postgres")
@@ -21,7 +22,7 @@ REGION = os.environ["AWS_REGION"]
 def connect(user, dbname):
     token = boto3.client("rds", region_name=REGION).generate_db_auth_token(DBHostname=HOST, Port=5432, DBUsername=user)
     return psycopg.connect(host=HOST, port=5432, user=user, dbname=dbname, password=token,
-                           sslmode="verify-full", sslrootcert="system", connect_timeout=60, autocommit=True)
+                           sslmode="verify-full", sslrootcert=certifi.where(), connect_timeout=60, autocommit=True)
 
 
 def main():
@@ -40,7 +41,7 @@ def main():
 
     # The application modules read their settings at import time.
     os.environ.update({
-        "DATABASE_URL": f"postgresql://{APP_USER}@{HOST}:5432/{APP_DB}?sslmode=verify-full&sslrootcert=system",
+        "DATABASE_URL": f"postgresql://{APP_USER}@{HOST}:5432/{APP_DB}?sslmode=verify-full",
         "DB_IAM_AUTH": "true",
     })
     from .database import init_db

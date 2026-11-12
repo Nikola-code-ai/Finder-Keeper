@@ -221,6 +221,9 @@ if settings.db_iam_auth:
     @event.listens_for(engine, "do_connect")
     def iam_password(dialect, connection_record, cargs, cparams):
         import boto3
+        import certifi
+        # psycopg's bundled libpq cannot locate the OS trust store, so verify-full uses certifi's CA bundle.
+        cparams.setdefault("sslrootcert", certifi.where())
         cparams["password"] = boto3.client("rds", region_name=settings.aws_region or None).generate_db_auth_token(
             DBHostname=cparams["host"], Port=int(cparams.get("port") or 5432), DBUsername=cparams["user"],
         )
