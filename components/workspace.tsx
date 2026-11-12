@@ -16,7 +16,7 @@ import styles from './workspace.module.css';
 
 export interface WorkspaceProps {
   activity: KeeperActivity; paused: boolean; onPause: () => void; onHelp: () => void;
-  status: Status | null; signedOut: boolean; loading: boolean; loadError: string; reconnecting: boolean; onReconnect: () => void; onSignIn: () => void; userName?: string | null;
+  status: Status | null; signedOut: boolean; loading: boolean; loadError: string; reconnecting: boolean; onReconnect: () => void; onSignIn: () => void; signInLabel?: string; userName?: string | null;
   profile: ReaderProfile | null; onProfile: (profile: ReaderProfile) => void; onPublishFolder: (folder: Folder, published: boolean) => void; onRefresh: () => void; notify: (message: string) => void; onError: (message: string) => void;
   folders: Folder[]; documents: Document[]; shared: SharedCollection[]; folder: string | null; onFolder: (id: string | null) => void;
   mode: SearchMode; onMode: (mode: SearchMode) => void; query: string; onQuery: (value: string) => void; onSubmit: (text?: string, mode?: SearchMode) => void; inputRef: RefObject<HTMLInputElement | null>;
@@ -174,7 +174,7 @@ export default function Workspace(p: WorkspaceProps) {
     <button className={styles.ghost} onClick={p.onCancelSearch}>Stop</button>
   </div>;
 
-  const gate = p.signedOut ? <div className={styles.empty}><ShieldCheck size={22} /><h3>Sign in to open your library.</h3><p>Your archive is tied to your account.</p><div className={styles.emptyActions}><button className={styles.primary} onClick={p.onSignIn}>Continue with Google <ArrowRight size={15} /></button><a className={styles.ghost} href="/sign-in">About signing in</a></div></div>
+  const gate = p.signedOut ? <div className={styles.empty}><ShieldCheck size={22} /><h3>Sign in to open your library.</h3><p>Your archive is tied to your account.</p><div className={styles.emptyActions}><button className={styles.primary} onClick={p.onSignIn}>{p.signInLabel || 'Sign in'} <ArrowRight size={15} /></button><a className={styles.ghost} href="/sign-in">About signing in</a></div></div>
     : p.loadError ? <div className={styles.empty}><BookOpen size={22} /><h3>Reconnecting to your library.</h3><p>{p.loadError}</p><div className={styles.emptyActions}><button className={styles.ghost} disabled={p.reconnecting} onClick={p.onReconnect}>{p.reconnecting ? 'Connecting…' : 'Try again now'}</button></div></div>
     : p.loading ? <div className={styles.skeleton} aria-label="Loading your library">{[0, 1, 2, 3, 4].map(n => <span key={n} />)}</div> : null;
 
