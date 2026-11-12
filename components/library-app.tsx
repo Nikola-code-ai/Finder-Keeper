@@ -47,7 +47,7 @@ export default function LibraryApp({ view = 'classic' }: { view?: 'classic' | 'c
   const [folderDialog, setFolderDialog] = useState<Folder | 'new' | null>(null), [folderName, setFolderName] = useState(''), [folderColor, setFolderColor] = useState('sage'), [folderParent, setFolderParent] = useState('');
   const [linkDialog, setLinkDialog] = useState(false), [linkValue, setLinkValue] = useState(''), [rights, setRights] = useState(false), [saving, setSaving] = useState(false);
   const [reader, setReader] = useState<{ document: Document; match?: SearchResult } | null>(null), [manageDoc, setManageDoc] = useState<Document | null>(null), [docTitle, setDocTitle] = useState(''), [docFolder, setDocFolder] = useState('');
-  const [deleteDoc, setDeleteDoc] = useState<Document | null>(null), [dragging, setDragging] = useState(false), [user, setUser] = useState<SessionUser | null>(null), [authReady, setAuthReady] = useState(false);
+  const [deleteDoc, setDeleteDoc] = useState<Document | null>(null), [dragging, setDragging] = useState(false), [user, setUser] = useState<SessionUser | null>(null), [authReady, setAuthReady] = useState(false), [cloudAuth, setCloudAuth] = useState(false);
   const [profile, setProfile] = useState<ReaderProfile | null>(null);
   const authRef = useRef<{ signIn: () => Promise<void>; signOut: () => Promise<void> } | null>(null), userRef = useRef<SessionUser | null>(null), fileRef = useRef<HTMLInputElement>(null), inputRef = useRef<HTMLInputElement>(null), abortRef = useRef<AbortController | null>(null), mounted = useRef(true);
   const notify = useCallback((message: string) => setToast(message), []);
@@ -91,7 +91,10 @@ export default function LibraryApp({ view = 'classic' }: { view?: 'classic' | 'c
     async function initialize() {
       try {
         const config = await fetch('/config').then(r => r.json());
-        const signedIn = (current: SessionUser | null) => { if (!mounted.current) return; userRef.current = current; setUser(current); setAuthReady(true); if (current) refresh(); };
+        const signedIn = (current: SessionUser | null) => {
+          if (!mounted.current) return; userRef.current = current; setUser(current); setAuthReady(true);
+          if (current) { refresh(); api<Status>('/status').then(state => { if (mounted.current) setStatus(state); }).catch(() => {}); }
+        };
         if (config.cognito) {
           // AWS: the session is an HttpOnly cookie, so requests need no token from the page.
           setTokenProvider(null);
@@ -105,12 +108,14 @@ export default function LibraryApp({ view = 'classic' }: { view?: 'classic' | 'c
           setTokenProvider(async () => auth.currentUser?.getIdToken());
           unsubscribe = onAuthStateChanged(auth, current => signedIn(current ? { name: current.displayName, email: current.email } : null));
         } else setAuthReady(true);
+        // Status needs a signed-in reader in the cloud; a signed-out visitor gets the sign-in gate, not an error.
+        if (authRef.current) { setCloudAuth(true); if (!userRef.current) { setLoading(false); return; } }
         const state = await api<Status>('/status'); if (!mounted.current) return; setStatus(state);
         if (!state.auth_required) await refresh(); else setLoading(false);
       } catch (e) { setLoading(false); setAuthReady(true); setLoadError(e instanceof Error ? e.message : 'The library is starting up.'); }
     }
     initialize();
-    const interval = setInterval(() => api<Status>('/status').then(state => { if (mounted.current) setStatus(state); }).catch(() => {}), 15000);
+    const interval = setInterval(() => { if (authRef.current && !userRef.current) return; api<Status>('/status').then(state => { if (mounted.current) setStatus(state); }).catch(() => {}); }, 15000);
     return () => { mounted.current = false; unsubscribe?.(); clearInterval(interval); abortRef.current?.abort(); };
   }, [refresh]);
   useEffect(() => {
@@ -210,7 +215,7 @@ export default function LibraryApp({ view = 'classic' }: { view?: 'classic' | 'c
   const hasResults = results !== null || discoveries !== null || busy;
   const importing = !!job && !['completed', 'ready', 'failed', 'cancelled'].includes(job.status);
   const working = busy || importing;
-  const signedOut = !!status?.auth_required && !user;
+  const signedOut = (!!status?.auth_required || (cloudAuth && authReady)) && !user;
   const docRow = (doc: Document, compact = false) => <div key={doc.id} data-keeper-anchor={`document:${doc.id}`} className={`document-row ${compact ? 'compact' : ''}`}>
     <button className="document-open" onClick={() => { setCabinetOpen(false); setReader({ document: doc }); }}><span className="document-icon"><FileText size={20} strokeWidth={1.5} /></span><span className="document-info"><strong>{doc.title}</strong><small>{doc.is_starter || doc.kind === 'starter' ? 'STARTER NOTE' : (doc.kind || 'PDF').toUpperCase()}<span>·</span>{doc.page_count || '–'} {doc.kind === 'PDF' ? 'pages' : 'sections'}<span>·</span>{relativeDate(doc.created_at)}</small></span></button>
     <span className={`doc-status ${cleanStatus(doc.status) === 'Searchable' ? 'ready' : ''}`} title={cleanStatus(doc.status)}>{cleanStatus(doc.status) === 'Searchable' ? <Sparkles size={13} /> : doc.status === 'failed' ? <CircleHelp size={13} /> : <LoaderCircle size={13} className="spin" />}</span>
