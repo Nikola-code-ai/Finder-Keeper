@@ -1,0 +1,394 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >-
+  Finder-Keeper on AWS serverless: CloudFront -> Next.js Lambda (function URL) -> IAM-signed FastAPI Lambda,
+  SQS-driven worker Lambda, private S3 files, Aurora PostgreSQL express cluster (IAM auth, created by deploy.sh).
+
+Parameters:
+  ApiImageUri:
+    Type: String
+    Description: ECR image URI (with digest or immutable tag) built from infra/aws/Dockerfile.api
+  WebImageUri:
+    Type: String
+    Description: ECR image URI (with digest or immutable tag) built from infra/aws/Dockerfile.web
+  DbEndpoint:
+    Type: String
+    Description: Writer endpoint of the Aurora express cluster
+  DbClusterResourceId:
+    Type: String
+    Description: The cluster's DbClusterResourceId (cluster-XXXX), used to scope rds-db:connect
+  DbUser:
+    Type: String
+    Default: finder_keeper
+  DbName:
+    Type: String
+    Default: finder_keeper
+  FirebaseProjectId:
+    Type: String
+  FirebaseApiKey:
+    Type: String
+    Description: Firebase web API key (public client configuration, not a secret)
+  FirebaseAuthDomain:
+    Type: String
+  FirebaseAppId:
+    Type: String
+  ContactEmail:
+    Type: String
+    Default: ""
+  UnpaywallEmail:
+    Type: String
+    Default: ""
+  OpenAlexApiKey:
+    Type: String
+    Default: ""
+    NoEcho: true
+    Description: Optional. Stored as a Lambda environment variable (visible to anyone who can read the function configuration).
+  MaxUploadMb:
+    Type: Number
+    Default: 25
+
+Conditions:
+  HasOpenAlexKey: !Not [!Equals [!Ref OpenAlexApiKey, ""]]
+
+Resources:
+  # ---------- Storage and queue ----------
+  FilesBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Sub finder-keeper-files-${AWS::AccountId}-${AWS::Region}
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      OwnershipControls:
+        Rules: [{ ObjectOwnership: BucketOwnerEnforced }]
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault: { SSEAlgorithm: AES256 }
+      LifecycleConfiguration:
+        Rules:
+          - Id: expire-abandoned-uploads
+            Status: Enabled
+            Prefix: incoming/
+            ExpirationInDays: 1
+          - Id: abort-incomplete-multipart
+            Status: Enabled
+            AbortIncompleteMultipartUpload: { DaysAfterInitiation: 1 }
+      CorsConfiguration:
+        CorsRules:
+          # Browsers POST uploads straight to S3 with a presigned form; nothing else is cross-origin.
+          - AllowedMethods: [POST]
+            AllowedOrigins: [!Sub "https://${Distribution.DomainName}"]
+            AllowedHeaders: ["*"]
+            MaxAge: 3600
+
+  FilesBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref FilesBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: DenyInsecureTransport
+            Effect: Deny
+            Principal: "*"
+            Action: "s3:*"
+            Resource: [!GetAtt FilesBucket.Arn, !Sub "${FilesBucket.Arn}/*"]
+            Condition: { Bool: { "aws:SecureTransport": "false" } }
+
+  JobsDeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: finder-keeper-jobs-dlq
+      MessageRetentionPeriod: 1209600
+      SqsManagedSseEnabled: true
+
+  JobsQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: finder-keeper-jobs
+      # At least the worker timeout (900 s) so a running job is not delivered twice.
+      VisibilityTimeout: 960
+      MessageRetentionPeriod: 345600
+      SqsManagedSseEnabled: true
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt JobsDeadLetterQueue.Arn
+        maxReceiveCount: 3
+
+  # ---------- Logs ----------
+  ApiLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties: { LogGroupName: /finder-keeper/api, RetentionInDays: 14 }
+  WorkerLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties: { LogGroupName: /finder-keeper/worker, RetentionInDays: 14 }
+  WebLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties: { LogGroupName: /finder-keeper/web, RetentionInDays: 14 }
+
+  # ---------- IAM ----------
+  ApiRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: { Service: lambda.amazonaws.com }
+            Action: sts:AssumeRole
+            Condition: { StringEquals: { "aws:SourceAccount": !Ref AWS::AccountId } }
+      Policies:
+        - PolicyName: finder-keeper-api
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: [logs:CreateLogStream, logs:PutLogEvents]
+                Resource: !Sub "${ApiLogGroup.Arn}"
+              - Effect: Allow
+                Action: [s3:GetObject, s3:PutObject, s3:DeleteObject]
+                Resource: !Sub arn:${AWS::Partition}:s3:::finder-keeper-files-${AWS::AccountId}-${AWS::Region}/*
+              - Effect: Allow
+                Action: sqs:SendMessage
+                Resource: !GetAtt JobsQueue.Arn
+              - Effect: Allow
+                Action: rds-db:connect
+                Resource: !Sub arn:${AWS::Partition}:rds-db:${AWS::Region}:${AWS::AccountId}:dbuser:${DbClusterResourceId}/${DbUser}
+
+  WorkerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: { Service: lambda.amazonaws.com }
+            Action: sts:AssumeRole
+            Condition: { StringEquals: { "aws:SourceAccount": !Ref AWS::AccountId } }
+      Policies:
+        - PolicyName: finder-keeper-worker
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: [logs:CreateLogStream, logs:PutLogEvents]
+                Resource: !Sub "${WorkerLogGroup.Arn}"
+              - Effect: Allow
+                Action: [s3:GetObject, s3:PutObject, s3:DeleteObject]
+                Resource: !Sub arn:${AWS::Partition}:s3:::finder-keeper-files-${AWS::AccountId}-${AWS::Region}/*
+              - Effect: Allow
+                Action: [sqs:SendMessage, sqs:ReceiveMessage, sqs:DeleteMessage, sqs:GetQueueAttributes, sqs:ChangeMessageVisibility]
+                Resource: !GetAtt JobsQueue.Arn
+              - Effect: Allow
+                Action: rds-db:connect
+                Resource: !Sub arn:${AWS::Partition}:rds-db:${AWS::Region}:${AWS::AccountId}:dbuser:${DbClusterResourceId}/${DbUser}
+
+  WebRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: { Service: lambda.amazonaws.com }
+            Action: sts:AssumeRole
+            Condition: { StringEquals: { "aws:SourceAccount": !Ref AWS::AccountId } }
+      Policies:
+        - PolicyName: finder-keeper-web
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: [logs:CreateLogStream, logs:PutLogEvents]
+                Resource: !Sub "${WebLogGroup.Arn}"
+              - Effect: Allow
+                Action: lambda:InvokeFunctionUrl
+                Resource: !GetAtt ApiFunction.Arn
+                Condition: { StringEquals: { "lambda:FunctionUrlAuthType": AWS_IAM } }
+              - Effect: Allow
+                Action: lambda:InvokeFunction
+                Resource: !GetAtt ApiFunction.Arn
+                Condition: { Bool: { "lambda:InvokedViaFunctionUrl": "true" } }
+
+  # ---------- Functions ----------
+  ApiFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: finder-keeper-api
+      PackageType: Image
+      Code: { ImageUri: !Ref ApiImageUri }
+      Role: !GetAtt ApiRole.Arn
+      Architectures: [x86_64]
+      MemorySize: 2048
+      Timeout: 180
+      LoggingConfig: { LogGroup: !Ref ApiLogGroup }
+      Environment:
+        Variables:
+          APP_ENV: production
+          AUTH_MODE: firebase
+          FIREBASE_PROJECT_ID: !Ref FirebaseProjectId
+          FIREBASE_CHECK_REVOKED: "false"
+          STORAGE_BACKEND: s3
+          S3_BUCKET_NAME: !Sub finder-keeper-files-${AWS::AccountId}-${AWS::Region}
+          JOBS_QUEUE_URL: !Ref JobsQueue
+          DATABASE_URL: !Sub postgresql://${DbUser}@${DbEndpoint}:5432/${DbName}?sslmode=verify-full&sslrootcert=system
+          DB_IAM_AUTH: "true"
+          STARTUP_TASKS: "false"
+          SEED_LIBRARY: "false"
+          OLLAMA_ENABLED: "false"
+          MAX_UPLOAD_MB: !Ref MaxUploadMb
+          CONTACT_EMAIL: !Ref ContactEmail
+          UNPAYWALL_EMAIL: !Ref UnpaywallEmail
+          OPENALEX_API_KEY: !If [HasOpenAlexKey, !Ref OpenAlexApiKey, !Ref AWS::NoValue]
+
+  ApiFunctionUrl:
+    Type: AWS::Lambda::Url
+    Properties:
+      TargetFunctionArn: !GetAtt ApiFunction.Arn
+      AuthType: AWS_IAM
+      InvokeMode: RESPONSE_STREAM
+
+  WorkerFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: finder-keeper-worker
+      PackageType: Image
+      Code: { ImageUri: !Ref ApiImageUri }
+      Role: !GetAtt WorkerRole.Arn
+      Architectures: [x86_64]
+      MemorySize: 3008
+      Timeout: 900
+      LoggingConfig: { LogGroup: !Ref WorkerLogGroup }
+      Environment:
+        Variables:
+          APP_ENV: production
+          AUTH_MODE: firebase
+          FIREBASE_PROJECT_ID: !Ref FirebaseProjectId
+          FIREBASE_CHECK_REVOKED: "false"
+          STORAGE_BACKEND: s3
+          S3_BUCKET_NAME: !Sub finder-keeper-files-${AWS::AccountId}-${AWS::Region}
+          JOBS_QUEUE_URL: !Ref JobsQueue
+          DATABASE_URL: !Sub postgresql://${DbUser}@${DbEndpoint}:5432/${DbName}?sslmode=verify-full&sslrootcert=system
+          DB_IAM_AUTH: "true"
+          STARTUP_TASKS: "false"
+          SEED_LIBRARY: "false"
+          OLLAMA_ENABLED: "false"
+          MAX_UPLOAD_MB: !Ref MaxUploadMb
+          CONTACT_EMAIL: !Ref ContactEmail
+          UNPAYWALL_EMAIL: !Ref UnpaywallEmail
+          OPENALEX_API_KEY: !If [HasOpenAlexKey, !Ref OpenAlexApiKey, !Ref AWS::NoValue]
+          WORKER_MODE: "true"
+          AWS_LWA_PASS_THROUGH_PATH: /internal/sqs
+          AWS_LWA_INVOKE_MODE: buffered
+
+  WorkerEventSource:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      FunctionName: !Ref WorkerFunction
+      EventSourceArn: !GetAtt JobsQueue.Arn
+      BatchSize: 1
+      FunctionResponseTypes: [ReportBatchItemFailures]
+      ScalingConfig: { MaximumConcurrency: 2 }
+
+  WebFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: finder-keeper-web
+      PackageType: Image
+      Code: { ImageUri: !Ref WebImageUri }
+      Role: !GetAtt WebRole.Arn
+      Architectures: [x86_64]
+      MemorySize: 1024
+      Timeout: 120
+      LoggingConfig: { LogGroup: !Ref WebLogGroup }
+      Environment:
+        Variables:
+          APP_ENV: production
+          AUTH_MODE: firebase
+          API_INTERNAL_URL: !GetAtt ApiFunctionUrl.FunctionUrl
+          AWS_IAM_PROXY_AUTH: "true"
+          FIREBASE_PROJECT_ID: !Ref FirebaseProjectId
+          FIREBASE_API_KEY: !Ref FirebaseApiKey
+          FIREBASE_AUTH_DOMAIN: !Ref FirebaseAuthDomain
+          FIREBASE_APP_ID: !Ref FirebaseAppId
+
+  WebFunctionUrl:
+    Type: AWS::Lambda::Url
+    Properties:
+      TargetFunctionArn: !GetAtt WebFunction.Arn
+      AuthType: NONE
+      InvokeMode: RESPONSE_STREAM
+
+  WebUrlPublicPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref WebFunction
+      Action: lambda:InvokeFunctionUrl
+      Principal: "*"
+      FunctionUrlAuthType: NONE
+
+  WebUrlInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref WebFunction
+      Action: lambda:InvokeFunction
+      Principal: "*"
+      InvokedViaFunctionUrl: true
+
+  # ---------- CDN ----------
+  SecurityHeaders:
+    Type: AWS::CloudFront::ResponseHeadersPolicy
+    Properties:
+      ResponseHeadersPolicyConfig:
+        Name: finder-keeper-security-headers
+        SecurityHeadersConfig:
+          StrictTransportSecurity: { AccessControlMaxAgeSec: 31536000, IncludeSubdomains: true, Override: false }
+
+  Distribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        Comment: Finder-Keeper
+        HttpVersion: http2and3
+        PriceClass: PriceClass_100
+        Origins:
+          - Id: web
+            DomainName: !Select [2, !Split ["/", !GetAtt WebFunctionUrl.FunctionUrl]]
+            CustomOriginConfig:
+              OriginProtocolPolicy: https-only
+              OriginSSLProtocols: [TLSv1.2]
+              OriginReadTimeout: 60
+        DefaultCacheBehavior:
+          TargetOriginId: web
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods: [GET, HEAD, OPTIONS, PUT, PATCH, POST, DELETE]
+          CachedMethods: [GET, HEAD]
+          Compress: true
+          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad # Managed-CachingDisabled
+          OriginRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac # Managed-AllViewerExceptHostHeader
+          ResponseHeadersPolicyId: !Ref SecurityHeaders
+        CacheBehaviors:
+          - PathPattern: /_next/static/*
+            TargetOriginId: web
+            ViewerProtocolPolicy: redirect-to-https
+            Compress: true
+            CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # Managed-CachingOptimized
+            ResponseHeadersPolicyId: !Ref SecurityHeaders
+
+Outputs:
+  SiteUrl:
+    Value: !Sub https://${Distribution.DomainName}
+  SiteDomain:
+    Description: Add this to Firebase Authentication > Settings > Authorized domains
+    Value: !GetAtt Distribution.DomainName
+  ApiFunctionUrl:
+    Value: !GetAtt ApiFunctionUrl.FunctionUrl
+  FilesBucketName:
+    Value: !Ref FilesBucket
+  JobsQueueUrl:
+    Value: !Ref JobsQueue
+  JobsDeadLetterQueueUrl:
+    Value: !Ref JobsDeadLetterQueue

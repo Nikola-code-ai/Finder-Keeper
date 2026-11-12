@@ -1,4 +1,7 @@
+import hashlib
+import json
 import logging
+import secrets
 from contextlib import asynccontextmanager
 from datetime import timedelta
 from typing import Annotated, Literal
@@ -11,11 +14,22 @@ from sqlalchemy import delete, func, select, update
 
 from . import retrieval
 from .acquisition import trusted_import_candidate
-import secrets
-
 from .auth import current_email, current_owner, verify_worker
+from .community import router as community_router
 from .config import settings
-from .database import Candidate, Chunk, Document, Folder, Job, Page, Session, Share, document_dict, init_db, now
+from .database import (
+    Candidate,
+    Chunk,
+    Document,
+    Folder,
+    Job,
+    Page,
+    Session,
+    Share,
+    document_dict,
+    init_db,
+    now,
+)
 from .discovery import discover, public_target
 from .embeddings import embeddings
 from .jobs import (
@@ -50,9 +64,12 @@ def initialize_library():
 @asynccontextmanager
 async def lifespan(app):
     settings.validate_runtime()
-    init_db()
+    # On Lambda the schema is migrated by a one-off bootstrap and frozen threads cannot finish start-up work.
+    if settings.startup_tasks:
+        init_db()
     retrieval.detect_ollama()
-    executor.submit(initialize_library)
+    if settings.startup_tasks:
+        executor.submit(initialize_library)
     yield
 
 
@@ -61,6 +78,8 @@ app.add_middleware(BodySizeLimitMiddleware, max_bytes=settings.max_bytes + 1024 
 app.add_middleware(CORSMiddleware, allow_origins=settings.allowed_origins.split(","), allow_credentials=False, allow_methods=["GET", "POST", "PATCH", "DELETE"], allow_headers=["Authorization", "Content-Type"])
 Owner = Annotated[str, Depends(current_owner)]
 Email = Annotated[str, Depends(current_email)]
+# The commons: reading flows, readers, open shelves, reviews, comments and follows.
+app.include_router(community_router)
 
 
 @app.middleware("http")
@@ -86,7 +105,7 @@ class FolderInput(BaseModel):
 
 
 def folder_dict(folder, documents=()):
-    return {"id": folder.id, "name": folder.name, "color": folder.color, "parent_id": folder.parent_id, "count": sum(doc.folder_id == folder.id for doc in documents)}
+    return {"id": folder.id, "name": folder.name, "color": folder.color, "parent_id": folder.parent_id, "count": sum(doc.folder_id == folder.id for doc in documents), "published": bool(folder.published), "published_at": folder.published_at, "description": folder.description or ""}
 
 
 def folder_scope(session, owner, folder_id):
@@ -205,7 +224,7 @@ def status(owner: Owner):
         docs = session.scalar(select(func.count()).select_from(Document).where(Document.owner_id == owner))
     return {
         "mode": "local" if settings.auth_mode == "local" else "cloud",
-        "storage": "Local private files" if settings.storage_backend == "local" else "Google Cloud Storage",
+        "storage": {"local": "Local private files", "s3": "Amazon S3"}.get(settings.storage_backend, "Google Cloud Storage"),
         "embedding_model": settings.embedding_model, "embedding_provider": settings.embedding_provider,
         "embedding_ready": embeddings.ready, "embedding_dimensions": settings.embedding_dimensions,
         "embedding_error": embeddings.error, "auth_required": settings.auth_mode != "local",
@@ -286,8 +305,58 @@ def delete_folder(folder_id: str, owner: Owner):
 async def upload_document(owner: Owner, file: UploadFile = File(...), folder_id: str | None = Form(None)):
     data = await file.read(settings.max_bytes + 1)
     await file.close()
+    return accept_upload(data, file.filename or "document.pdf", file.content_type or "", owner, folder_id or None)
+
+
+class UploadInput(BaseModel):
+    filename: str = Field(min_length=1, max_length=500)
+    content_type: str = Field("", max_length=200)
+    size: int = Field(ge=0)
+
+
+class UploadComplete(BaseModel):
+    filename: str = Field(min_length=1, max_length=500)
+    content_type: str = Field("", max_length=200)
+    folder_id: str | None = None
+
+
+def incoming_prefix(owner):
+    return f"incoming/{hashlib.sha256(owner.encode()).hexdigest()[:24]}/"
+
+
+@app.post("/api/uploads")
+def start_upload(payload: UploadInput, owner: Owner):
+    """Large files go straight to S3 on AWS; other backends keep the multipart upload."""
+    if settings.storage_backend != "s3":
+        return {"mode": "multipart"}
+    if not 0 < payload.size <= settings.max_bytes:
+        raise HTTPException(400, f"Choose a non-empty document smaller than {settings.max_upload_mb} MB")
+    upload_id = secrets.token_urlsafe(18)
+    post = storage.presigned_upload(incoming_prefix(owner) + upload_id, settings.max_bytes)
+    return {"mode": "direct", "upload_id": upload_id, "url": post["url"], "fields": post["fields"]}
+
+
+@app.post("/api/uploads/{upload_id}/complete", status_code=202)
+def complete_upload(upload_id: str, payload: UploadComplete, owner: Owner):
+    if settings.storage_backend != "s3" or not upload_id.replace("-", "").replace("_", "").isalnum():
+        raise HTTPException(404, "Upload not found")
+    key = incoming_prefix(owner) + upload_id
     try:
-        document, duplicate = store_document(data, file.filename or "document.pdf", owner, folder_id or None, file.content_type or "", metadata={"license": "User-provided document"})
+        if storage.size(key) > settings.max_bytes:
+            raise HTTPException(400, f"Choose a non-empty document smaller than {settings.max_upload_mb} MB")
+        data = storage.get(key)
+    except HTTPException:
+        storage.delete(key)
+        raise
+    except Exception:
+        raise HTTPException(404, "Upload not found") from None
+    storage.delete(key)
+    return accept_upload(data, payload.filename, payload.content_type, owner, payload.folder_id or None)
+
+
+def accept_upload(data, filename, content_type, owner, folder_id):
+    try:
+        document, duplicate = store_document(data, filename, owner, folder_id, content_type, metadata={"license": "User-provided document"})
     except (ValueError, UnicodeDecodeError) as exc:
         raise HTTPException(400, str(exc)) from None
     with Session.begin() as session:
@@ -572,6 +641,21 @@ def cancel_job(job_id: str, owner: Owner):
             if document and document.status != "ready":
                 document.status, document.error = "failed", "Processing was cancelled. You can retry."
         return {"id": job.id, "status": job.status, "stage": job.stage}
+
+
+@app.post("/internal/sqs")
+def process_sqs_batch(event: dict):
+    """SQS events forwarded by the Lambda Web Adapter on the worker function only (AWS_LWA_PASS_THROUGH_PATH)."""
+    if not settings.worker_mode:
+        raise HTTPException(404, "Not found")
+    failures = []
+    for record in event.get("Records", []):
+        try:
+            run_job(json.loads(record["body"])["job_id"])
+        except Exception:
+            logger.exception("Job message %s failed", record.get("messageId"))
+            failures.append({"itemIdentifier": record.get("messageId")})
+    return {"batchItemFailures": failures}
 
 
 @app.post("/internal/jobs/{job_id}", dependencies=[Depends(verify_worker)])

@@ -1,0 +1,23 @@
+# Keep secrets, local data, and large art sources out of every image build context.
+.env
+.env.*
+!.env.example
+.git
+.next
+node_modules
+art
+docs
+tests
+out.json
+backend/.venv
+backend/.data
+backend/tests
+**/__pycache__
+.claude
+.codex
+.idea
+.impeccable
+.vscode
+infra/terraform/.terraform
+infra/terraform/*.tfstate*
+infra/terraform/terraform.tfvars

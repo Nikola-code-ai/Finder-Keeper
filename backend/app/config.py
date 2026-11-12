@@ -11,6 +11,15 @@ class Settings(BaseSettings):
     database_url: str = ""
     storage_backend: str = "local"
     gcs_bucket_name: str = ""
+    # AWS deployment (infra/aws): S3 files, SQS jobs, Aurora IAM database authentication.
+    aws_region: str = ""
+    s3_bucket_name: str = ""
+    jobs_queue_url: str = ""
+    db_iam_auth: bool = False
+    worker_mode: bool = False
+    startup_tasks: bool = True
+    firebase_check_revoked: bool = True
+    model_dir: Path | None = None
     google_cloud_project: str = ""
     firebase_project_id: str = ""
     gcp_location: str = "us-central1"
@@ -42,6 +51,15 @@ class Settings(BaseSettings):
         return url
 
     @property
+    def models_path(self):
+        return self.model_dir or self.data_dir / "models"
+
+    @property
+    def queued(self):
+        """Jobs run on a durable external queue (SQS or Cloud Tasks) rather than the local thread pool."""
+        return bool(self.jobs_queue_url or self.tasks_queue)
+
+    @property
     def max_bytes(self):
         return self.max_upload_mb * 1024 * 1024
 
@@ -53,12 +71,14 @@ class Settings(BaseSettings):
                 raise RuntimeError("Production requires AUTH_MODE=firebase")
             if not self.firebase_project_id:
                 raise RuntimeError("Production requires FIREBASE_PROJECT_ID")
-            if self.storage_backend != "gcs" or not self.gcs_bucket_name:
-                raise RuntimeError("Production requires private GCS storage")
+            if not ((self.storage_backend == "gcs" and self.gcs_bucket_name) or (self.storage_backend == "s3" and self.s3_bucket_name)):
+                raise RuntimeError("Production requires private GCS or S3 storage")
             if not self.db_url.startswith("postgresql"):
                 raise RuntimeError("Production requires PostgreSQL")
-            if not all([self.tasks_queue, self.tasks_service_account, self.worker_url]):
-                raise RuntimeError("Production requires Cloud Tasks queue, identity, and worker URL")
+            if not (self.jobs_queue_url or all([self.tasks_queue, self.tasks_service_account, self.worker_url])):
+                raise RuntimeError("Production requires an SQS queue or a Cloud Tasks queue, identity, and worker URL")
+        if self.storage_backend not in {"local", "gcs", "s3"}:
+            raise RuntimeError("STORAGE_BACKEND must be local, gcs or s3")
         if self.embedding_provider not in {"fastembed", "vertex"}:
             raise RuntimeError("EMBEDDING_PROVIDER must be fastembed or vertex")
         if self.embedding_provider == "vertex" and self.embedding_model.startswith("BAAI/"):

@@ -1,0 +1,27 @@
+# Next.js standalone server on AWS Lambda through the Lambda Web Adapter (function URL, response streaming).
+FROM public.ecr.aws/awsguru/aws-lambda-adapter:0.9.1 AS adapter
+
+FROM node:24-bookworm-slim AS build
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY app ./app
+COPY components ./components
+COPY lib ./lib
+COPY public ./public
+COPY tsconfig.json next-env.d.ts next.config.ts ./
+RUN npm run build
+
+FROM node:24-bookworm-slim
+COPY --from=adapter /lambda-adapter /opt/extensions/lambda-adapter
+WORKDIR /app
+ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=8080 HOSTNAME=127.0.0.1 \
+    AWS_LWA_PORT=8080 \
+    AWS_LWA_READINESS_CHECK_PATH=/config \
+    AWS_LWA_INVOKE_MODE=response_stream
+COPY --from=build /app/.next/standalone ./
+COPY --from=build /app/.next/static ./.next/static
+COPY --from=build /app/public ./public
+# Next writes its fetch/image cache under .next/cache; on Lambda only /tmp is writable.
+RUN rm -rf .next/cache && ln -s /tmp/next-cache .next/cache
+CMD ["node", "server.js"]

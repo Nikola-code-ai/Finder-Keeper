@@ -2,6 +2,8 @@
 
 The current product runs locally with no cloud account. Nothing in this directory is started by `setup-local.sh` or `dev.sh`. No GCP/Azure resource has been created. The infrastructure is a future starting point, not a verified deployment under the owner's $20/month ceiling.
 
+**AWS (serverless): see [aws/README.md](aws/README.md)**. It covers Lambda, SQS, S3, and Aurora PostgreSQL express configuration, deployed with `infra/aws/deploy.sh`.
+
 ## Local files
 
 - `Dockerfile.frontend`: production Next.js standalone container; reads API and Firebase settings at runtime.

@@ -18,6 +18,21 @@ export async function api<T>(path: string, options: RequestInit = {}): Promise<T
   }
   return response.status === 204 ? undefined as T : response.json();
 }
+type Upload = { mode: 'direct' | 'multipart'; upload_id?: string; url?: string; fields?: Record<string, string> };
+/** On AWS the file goes straight to S3 (Lambda requests stop at 6 MB); locally it is a multipart POST. */
+export async function uploadDocument<T>(file: File, folder?: string | null): Promise<T> {
+  const start = await api<Upload>('/uploads', { method: 'POST', body: JSON.stringify({ filename: file.name, content_type: file.type, size: file.size }) });
+  if (start.mode !== 'direct' || !start.url || !start.fields || !start.upload_id) {
+    const data = new FormData(); data.append('file', file); if (folder) data.append('folder_id', folder);
+    return api<T>('/documents/upload', { method: 'POST', body: data });
+  }
+  const form = new FormData();
+  for (const [key, value] of Object.entries(start.fields)) form.append(key, value);
+  form.append('file', file);
+  const stored = await fetch(start.url, { method: 'POST', body: form });
+  if (!stored.ok) throw new Error(stored.status === 400 ? 'Please choose a smaller document.' : 'The document could not be stored. Please try again.');
+  return api<T>(`/uploads/${encodeURIComponent(start.upload_id)}/complete`, { method: 'POST', body: JSON.stringify({ filename: file.name, content_type: file.type, folder_id: folder || null }) });
+}
 export async function downloadDocument(id: string, title: string) {
   const response = await fetch(`/api/documents/${encodeURIComponent(id)}/file`, { headers: await authHeaders() });
   if (!response.ok) throw new Error('The document could not be downloaded.');
