@@ -39,6 +39,8 @@ if ! aws rds describe-db-clusters --db-cluster-identifier "$CLUSTER" >/dev/null 
     --serverless-v2-scaling-configuration MinCapacity=0,MaxCapacity=4,SecondsUntilAutoPause=600 >/dev/null
   aws rds wait db-cluster-available --db-cluster-identifier "$CLUSTER"
 fi
+# The cluster reports available before its serverless instance does; the bootstrap needs the instance.
+aws rds wait db-instance-available --filters "Name=db-cluster-id,Values=$CLUSTER"
 read -r DB_ENDPOINT DB_RESOURCE_ID < <(aws rds describe-db-clusters --db-cluster-identifier "$CLUSTER" \
   --query 'DBClusters[0].[Endpoint,DbClusterResourceId]' --output text)
 
