@@ -1,22 +1,28 @@
-<p align="center">
-  <img src="art/brand/export/finder-keeper-wordmark.png" alt="finder & keeper" width="420">
-</p>
+# Finder & Keeper
 
-<p align="center"><em>A quiet research library, kept by an old shopkeeper and his spider.</em></p>
+*A quiet research library: find open full text, keep it in collections, and ask it questions with citations.*
 
-<p align="center">
-  <img src="public/herbarium/room-back.png" alt="The Keeper's herbarium shop, rendered in Blender" width="760">
-</p>
+![The library home: one search bar for recalling passages, synthesizing answers or finding documents online](docs/screenshots/library.png)
 
----
+Finder & Keeper is a document search, retrieval and question-answering library. You describe what you half-remember. It finds openly available full text online, keeps it in your collections, recalls the exact passage you meant, and answers questions only from what you've kept, with every claim linked to its source.
 
-Finder-Keeper is a document search, retrieval and question-answering library wrapped in a story. You describe what you half-remember; the spider goes out of the window to find openly available full text, the Keeper files it into your collections, and when you ask a question he reads the pages and hands back an answer with citations you can open.
+Two guides live in the corner of the page. **Finder**, a spider, explains how documents are gathered. **Keeper**, an old archivist, explains how they're stored, searched and answered from, and how the cloud setup works.
 
-The main library at `/` is a calm scholarly workspace (Passages, Synthesize, Collections, Flows and the Commons) with the spider's threads drawn faintly in the background. The illustrated shop lives at `/clerk-room`. There the desk's drawers are your collections, every document is a mounted herbarium sheet with a collector's label, and the characters move only when a real request is being processed. Their animation never holds up a result.
+## A tour
+
+| Recall a passage by meaning | Ask the library |
+| --- | --- |
+| ![Passages: ranked matches on the left, the matched passage highlighted in the reader on the right](docs/screenshots/passages.png) | ![Synthesize: an answer built from quoted passages, each cited, with the grounding passages listed beside it](docs/screenshots/synthesize.png) |
+| Describe it in your own words. The matching span opens highlighted on its page. | Answers are made from your own passages, and each citation opens the source in the reader. |
+
+| Keeper explains the pipeline | On a phone |
+| --- | --- |
+| ![Keeper's guide: how documents are read, cut into passages, embedded and shelved](docs/screenshots/keeper-guide.png) | <img src="docs/screenshots/mobile.png" alt="The library home on a phone, with a bottom tab bar" width="260"> |
+| Plain-language steps from text extraction to the vector index, with the technical term beside each. | Phones get their own layout with a bottom tab bar, not a shrunken desktop. |
 
 ## What it does
 
-**Three jobs, one room**
+**Three jobs, one search bar**
 
 | Job | What happens |
 | --- | --- |
@@ -26,9 +32,10 @@ The main library at `/` is a calm scholarly workspace (Passages, Synthesize, Col
 
 **And around them**
 
-- **Collections**: drawers on the desk, with dividers (sub-collections) inside. Search and ask can be scoped to a drawer.
+- **Collections**, with one level of sub-collections. Search and ask can be scoped to a collection.
 - **Reader**: PDF pages with highlights, EPUB 2/3 in reading order with chapter sections, and HTML/text in numbered sections.
 - **Uploads and imports**: PDF, EPUB, Markdown, text and HTML. Imports run as background jobs (queued → processing → searchable / failed) that you can retry or cancel.
+- **The illustrated shop** at `/clerk-room`: the same library as a Blender-rendered herbarium shop, where the desk's drawers are your collections and the characters act out each request.
 - **Reading flows**: the Keeper plans a path through your library toward a goal, with a main route, "go deeper" detours and a final synthesis step. Flows are drawn as a map and a checklist.
 - **Lending and the commons**: lend a collection to a friend by email or by link, publish open shelves and flows, and write reviews and notes on public reader profiles (`/u/<handle>`).
 - **Accessibility**: a pause control, `prefers-reduced-motion` support with static poses, keyboard operation, and a layout composed separately for phones.
