@@ -1,7 +1,7 @@
-// Pip, the Keeper's spider, in the small sizes the reading room uses: a glyph, a corner web, and Pip on a thread.
+// Finder, the Keeper's spider, in the small sizes the reading room uses: a glyph, a corner web, and Finder on a thread.
 import type { CSSProperties } from 'react';
 
-/** Pip as a glyph: eight legs, a round body, two amber eyes. Inherits colour from the text around it. */
+/** Finder as a glyph: eight legs, a round body, two amber eyes. Inherits colour from the text around it. */
 export function SpiderGlyph({ size = 16, eyes = true, className, style }: { size?: number; eyes?: boolean; className?: string; style?: CSSProperties }) {
   return <svg className={className} style={style} width={size} height={size} viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false">
     <g stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -51,7 +51,7 @@ function radialWeb(cx: number, cy: number, anchors: [number, number][], rings: n
 }
 const BOOK_WEB = radialWeb(64, 50, [[4, 6], [60, 1], [126, 10], [138, 60], [114, 108], [58, 116], [10, 96], [1, 48]], [.28, .5, .72, .92]);
 
-/** A book that fell into a cobweb and stayed there, with Pip keeping an eye on it. Line doodle. */
+/** A book that fell into a cobweb and stayed there, with Finder keeping an eye on it. Line doodle. */
 export function BookInWeb({ className, width = 150 }: { className?: string; width?: number }) {
   return <svg className={className} width={width} height={width * 120 / 140} viewBox="0 0 140 120" fill="none" aria-hidden="true" focusable="false" strokeLinecap="round" strokeLinejoin="round">
     <path d={BOOK_WEB} stroke="currentColor" strokeWidth=".7" opacity=".8" />
@@ -93,7 +93,7 @@ function SpiderPaths() {
   </>;
 }
 
-/** Pip let down on a silk thread. `drop` is how far the thread runs, in pixels. */
+/** Finder let down on a silk thread. `drop` is how far the thread runs, in pixels. */
 export function Dangler({ drop = 40, size = 18, className, label }: { drop?: number; size?: number; className?: string; label?: string }) {
   return <span className={className} style={{ '--drop': `${drop}px` } as CSSProperties} role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : true}>
     <span data-thread="" />

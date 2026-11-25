@@ -1,0 +1,104 @@
+/* Finder and Keeper as guides. They borrow the workspace's Stitch tokens (ink navy, parchment, bookbinder's amber),
+   with fallbacks so the dock also works outside the workspace. */
+.dock, .sheet {
+  --g-bg: #0b0e14; --g-card: #11161f; --g-raised: #1b2330; --g-line: rgba(237, 234, 228, .14);
+  --g-ink: #edeae4; --g-mid: #9ea6b5; --g-dim: #7d8696; --g-amber: #e89b53; --g-amber-wash: rgba(232, 155, 83, .12); --g-amber-line: rgba(232, 155, 83, .4);
+  --g-serif: var(--font-newsreader), 'Newsreader', Georgia, serif; --g-sans: var(--font-inter), 'Inter', system-ui, sans-serif; --g-mono: var(--font-mono), 'JetBrains Mono', ui-monospace, monospace;
+  --g-ease: cubic-bezier(.16, 1, .3, 1);
+  --guide-body: #1b2330; --guide-skin: #2c2723; --guide-hair: #edeae4; --guide-page: #efe8da; --guide-eye: #f6f1e7; --guide-pupil: #0b0e14; --guide-accent: #e89b53;
+}
+
+/* The dock: Finder hangs from his thread, Keeper stands beside him. Bottom-right, clear of the content column. */
+.dock { position: fixed; z-index: 18; right: clamp(12px, 2.4vw, 32px); bottom: 18px; display: flex; align-items: flex-end; gap: 6px; pointer-events: none; }
+.guide { pointer-events: auto; position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 0 4px 2px; border: 0; background: none; color: var(--g-ink); cursor: pointer; font: inherit; }
+.guide:focus-visible { outline: 2px solid var(--g-amber); outline-offset: 4px; border-radius: 12px; }
+.finder, .keeper { display: block; filter: drop-shadow(0 8px 14px rgba(0, 0, 0, .45)); transition: transform .35s var(--g-ease); }
+.finder { margin-bottom: 18px; transform-origin: 50% 0; animation: dangle 4.2s ease-in-out infinite; }
+.keeper { transform-origin: 50% 100%; }
+.guide:hover .keeper, .guide:focus-visible .keeper { transform: translateY(-4px) rotate(-2deg); }
+.guide:hover .finder, .guide:focus-visible .finder { transform: translateY(6px); animation-play-state: paused; }
+@keyframes dangle { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg) translateY(3px); } }
+/* Working: Finder scurries while a search runs online; Keeper leafs through while he files or searches. */
+.guide[data-busy] .finder { animation: scurry .7s ease-in-out infinite; }
+.guide[data-busy] .keeper { animation: leaf 1.4s ease-in-out infinite; }
+@keyframes scurry { 50% { transform: translateY(8px) rotate(4deg); } }
+@keyframes leaf { 50% { transform: translateY(-2px) rotate(1.5deg); } }
+.dock[data-paused] :is(.finder, .keeper) { animation: none; }
+
+.tag { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 10px 7px; border-radius: 10px; background: rgba(17, 22, 31, .92); box-shadow: inset 0 0 0 1px var(--g-line), 0 10px 24px rgba(0, 0, 0, .45); white-space: nowrap; transition: box-shadow .2s, transform .3s var(--g-ease); }
+.tag strong { font: 500 15px/1 var(--g-serif); letter-spacing: -.005em; color: var(--g-ink); }
+.tag small { font: 400 10px/1.2 var(--g-mono); color: var(--g-dim); }
+.guide:hover .tag, .guide:focus-visible .tag { box-shadow: inset 0 0 0 1px var(--g-amber-line), 0 12px 28px rgba(0, 0, 0, .5); }
+.guide:hover .tag small, .guide:focus-visible .tag small { color: var(--g-amber); }
+
+/* The sheet: a tall panel from the right on desktop, a bottom sheet on a phone. */
+.sheet { position: fixed; inset: 0 0 0 auto; width: min(560px, 100vw); max-width: none; height: 100dvh; max-height: none; margin: 0; padding: 0; border: 0; border-left: 1px solid var(--g-line); background: var(--g-card); color: var(--g-ink); font: 400 15px/1.55 var(--g-sans); overflow-y: auto; overscroll-behavior: contain; box-shadow: -30px 0 80px rgba(0, 0, 0, .55); }
+.sheet[open] { animation: slideIn .4s var(--g-ease); }
+.sheet::backdrop { background: rgba(5, 7, 11, .62); }
+@keyframes slideIn { from { transform: translateX(40px); opacity: 0; } }
+.sheet *, .sheet *::before, .sheet *::after { box-sizing: border-box; }
+.sheet :is(h2, h3, p, ol) { margin: 0; }
+.sheet button { font: inherit; color: inherit; border: 0; background: none; padding: 0; cursor: pointer; }
+.sheet :is(button):focus-visible { outline: 2px solid var(--g-amber); outline-offset: 3px; border-radius: 6px; }
+.sheetInner { padding: 28px 30px 36px; }
+
+.sheetHead { display: grid; grid-template-columns: auto 1fr auto; align-items: end; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid var(--g-line); }
+.portrait { display: grid; place-items: end center; width: 84px; height: 92px; border-radius: 14px; background: radial-gradient(70px 70px at 50% 60%, var(--g-amber-wash), transparent 70%), var(--g-raised); box-shadow: inset 0 0 0 1px var(--g-line); overflow: hidden; color: var(--g-ink); }
+.sheet[data-who='finder'] .portrait { place-items: center; }
+.who { font: 400 11px/1.4 var(--g-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--g-amber); }
+.sheetHead h2 { margin-top: 6px; font: 400 30px/1.12 var(--g-serif); letter-spacing: -.015em; }
+.close { align-self: start; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; color: var(--g-mid); }
+.close:hover { color: var(--g-ink); background: var(--g-raised); }
+
+.tabs { display: flex; gap: 4px; margin-top: 18px; padding: 4px; border-radius: 99px; box-shadow: inset 0 0 0 1px var(--g-line); background: rgba(11, 14, 20, .5); overflow-x: auto; scrollbar-width: none; }
+.tabs button { flex: 1 0 auto; height: 36px; padding: 0 14px; border-radius: 99px; font-size: 14px; color: var(--g-mid); white-space: nowrap; transition: background .25s var(--g-ease), color .2s; }
+.tabs button:hover { color: var(--g-ink); }
+.tabs button[aria-selected='true'] { background: #2a313d; color: var(--g-ink); }
+
+.panel { margin-top: 22px; animation: fade .35s var(--g-ease); }
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } }
+.lede { font: italic 400 19px/1.5 var(--g-serif); color: var(--g-ink); }
+.here { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 14px; font: 400 12px/1.5 var(--g-mono); color: var(--g-mid); }
+.here i { width: 7px; height: 7px; border-radius: 50%; background: #34d399; }
+.here code { font: inherit; color: var(--g-ink); }
+
+/* The thread: stations along one amber silk line, each a step with its technical name. */
+.thread { position: relative; list-style: none; margin-top: 24px !important; padding: 0; display: flex; flex-direction: column; gap: 22px; }
+.thread::before { content: ''; position: absolute; left: 19px; top: 20px; bottom: 20px; width: 1px; background: linear-gradient(var(--g-amber-line), rgba(232, 155, 83, .08)); }
+.thread li { position: relative; display: grid; grid-template-columns: 40px 1fr; gap: 16px; animation: fade .45s var(--g-ease) both; animation-delay: calc(var(--i) * 60ms); }
+.node { position: relative; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--g-raised); box-shadow: inset 0 0 0 1px var(--g-amber-line), 0 0 0 5px var(--g-card); color: var(--g-amber); }
+.thread li[data-here='true'] .node { background: var(--g-amber); color: #1b1006; }
+.thread h3 { display: flex; align-items: baseline; gap: 10px; padding-top: 8px; font: 400 19px/1.25 var(--g-serif); }
+.stepNo { font: 400 11px/1 var(--g-mono); color: var(--g-dim); }
+.term { display: inline-block; margin-top: 7px; padding: 4px 8px; border-radius: 6px; background: var(--g-amber-wash); box-shadow: inset 0 0 0 1px rgba(232, 155, 83, .22); font: 400 11px/1.3 var(--g-mono); color: var(--g-amber); }
+.thread p { margin-top: 8px !important; font-size: 14.5px; line-height: 1.6; color: var(--g-mid); }
+
+.note { display: flex; align-items: flex-start; gap: 10px; margin-top: 22px !important; padding: 12px 14px; border-radius: 10px; background: rgba(11, 14, 20, .5); box-shadow: inset 0 0 0 1px var(--g-line); font-size: 13.5px; line-height: 1.55; color: var(--g-mid); }
+.note svg { flex: 0 0 auto; margin-top: 2px; color: var(--g-amber); }
+.note + .note { margin-top: 10px !important; }
+
+.sheetFoot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--g-line); }
+.handoff { display: inline-flex; align-items: center; gap: 10px; height: 44px; padding: 0 14px 0 8px; border-radius: 12px; box-shadow: inset 0 0 0 1px var(--g-line); font-size: 14px; color: var(--g-ink); transition: box-shadow .2s, color .2s; }
+.handoff:hover { box-shadow: inset 0 0 0 1px var(--g-amber-line); color: var(--g-amber); }
+.next { height: 44px; padding: 0 16px; border-radius: 12px; background: var(--g-amber); color: #1b1006 !important; font-size: 14px; font-weight: 500; }
+.next:hover { background: #f0ac6a; }
+
+@media (max-width: 860px) {
+  /* Above the phone's section bar, smaller, tags collapse to names. */
+  .dock { bottom: calc(66px + env(safe-area-inset-bottom)); right: 8px; gap: 0; }
+  .finder { width: 44px; height: 44px; margin-bottom: 12px; }
+  .keeper { width: 44px; height: 55px; }
+  .tag { padding: 4px 8px 5px; }
+  .tag small { display: none; }
+  .tag strong { font-size: 13px; }
+  .sheet { inset: auto 0 0 0; width: 100vw; height: auto; max-height: 92dvh; border-left: 0; border-top: 1px solid var(--g-line); border-radius: 18px 18px 0 0; box-shadow: 0 -30px 80px rgba(0, 0, 0, .55); }
+  .sheet[open] { animation: rise .4s var(--g-ease); }
+  @keyframes rise { from { transform: translateY(40px); opacity: 0; } }
+  .sheetInner { padding: 20px 18px calc(28px + env(safe-area-inset-bottom)); }
+  .portrait { width: 64px; height: 70px; }
+  .portrait svg { transform: scale(.8); transform-origin: 50% 100%; }
+  .sheetHead { gap: 12px; }
+  .sheetHead h2 { font-size: 24px; }
+  .lede { font-size: 17px; }
+}
+@media (prefers-reduced-motion: reduce) { .dock *, .sheet, .sheet * { animation: none !important; transition: none !important; } }

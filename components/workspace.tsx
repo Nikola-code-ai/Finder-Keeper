@@ -1,13 +1,15 @@
 'use client';
 
 // The Stitch "Archival Scholar" design, as designed: Library home, Passages, Synthesize and the Collections catalogue.
-// The only additions are faint line doodles in the margins: Pip the spider, cobwebs, and books caught in webs.
+// Additions: faint line doodles in the margins (Finder the spider, cobwebs, books caught in webs), and the two
+// characters as clickable guides in the corner: Finder explains gathering, Keeper explains storing and search.
 import { useEffect, useMemo, useState, type RefObject } from 'react';
 import { ArrowRight, ArrowUp, BookOpen, ChevronDown, ChevronLeft, ChevronRight, CircleHelp, Copy, Ellipsis, FolderPlus, Globe2, Link as LinkIcon, LoaderCircle, Pencil, Plus, Quote, Search, ShieldCheck, Sparkles, Upload, X } from 'lucide-react';
 import { api } from '@/lib/api';
 import type { KeeperActivity } from '@/lib/keeper-choreography';
 import type { Discovery, DiscoveryKind, Document, Folder, Job, ReaderProfile, SearchMode, SearchResult, SharedCollection, Status } from '@/lib/types';
 import DiscoveryResults from './discovery-results';
+import Guides from './guides';
 import FlowsView from './flows-view';
 import CommunityView from './community-view';
 import { BookInWeb, BookStack, Dangler, SpiderGlyph, WebCorner } from './spider-bits';
@@ -355,5 +357,6 @@ export default function Workspace(p: WorkspaceProps) {
       <span>Finder &amp; Keeper <i aria-hidden="true">•</i> <b data-ready={!!p.status?.embedding_ready} aria-hidden="true" /> {p.status?.auth_required ? 'Private cloud library' : 'Local library active'}</span>
       <span>{p.documents.length} documents <i aria-hidden="true">•</i> {p.folders.length} collections{p.status?.embedding_model ? <> <i aria-hidden="true">•</i> {p.status.embedding_model}</> : null}</span>
     </footer>
+    <Guides status={p.status} busy={p.busy || p.activity.active} paused={p.paused} mode={p.mode} />
   </div>;
 }
