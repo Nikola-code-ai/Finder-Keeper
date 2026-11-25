@@ -12,7 +12,7 @@
 
 Finder-Keeper is a document search, retrieval and question-answering library wrapped in a story. You describe what you half-remember; the spider goes out of the window to find openly available full text, the Keeper files it into your collections, and when you ask a question he reads the pages and hands back an answer with citations you can open.
 
-The scene is the interface. The desk's drawers are your collections, every document is a mounted herbarium sheet with a collector's label, and the characters only move when a real request is being processed. Their animation never holds up a result.
+The main library at `/` is a calm scholarly workspace (Passages, Synthesize, Collections, Flows and the Commons) with the spider's threads drawn faintly in the background. The illustrated shop lives at `/clerk-room`. There the desk's drawers are your collections, every document is a mounted herbarium sheet with a collector's label, and the characters move only when a real request is being processed. Their animation never holds up a result.
 
 ## What it does
 
@@ -37,7 +37,7 @@ The scene is the interface. The desk's drawers are your collections, every docum
 
 ```
 Next.js 16 / React 19  ──same-origin proxy──>  FastAPI (Python 3.12)
-  the shop, reader,                              ├─ discovery + full-text verification
+  workspace, shop, reader,                       ├─ discovery + full-text verification
   flows, commons                                 ├─ extraction (PDF, EPUB, HTML, text)
                                                  ├─ embeddings: BGE-small-en-v1.5 via FastEmbed (384-d, CPU)
                                                  ├─ retrieval: vectors + keyword + title signals
@@ -79,7 +79,7 @@ Default limits are 25 MB per file, 1,000 pages per PDF, 500 documents and 30 imp
 
 | Route | What it is |
 | --- | --- |
-| `/` | The library workspace |
+| `/` | The library workspace: Passages, Synthesize, Collections, Flows, Commons |
 | `/clerk-room` | The rendered herbarium shop |
 | `/sign-in` | The shop door (sign-in) |
 | `/shared/<token>`, `/shelves/<id>`, `/flows/<id>`, `/u/<handle>` | Lent collections and the public commons |
