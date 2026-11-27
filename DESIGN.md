@@ -292,6 +292,31 @@ The ledger panel: a lifted paper that swings in (`perspective(900px) rotateY(-55
 ### The Reader (under `.shell`)
 Dialogs re-skinned as paper: `paper` fill, 1.5px `pencil` border, 2px corner, hand-face headings 26px, `dialog-pencil` descriptions, `paper-2` inset boxes, a `#dcd9d1` reading well, and a long-form serif at 16px/1.78 for readable text with `faint` marks. The toast is an ink-filled paper at top-right, rotated 1deg.
 
+## Characters
+
+The product has two characters and they are named after its two halves. They apply on every surface: the scholarly workspace at `/` draws them in its Stitch palette (`components/guides.tsx`), the shops draw them in their own world (`/clerk-room`, the ink shop).
+
+- **Keeper** is an **old man**: the archivist. Bald crown with white side tufts, white eyebrows, round spectacles, a large white beard and moustache, a cardigan with a small bow tie, an open book held at the chest. Kind, unhurried, closed smiling eyes. He owns everything that happens *after* a document arrives: storing it, searching it, answering from it.
+- **Finder** is a **nice spider**: the fetcher. A round body and head, big eyes with highlights, rosy cheeks, a small smile, a magnifying glass held up in one front leg, let down on a silk thread. Friendly, never creepy: no fangs, no hair, no red eyes. He owns everything that happens *before* a document arrives: searching public sources, fetching, checking, handing over. (Earlier code called him "Pip"; the name is Finder.)
+
+### The Guide Rule
+Both characters are **clickable educational guides**, not decoration. Clicking one opens a sheet in the character's own voice that explains how the system works, step by step, each step carrying the technical term it stands for so a curious reader learns the real vocabulary:
+
+| Guide | Chapters | Terms taught |
+| --- | --- | --- |
+| **Finder** | Gathering | query parsing, federated search over public APIs (not crawling), retrieval & verification, access classification, import job |
+| **Keeper** | Storing | text extraction, chunking, embedding / vectorizing, vector index |
+| | Searching | query embedding, hybrid retrieval, scoring & re-ranking, excerpt pinpointing |
+| | Answering | retrieval, retrieval-augmented generation (RAG), grounding check, extractive fallback |
+| | The building | local mode, CDN + serverless web, authentication, API + job queue, object storage + vector database |
+
+Steps are drawn as stations on one amber thread (Finder's silk). Each sheet ends with a hand-off to the other character, because the two jobs meet at the import queue. Numbers in the copy must match the code (`backend/app/extraction.py`, `retrieval.py`); change the guide when the pipeline changes.
+
+### Named Rules
+**The True-State Rule.** A character moves because real work is happening: Finder scurries only while an online search runs, Keeper leafs only while he files, searches or answers. Pause and `prefers-reduced-motion` stop both. Animation never delays a result.
+
+**The Corner Rule.** On the workspace the guides stand in the bottom-right corner (above the section bar on phones), never in the content column and never as a third layout column. They carry a name tag ("Finder · how gathering works", "Keeper · how storing & search work"); on phones the tag is the name only.
+
 ## Do's and Don'ts
 
 ### Do:
