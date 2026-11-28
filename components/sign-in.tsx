@@ -56,7 +56,7 @@ export default function SignIn() {
       {mode === 'unconfigured' && <p className={styles.quiet}>Sign-in has not been set up on this installation yet.</p>}
       {error && <p className={styles.error} role="alert">{error}</p>}
       <p className={styles.footnote}>{mode === 'cognito'
-        ? 'Sign in or create an account with your email address. The shop keeps only your documents and whom you lent them to.'
+        ? 'Sign in or create an account. The shop keeps only your documents and whom you lent them to.'
         : 'No passwords are kept here. Google tells the shop who you are; the shop keeps only your documents and whom you lent them to.'}</p>
     </section>
   </main>;

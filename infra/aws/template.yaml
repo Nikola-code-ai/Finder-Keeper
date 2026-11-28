@@ -42,10 +42,17 @@ Parameters:
   MaxUploadMb:
     Type: Number
     Default: 25
+  GoogleClientId:
+    Type: String
+    Default: ""
+    Description: >-
+      Optional. A Google OAuth web client ID; set it to offer "Continue with Google" on the sign-in page. The client
+      secret is read from the Secrets Manager secret finder-keeper/google-oauth (key client_secret), never a parameter.
 
 Conditions:
   HasOpenAlexKey: !Not [!Equals [!Ref OpenAlexApiKey, ""]]
   HasSiteDomain: !Not [!Equals [!Ref SiteDomain, ""]]
+  HasGoogle: !Not [!Equals [!Ref GoogleClientId, ""]]
 
 Resources:
   # ---------- Storage and queue ----------
@@ -367,6 +374,24 @@ Resources:
       Domain: !Sub finder-keeper-${AWS::AccountId}
       ManagedLoginVersion: 2
 
+  # Google federation. Google users get their own user (username google_<id>); an email-and-password user with the
+  # same address is a separate reader. Google's email_verified is mapped so sharing by address works for them too.
+  GoogleIdentityProvider:
+    Type: AWS::Cognito::UserPoolIdentityProvider
+    Condition: HasGoogle
+    Properties:
+      UserPoolId: !Ref UserPool
+      ProviderName: Google
+      ProviderType: Google
+      ProviderDetails:
+        client_id: !Ref GoogleClientId
+        client_secret: "{{resolve:secretsmanager:finder-keeper/google-oauth:SecretString:client_secret}}"
+        authorize_scopes: openid email profile
+      AttributeMapping:
+        email: email
+        email_verified: email_verified
+        name: name
+
   UserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     Properties:
@@ -376,7 +401,8 @@ Resources:
       AllowedOAuthFlowsUserPoolClient: true
       AllowedOAuthFlows: [code]
       AllowedOAuthScopes: [openid, email, profile]
-      SupportedIdentityProviders: [COGNITO]
+      # Ref (the provider name) also makes the client wait for the provider.
+      SupportedIdentityProviders: !If [HasGoogle, [COGNITO, !Ref GoogleIdentityProvider], [COGNITO]]
       CallbackURLs: [!If [HasSiteDomain, !Sub "https://${SiteDomain}/auth/callback", "https://localhost/auth/callback"]]
       LogoutURLs: [!If [HasSiteDomain, !Sub "https://${SiteDomain}/", "https://localhost/"]]
       ExplicitAuthFlows: [ALLOW_REFRESH_TOKEN_AUTH]
