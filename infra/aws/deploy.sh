@@ -77,8 +77,13 @@ deploy_stack() {
     --parameter-overrides \
       ApiImageUri="$API_IMAGE" WebImageUri="$WEB_IMAGE" SiteDomain="$1" \
       DbEndpoint="$DB_ENDPOINT" DbClusterResourceId="$DB_RESOURCE_ID" \
-      ContactEmail="${CONTACT_EMAIL:-}" UnpaywallEmail="${UNPAYWALL_EMAIL:-}" OpenAlexApiKey="${OPENALEX_API_KEY:-}"
+      ContactEmail="${CONTACT_EMAIL:-}" UnpaywallEmail="${UNPAYWALL_EMAIL:-}" OpenAlexApiKey="${OPENALEX_API_KEY:-}" \
+      GoogleClientId="${GOOGLE_CLIENT_ID:-}"
 }
+if [ -n "${GOOGLE_CLIENT_ID:-}" ] && ! aws secretsmanager describe-secret --secret-id finder-keeper/google-oauth >/dev/null 2>&1; then
+  echo "GOOGLE_CLIENT_ID is set but the secret finder-keeper/google-oauth does not exist (see infra/aws/README.md)" >&2
+  exit 1
+fi
 SITE_DOMAIN="$(output SiteDomain)"; [ "$SITE_DOMAIN" = "None" ] && SITE_DOMAIN=""
 deploy_stack "$SITE_DOMAIN"
 if [ "$(output SiteDomain)" != "$SITE_DOMAIN" ]; then

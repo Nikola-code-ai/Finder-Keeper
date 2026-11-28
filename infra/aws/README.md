@@ -32,7 +32,7 @@ Requirements: AWS CLI v2.33+ signed in (`aws login --profile finder-keeper`), Do
 infra/aws/deploy.sh
 ```
 
-The script runs only from a clean `main`. Optional variables: `CONTACT_EMAIL`, `UNPAYWALL_EMAIL`, and `OPENALEX_API_KEY`.
+The script runs only from a clean `main`. Optional variables: `CONTACT_EMAIL`, `UNPAYWALL_EMAIL`, `OPENALEX_API_KEY`, and `GOOGLE_CLIENT_ID` (see "Sign in with Google" below).
 
 The script is idempotent. It runs these steps:
 
@@ -43,6 +43,26 @@ The script is idempotent. It runs these steps:
 
 To ship a new build, merge to `main` and run the script again.
 
+### Sign in with Google
+
+Off by default. To show "Continue with Google" on the Cognito sign-in page:
+
+1. In the Google Cloud console, under APIs & Services > Credentials, create an OAuth client ID of type **Web application**. Use these values:
+   - Authorized JavaScript origin: `https://finder-keeper-460370269693.auth.us-east-2.amazoncognito.com`
+   - Authorized redirect URI: `https://finder-keeper-460370269693.auth.us-east-2.amazoncognito.com/oauth2/idpresponse`
+   
+   On the OAuth consent screen, add `amazoncognito.com` as an authorized domain.
+2. Store the client secret in Secrets Manager. Run this yourself, so the secret never appears on a command line:
+
+   ```sh
+   read -rs GS && printf '{"client_secret":"%s"}' "$GS" > /dev/shm/g.json && unset GS && \
+     aws secretsmanager create-secret --name finder-keeper/google-oauth --secret-string file:///dev/shm/g.json; rm -f /dev/shm/g.json
+   ```
+
+3. Deploy with the client ID: `GOOGLE_CLIENT_ID=<id>.apps.googleusercontent.com infra/aws/deploy.sh`.
+
+CloudFormation reads the secret only when the provider changes. After rotating the secret, update the provider in the Cognito console or change the template. The secret costs $0.40 a month.
+
 ## Cost (Free plan, light use)
 
 Lambda (1M requests and 400,000 GB-seconds/month), SQS (1M requests), and CloudFront are covered by always-free allowances. Aurora bills ACU-hours only while it is awake, plus storage. On the Free plan it is capped at 4 ACU and **1 GiB of storage per cluster**. Each 384-dimension chunk takes about 1.5 KB of vectors plus its text, so watch storage as the library grows. Everything draws from the $100 credit until 2027-05-12. Create a budget in the Billing and Cost Management console before inviting users.
@@ -52,7 +72,8 @@ Lambda (1M requests and 400,000 GB-seconds/month), SQS (1M requests), and CloudF
 - **Cold starts.** The first request after a quiet period can wait for Aurora to resume and for the API to load the embedding model. That can take a few seconds to a few tens of seconds.
 - **Session end.** Signing out revokes the refresh token, but the API checks ID tokens locally. A disabled user's current ID token keeps working until it expires, which takes at most 15 minutes.
 - **Email delivery.** Cognito sends verification and reset codes from its default sender, which is limited to about 50 emails a day. Before wider sign-ups, switch the user pool to Amazon SES.
-- **MFA** is optional and authenticator-app only. Google sign-in can be added later as a federated provider; it needs a Google OAuth client.
+- **MFA** is optional and authenticator-app only. It applies to email-and-password readers; Google readers use Google's own protections.
+- **Google and email accounts are separate.** A reader who signs up with an email and password and later uses Google with the same address gets a second, empty library. Linking them needs a pre sign-up Lambda trigger.
 - **Public web function URL.** CloudFront fronts the web function, but its function URL is also reachable directly. Origin access control is not used, because Lambda OAC requires browsers to sign POST bodies. The API itself accepts only the web function's role.
 - **Failed jobs** that exhaust three attempts land in `finder-keeper-jobs-dlq`, and the job record stays "Waiting for an automatic retry". Retry it from the app.
 
